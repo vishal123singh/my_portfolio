@@ -43,7 +43,7 @@ export default function ProjectCard({
         onMouseLeave={() => swiperRef.current?.autoplay?.stop()}
       >
         <div className="project-image-wrapper">
-          {images.length > 1 ? (
+          {/* {images.length > 1 ? (
             <Swiper
               modules={[Autoplay]}
               onSwiper={(swiper) => {
@@ -69,6 +69,26 @@ export default function ProjectCard({
             </Swiper>
 
           ) : displayImage ? (
+            <div className="slide-image">
+              <Image
+                src={displayImage}
+                alt={title}
+                fill
+                sizes="100%"
+                style={{
+                  objectFit: 'cover',
+                  borderTopLeftRadius: '1rem',
+                  borderTopRightRadius: '1rem',
+                }}
+              />
+            </div>
+          ) : (
+            <div className="project-image-placeholder">No Image</div>
+          )} */}
+
+
+
+          {displayImage ? (
             <div className="slide-image">
               <Image
                 src={displayImage}
@@ -146,7 +166,7 @@ export default function ProjectCard({
                 key={i}
                 src={src}
                 alt={`Preview ${i + 1}`}
-                width={600}
+                width={300}
                 height={350}
                 style={{
                   objectFit: 'contain',
