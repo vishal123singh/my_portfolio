@@ -28,9 +28,12 @@ const projects = [
         ]
         ,
         contributions: [
-            'Built AI-enabled chat system for earnings call insights',
-            'Integrated OpenAI and Anthropic APIs for real-time querying',
-            'Developed charting dashboard and data parsing modules',
+            "Developed the application end-to-end, integrating AI-powered data processing and visualization.",
+            "Implemented real-time sentiment analysis, Q&A functionality, and transcript generation from earnings calls.",
+            "Built features to fetch, upload, and manage earnings calls for multiple companies.",
+            "Developed earnings calendar, company performance comparison tools, and AI-generated visual reports.",
+            "Integrated SEC filing reports including income statements, balance sheets, and cash flow statements.",
+            "Added voice assistant functionality for interactive financial insights."
         ],
         displayImage: '/projects/screenshots/earnings-call/12.png'
     },
@@ -43,11 +46,14 @@ const projects = [
             '/projects/screenshots/koodums-chat/2.png',
             '/projects/screenshots/koodums-chat/3.png'
         ],
-        tags: ['AI Agents', 'Web', 'Node JS', 'Typescript', 'Python', "GCP", "MCP"],
+        tags: ['AI Agents', 'Node JS', 'Typescript', 'Python', "GCP", "MCP"],
         contributions: [
-            'Created AI agent flow for hotel concierge operations',
-            'Integrated MCP with OpenAI and LangChain logic',
-            'Built tools for chatbot-based service management',
+            "Focused on building the MCP (Model Context Protocol) client and server architecture to connect AI agents with external tools like Google Maps and YouTube.",
+            "Implemented MCP servers from scratch to handle tool calls for fetching place details, directions, reviews, photos, YouTube videos, comments, live streams, shorts, channels, and playlists.",
+            "Developed prompt optimization logic to clarify incomplete or ambiguous user queries by analyzing conversational context or dynamically requesting missing information from the user.",
+            "Designed and implemented context management system to ensure optimal LLM performance by maintaining only the latest 10 conversational turns for efficient memory usage and relevant context injection.",
+            "Enabled AI agents to dynamically chain tool calls through MCP servers to enrich user conversations and deliver personalized, context-aware responses.",
+            "Collaborated on integration with cloud services for scalable deployment and real-time system performance."
         ],
         displayImage: '/projects/screenshots/koodums-chat/3.png'
     },
@@ -57,12 +63,45 @@ const projects = [
         link: "https://www.xinervatech.com/",
         images: ['/projects/screenshots/swifi/1.png', '/projects/screenshots/swifi/2.png', '/projects/screenshots/swifi/3.png'],
         tags: ['Angular', 'Web', 'Node JS', 'Typescript'],
-        contributions: [
-            'Built front-end UI using Angular and Material UI',
-            'Developed APIs for authentication, storage, and management',
-            'Worked on SEC data scraping and visualization',
-        ],
+        contributions:
+            [
+                "Developed a web scraper to extract and process investment-grade SEC filings.",
+                "Built an annotation tool allowing users to highlight and comment on filing data for collaborative analysis."
+            ],
+
         displayImage: '/projects/screenshots/swifi/1.png'
+    },
+    {
+        title: "OFLEP Connect",
+        description: "Video conferencing platform offering HD calls, collaboration tools, and secure virtual meetings for individuals and businesses.",
+        link: "#",
+        images: [],
+        tags: ['React Native', 'Express.js', 'Node.js', 'WebRTC', 'MongoDB', 'Socket.io', 'TypeScript'],
+        contributions:
+            [
+                "Designed and developed high-quality multi-party video calling functionality using WebRTC.",
+                "Built core features such as screen sharing, chat, reactions, and meeting scheduling with recording support.",
+                "Implemented advanced host controls for muting, video toggling, participant management, and permissions.",
+                "Integrated secure, password-protected meeting invites with time-limited access links.",
+                "Developed cross-platform solutions to support both mobile (iOS & Android) and web-based participation.",
+                "Configured TURN servers for improved call stability and reliability under various network conditions."
+            ],
+    },
+    {
+        title: "Intellibooks",
+        description: "Cross-platform desktop application for hotel and restaurant owners to manage orders, inventory, and billing operations.",
+        link: "https://intellibooks.io/",
+        images: ['/projects/screenshots/intellibooks/1.png', '/projects/screenshots/intellibooks/2.png'],
+        tags: ['React', ' Electron.js', 'Express.js', 'Node.js', 'TypeScript'],
+        contributions:
+            [
+                "Developed a multi-platform desktop application compatible across various operating systems.",
+                "Implemented hash-based routing and platform-specific adaptations for cross-OS compatibility.",
+                "Developed modules for order management, stock handling, billing, and reporting."
+            ],
+        displayImage: '/projects/screenshots/intellibooks/2.png'
+
+
     },
     {
         title: 'AutoFlow',
@@ -89,10 +128,13 @@ const projects = [
         ,
         tags: ["Automation", 'Web', 'Next.js'],
         contributions: [
-            'Architected backend system for lead automation workflows',
-            'Integrated Apollo.io and Notion for data enrichment',
-            'Built email sequence tool and analytics dashboard',
+            "Developed the full application from scratch, handling complete frontend, backend, and integrations.",
+            "Implemented multi-source data extraction pipelines from platforms like Nasdaq, Google Sheets, Y Combinator, Clutch, and LinkedIn.",
+            "Built enrichment workflows by integrating Apollo.io API to retrieve emails, LinkedIn profiles, and phone numbers for extracted leads.",
+            "Designed marketing automation workflows for running email and voice drop campaigns targeting enriched leads.",
+            "Enabled seamless campaign management with real-time tracking and performance reporting."
         ],
+
         displayImage: '/projects/screenshots/autoflow/1.png'
     },
     {
@@ -102,9 +144,8 @@ const projects = [
         images: ['/projects/screenshots/petlinx/1.png', '/projects/screenshots/petlinx/2.png'],
         tags: ['AI', 'Web', 'Next.js'],
         contributions: [
-            'Developed customizable email template engine with preview support',
-            'Created booking workflows and business management tools',
-            'Worked on PDF export, preview, and storage integrations',
+            'Built email template editor for customizable communications.',
+            'Performed bug fixing and code optimization for improved performance.'
         ],
         displayImage: '/projects/screenshots/petlinx/1.png'
 
@@ -115,7 +156,6 @@ const projects = [
         link: 'https://www.kiddiekredit.com/',
         images: [
             '/projects/screenshots/kk/5.png',
-            '/projects/screenshots/kk/1.png',
             '/projects/screenshots/kk/2.png',
             '/projects/screenshots/kk/4.png',
             '/projects/screenshots/kk/6.png',
@@ -133,7 +173,10 @@ const projects = [
         contributions: [
             'Developed gamified task/reward system for children’s financial literacy',
             'Built multi-role support (child, guardian, admin)',
-            'Integrated Firebase and in-app notification logic',
+            "End-to-end development of the mobile application.",
+            "Built core features such as task assignment, reward systems, credit score simulation, progress tracking, and educational modules.",
+            "Integrated Braze for behavior tracking, campaign management, and personalized notifications.",
+            "Developed secure authentication, push notifications, and parental controls for data privacy."
         ],
     },
     {
@@ -142,10 +185,14 @@ const projects = [
         images: ["/projects/screenshots/deligo/Screenshot_20240618-183329.png"],
         tags: ['React Native', 'Node JS', 'Android', 'IOS', 'AWS'],
         contributions: [
-            'Built vendor, delivery, and customer-facing mobile apps',
-            'Implemented live order tracking and delivery status updates',
-            'Managed authentication and vendor dashboards',
-        ],
+            "End-to-end development of customer, vendor, delivery partner apps, and admin panel.",
+            "Built key modules for order management, real-time tracking, payments, vendor inventory, and delivery partner assignments.",
+            "Integrated Razorpay for secure multi-payment options including digital wallets and COD.",
+            "Implemented Firebase for real-time updates, push notifications, and seamless order tracking.",
+            "Designed role-based access control for secure user, vendor, delivery partner, and admin functionalities.",
+            "Built analytics dashboards for performance monitoring, vendor reporting, and transaction management."
+        ]
+
     },
     {
         title: 'Logik',
@@ -178,10 +225,12 @@ const projects = [
         tags: ['React Native', 'Node JS', 'Android', 'IOS', 'Tracking', "GCP"],
         displayImage: '/projects/screenshots/logik/15.png',
         contributions: [
-            'Designed vehicle rental & logistics mobile app interface',
-            'Integrated location tracking and booking system',
-            'Built admin tools for managing orders and users',
-        ],
+            "Fully developed both client and driver applications.",
+            "Implemented vehicle booking, real-time tracking, route optimization, invoicing, ride history, and secure payments.",
+            "Integrated smart vehicle-driver matching algorithms.",
+            "Developed real-time notifications, secure user authentication, and transaction management."
+        ]
+
     }
 
 

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
-import { ExternalLink, Eye } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Eye } from 'lucide-react';
 
 export default function ProjectCard({
   title,
@@ -18,6 +18,7 @@ export default function ProjectCard({
   contributions = [],
 }) {
   const [open, setOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
   const [currentContribution, setCurrentContribution] = useState(0);
   const swiperRef = useRef(null);
 
@@ -44,51 +45,6 @@ export default function ProjectCard({
         onMouseLeave={() => swiperRef.current?.autoplay?.stop()}
       >
         <div className="project-image-wrapper">
-          {/* {images.length > 1 ? (
-            <Swiper
-              modules={[Autoplay]}
-              onSwiper={(swiper) => {
-                swiperRef.current = swiper;
-                swiper.autoplay?.stop(); // 🔐 Ensure autoplay doesn't start on load
-              }}
-              loop
-              className="swiper-preview"
-            >
-              {images.map((src, idx) => (
-                <SwiperSlide key={idx}>
-                  <div className="slide-image">
-                    <Image
-                      src={src}
-                      alt={`Slide ${idx + 1}`}
-                      fill
-                      sizes="100%"
-                      style={{ objectFit: 'cover', borderRadius: '1rem' }}
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-
-          ) : displayImage ? (
-            <div className="slide-image">
-              <Image
-                src={displayImage}
-                alt={title}
-                fill
-                sizes="100%"
-                style={{
-                  objectFit: 'cover',
-                  borderTopLeftRadius: '1rem',
-                  borderTopRightRadius: '1rem',
-                }}
-              />
-            </div>
-          ) : (
-            <div className="project-image-placeholder">No Image</div>
-          )} */}
-
-
-
           {displayImage ? (
             <div className="slide-image">
               <Image
@@ -97,7 +53,10 @@ export default function ProjectCard({
                 fill
                 sizes="100%"
                 style={{
-                  objectFit: displayImage.includes('kk') || displayImage.includes('logik') ? 'cover' : 'cover',
+                  objectFit:
+                    displayImage.includes('kk') || displayImage.includes('logik')
+                      ? 'cover'
+                      : 'contain',
                   borderTopLeftRadius: '1rem',
                   borderTopRightRadius: '1rem',
                 }}
@@ -114,7 +73,7 @@ export default function ProjectCard({
 
           {/* 👇 Contribution Carousel */}
           {contributions.length > 0 && (
-            <div className="contribution-carousel">
+            <div className="contribution-carousel h-[100px]">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={currentContribution}
@@ -150,9 +109,12 @@ export default function ProjectCard({
                 <ExternalLink size={18} /> View
               </a>
             )}
-            {images.length > 1 && (
+            {images.length > 0 && (
               <button
-                onClick={() => setOpen(true)}
+                onClick={(e) => {
+                  setActiveImage(null); // <-- Ensure default preview mode
+                  setOpen(true);
+                }}
                 className="project-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
               >
@@ -164,29 +126,34 @@ export default function ProjectCard({
         </div>
       </motion.div>
 
-      {/* 🔍 Modal Preview */}
       {open && (
         <div
           className="modal-backdrop"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            setActiveImage(null);
+          }}
           style={{
             position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.6)',
+            backgroundColor: 'rgba(0,0,0,0.85)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 9999,
-            padding: '2rem',
+            padding: '1rem',
           }}
         >
-          {/* ✖ Close button at top-right of modal wrapper */}
           <button
-            onClick={() => setOpen(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+              setActiveImage(null);
+            }}
             style={{
               position: 'absolute',
               top: '1rem',
@@ -216,29 +183,61 @@ export default function ProjectCard({
               borderRadius: '1rem',
               maxHeight: '85vh',
               overflowY: 'auto',
+              maxWidth: '95vw',
+              width: '100%',
             }}
           >
-            {images.map((src, i) => (
-              <Image
-                key={i}
-                src={src}
-                alt={`Preview ${i + 1}`}
-                width={800}
-                height={500}
-                style={{
-                  objectFit: 'contain',
-                  width: '100%',
-                  maxWidth: '700px',
-                  maxHeight: '80vh',
-                  height: 'auto',
-                  marginBottom: '1rem',
-                  borderRadius: '0.75rem',
-                  display: 'block',
-                  marginInline: 'auto',
-                }}
-              />
-
-            ))}
+            {/* Fullscreen mode */}
+            {activeImage ? (
+              <div style={{ position: 'relative', textAlign: 'center' }}>
+                <Image
+                  src={activeImage}
+                  alt="Zoomed"
+                  width={1920}
+                  height={1080}
+                  style={{
+                    objectFit: 'contain',
+                    width: '100%',
+                    height: '80vh',
+                    borderRadius: '0.75rem',
+                  }}
+                />
+                <ArrowLeft
+                  onClick={() => setActiveImage(null)}
+                  style={{
+                    position: 'absolute',
+                    color: '#00f7ff',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                  }}
+                >
+                </ArrowLeft>
+              </div>
+            ) : (
+              // Default view: all thumbnails
+              images.map((src, i) => (
+                <Image
+                  key={i}
+                  src={src}
+                  alt={`Preview ${i + 1}`}
+                  width={800}
+                  height={800}
+                  onClick={() => setActiveImage(src)}
+                  style={{
+                    objectFit: 'contain',
+                    width: '100%',
+                    maxWidth: '90vw',
+                    height: 'auto',
+                    maxHeight: '70vh',
+                    marginBottom: '1rem',
+                    borderRadius: '0.75rem',
+                    display: 'block',
+                    marginInline: 'auto',
+                    cursor: 'pointer',
+                  }}
+                />
+              ))
+            )}
           </div>
         </div>
       )}
