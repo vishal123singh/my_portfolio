@@ -1,23 +1,104 @@
 'use client';
 
 import Image from 'next/image';
-import { FaReact, FaNodeJs, FaMobileAlt, FaPython } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaReact, FaNodeJs, FaMobileAlt, FaPython, FaUnlockAlt } from 'react-icons/fa';
 import { SiNextdotjs, SiMongodb, SiAngular, SiFirebase } from 'react-icons/si';
 import { Typewriter } from 'react-simple-typewriter';
+
+function FlippableProfile() {
+  const [code, setCode] = useState('');
+  const [flipped, setFlipped] = useState(false);
+
+  const handleFlip = () => {
+    if (code.trim().toLowerCase() === 'ballu & soni') {
+      setFlipped((prev) => !prev); // toggle flip
+    }
+  };
+
+  return (
+    <div className="relative w-48 h-48 perspective mx-auto">
+      <div className={`flip-card-inner ${flipped ? 'flipped' : ''}`}>
+        {/* Front Image */}
+        <div className="flip-card-front">
+          <Image
+            src="/personal/profile.png"
+            alt="Vishal Singh"
+            fill
+            className="object-cover rounded-full"
+          />
+        </div>
+
+        {/* Back Image */}
+        <div className="flip-card-back">
+          <Image
+            src="/personal/2.jpg"
+            alt="Ballu & Soni"
+            fill
+            className="object-cover rounded-full"
+          />
+        </div>
+      </div>
+
+      {/* Code Input + Icon */}
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <input
+          type="text"
+          placeholder="Enter secret code"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          className="px-2 py-1 rounded-md text-sm text-white"
+        />
+        <button
+          onClick={handleFlip}
+          className="text-white bg-pink-500 px-3 py-2 rounded-full hover:bg-pink-600"
+        >
+          <FaUnlockAlt />
+        </button>
+      </div>
+
+      <style jsx>{`
+        .perspective {
+          perspective: 1000px;
+        }
+
+        .flip-card-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transition: transform 0.8s;
+          transform-style: preserve-3d;
+        }
+
+        .flipped {
+          transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          backface-visibility: hidden;
+          border-radius: 9999px;
+          overflow: hidden;
+        }
+
+        .flip-card-back {
+          transform: rotateY(180deg);
+        }
+      `}</style>
+    </div>
+  );
+}
+
 
 export default function About() {
   return (
     <section className="about-section">
       <div className="about-flex">
-        <div className="about-image">
-          <Image
-            src="/profile.jpg"
-            alt="Vishal Singh"
-            width={250}
-            height={250}
-            className="profile-img"
-          />
-        </div>
+        <FlippableProfile />
+
 
         <div className="about-text">
           <h2 className="about-title">Professional Profile</h2>
@@ -103,26 +184,35 @@ export default function About() {
               <li>
                 <div className="timeline-point" />
                 <div className="timeline-content">
-                  <h4>Notable Projects</h4>
-                  <div className="project-highlights">
-                    <div className="project-item">
-                      <h5>AutoFlow</h5>
-                      <p>Sales automation platform with multi-source data extraction and marketing workflows</p>
-                      <span>Next.js | Apollo | TypeScript</span>
+                  <h4 className="text-xl font-semibold mb-3 text-cyan-400">🚀 Notable Projects</h4>
+                  <div className="space-y-4">
+                    <div className="bg-[#1e293b] p-4 rounded-lg shadow-md border border-[#334155] hover:shadow-cyan-500/10 transition">
+                      <h5 className="text-lg font-semibold text-white">AutoFlow</h5>
+                      <p className="text-sm text-slate-300 mt-1">
+                        Sales automation platform with multi-source data extraction and marketing workflows.
+                      </p>
+                      <span className="text-xs text-cyan-400 mt-2 block">Next.js • Apollo • TypeScript</span>
                     </div>
-                    <div className="project-item">
-                      <h5>Earnings Call</h5>
-                      <p>AI-powered financial analysis with LLM integration and voice assistant</p>
-                      <span>Next.js | AWS | AI Agents</span>
+
+                    <div className="bg-[#1e293b] p-4 rounded-lg shadow-md border border-[#334155] hover:shadow-cyan-500/10 transition">
+                      <h5 className="text-lg font-semibold text-white">Earnings Call</h5>
+                      <p className="text-sm text-slate-300 mt-1">
+                        AI-powered financial analysis platform with LLM integration and voice assistant.
+                      </p>
+                      <span className="text-xs text-cyan-400 mt-2 block">Next.js • AWS • AI Agents</span>
                     </div>
-                    <div className="project-item">
-                      <h5>OFLEP Connect</h5>
-                      <p>WebRTC video conferencing with screen sharing and host controls</p>
-                      <span>React Native | WebRTC | Socket.io</span>
+
+                    <div className="bg-[#1e293b] p-4 rounded-lg shadow-md border border-[#334155] hover:shadow-cyan-500/10 transition">
+                      <h5 className="text-lg font-semibold text-white">OFLEP Connect</h5>
+                      <p className="text-sm text-slate-300 mt-1">
+                        WebRTC video conferencing with screen sharing and real-time host controls.
+                      </p>
+                      <span className="text-xs text-cyan-400 mt-2 block">React Native • WebRTC • Socket.io</span>
                     </div>
                   </div>
                 </div>
               </li>
+
             </ul>
           </div>
         </div>

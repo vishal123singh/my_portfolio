@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
+import { ExternalLink, Eye } from 'lucide-react';
 
 export default function ProjectCard({
   title,
@@ -96,7 +97,7 @@ export default function ProjectCard({
                 fill
                 sizes="100%"
                 style={{
-                  objectFit: 'cover',
+                  objectFit: displayImage.includes('kk') || displayImage.includes('logik') ? 'cover' : 'cover',
                   borderTopLeftRadius: '1rem',
                   borderTopRightRadius: '1rem',
                 }}
@@ -144,45 +145,104 @@ export default function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="project-link"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
               >
-                🔗 View
+                <ExternalLink size={18} /> View
               </a>
             )}
             {images.length > 1 && (
-              <button onClick={() => setOpen(true)} className="project-link">
-                👁️ Preview
+              <button
+                onClick={() => setOpen(true)}
+                className="project-link"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+              >
+                <Eye size={18} /> Preview
               </button>
             )}
           </div>
+
         </div>
       </motion.div>
 
       {/* 🔍 Modal Preview */}
       {open && (
-        <div className="modal-backdrop" onClick={() => setOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-backdrop"
+          onClick={() => setOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999,
+            padding: '2rem',
+          }}
+        >
+          {/* ✖ Close button at top-right of modal wrapper */}
+          <button
+            onClick={() => setOpen(false)}
+            style={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              background: '#00f7ff',
+              color: '#0f172a',
+              border: 'none',
+              borderRadius: '50%',
+              width: '2.25rem',
+              height: '2.25rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: '1.1rem',
+              boxShadow: '0 0 8px rgba(0, 247, 255, 0.3)',
+              zIndex: 10000,
+            }}
+          >
+            ✖
+          </button>
+
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#1e293b',
+              padding: '1.5rem',
+              borderRadius: '1rem',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+            }}
+          >
             {images.map((src, i) => (
               <Image
                 key={i}
                 src={src}
                 alt={`Preview ${i + 1}`}
-                width={300}
-                height={350}
+                width={800}
+                height={500}
                 style={{
                   objectFit: 'contain',
                   width: '100%',
+                  maxWidth: '700px',
+                  maxHeight: '80vh',
                   height: 'auto',
                   marginBottom: '1rem',
                   borderRadius: '0.75rem',
+                  display: 'block',
+                  marginInline: 'auto',
                 }}
               />
+
             ))}
-            <button onClick={() => setOpen(false)} className="close-btn">
-              ✖
-            </button>
           </div>
         </div>
       )}
+
     </>
   );
 }

@@ -772,4 +772,10 @@ footer {
 }
 
 
+.drop-shadow-lg {
+  drop-shadow: 0 0 12px rgba(0, 247, 255, 0.3);
+}
 
+.tech-pill {
+  transition: background 0.3s ease;
+}

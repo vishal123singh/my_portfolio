@@ -83,7 +83,7 @@ export default function Assistant() {
         }}
       >
         <span style={{ fontWeight: 600, color: '#00f7ff', fontSize: '1rem' }}>
-          Ask Buddy about me
+          Ask VAI
         </span>
 
         <div
