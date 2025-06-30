@@ -254,16 +254,12 @@ const projects = [
             '/projects/screenshots/logik/26.png',
             '/projects/screenshots/logik/27.png',
             '/projects/screenshots/logik/28.png',
-            '/projects/screenshots/logik/29.png',
-            '/projects/screenshots/logik/30.png',
-            '/projects/screenshots/logik/31.png',
-            '/projects/screenshots/logik/32.png',
-            '/projects/screenshots/logik/33.png',
-            '/projects/screenshots/logik/34.png'
+            '/projects/screenshots/logik/29.png'
+
 
         ],
         tags: ['React Native', 'Node JS', 'Android', 'IOS', 'Tracking', "GCP"],
-        displayImage: '/projects/screenshots/logik/34.png',
+        displayImage: '/projects/screenshots/logik/14.png',
         contributions: [
             "Fully developed both client and driver applications.",
             "Implemented vehicle booking, real-time tracking, route optimization, invoicing, ride history, and secure payments.",
