@@ -75,7 +75,23 @@ const projects = [
         title: "OFLEP Connect",
         description: "Video conferencing platform offering HD calls, collaboration tools, and secure virtual meetings for individuals and businesses.",
         link: "#",
-        images: [],
+        images: [
+            '/projects/screenshots/oflep/1.png',
+            '/projects/screenshots/oflep/2.png',
+            '/projects/screenshots/oflep/3.png',
+            '/projects/screenshots/oflep/4.png',
+            '/projects/screenshots/oflep/5.png',
+            '/projects/screenshots/oflep/6.png',
+            '/projects/screenshots/oflep/7.png',
+            '/projects/screenshots/oflep/8.png',
+            '/projects/screenshots/oflep/9.png',
+            '/projects/screenshots/oflep/10.png',
+            '/projects/screenshots/oflep/11.png',
+            '/projects/screenshots/oflep/12.png',
+            '/projects/screenshots/oflep/13.png',
+            '/projects/screenshots/oflep/14.png',
+            '/projects/screenshots/oflep/15.png'
+        ],
         tags: ['React Native', 'Express.js', 'Node.js', 'WebRTC', 'MongoDB', 'Socket.io', 'TypeScript'],
         contributions:
             [
@@ -86,6 +102,7 @@ const projects = [
                 "Developed cross-platform solutions to support both mobile (iOS & Android) and web-based participation.",
                 "Configured TURN servers for improved call stability and reliability under various network conditions."
             ],
+        displayImage: '/projects/screenshots/oflep/1.png'
     },
     {
         title: "Intellibooks",
@@ -182,7 +199,22 @@ const projects = [
     {
         title: 'DELIGO',
         description: 'End-to-end food & grocery  delivery ecosystem with multi-role apps.',
-        images: ["/projects/screenshots/deligo/Screenshot_20240618-183329.png"],
+        images: [
+            '/projects/screenshots/deligo/1.png',
+            '/projects/screenshots/deligo/2.png',
+            '/projects/screenshots/deligo/3.png',
+            '/projects/screenshots/deligo/4.png',
+            '/projects/screenshots/deligo/5.png',
+            '/projects/screenshots/deligo/6.png',
+            '/projects/screenshots/deligo/7.png',
+            '/projects/screenshots/deligo/8.png',
+            '/projects/screenshots/deligo/9.png',
+            '/projects/screenshots/deligo/10.png',
+            '/projects/screenshots/deligo/11.png',
+            '/projects/screenshots/deligo/12.png',
+            '/projects/screenshots/deligo/13.png',
+
+        ],
         tags: ['React Native', 'Node JS', 'Android', 'IOS', 'AWS'],
         contributions: [
             "End-to-end development of customer, vendor, delivery partner apps, and admin panel.",
@@ -191,8 +223,8 @@ const projects = [
             "Implemented Firebase for real-time updates, push notifications, and seamless order tracking.",
             "Designed role-based access control for secure user, vendor, delivery partner, and admin functionalities.",
             "Built analytics dashboards for performance monitoring, vendor reporting, and transaction management."
-        ]
-
+        ],
+        displayImage: "/projects/screenshots/deligo/4.png"
     },
     {
         title: 'Logik',
@@ -219,11 +251,19 @@ const projects = [
             '/projects/screenshots/logik/23.png',
             '/projects/screenshots/logik/24.png',
             '/projects/screenshots/logik/25.png',
-            '/projects/screenshots/logik/26.png'
+            '/projects/screenshots/logik/26.png',
+            '/projects/screenshots/logik/27.png',
+            '/projects/screenshots/logik/28.png',
+            '/projects/screenshots/logik/29.png',
+            '/projects/screenshots/logik/30.png',
+            '/projects/screenshots/logik/31.png',
+            '/projects/screenshots/logik/32.png',
+            '/projects/screenshots/logik/33.png',
+            '/projects/screenshots/logik/34.png'
 
         ],
         tags: ['React Native', 'Node JS', 'Android', 'IOS', 'Tracking', "GCP"],
-        displayImage: '/projects/screenshots/logik/15.png',
+        displayImage: '/projects/screenshots/logik/34.png',
         contributions: [
             "Fully developed both client and driver applications.",
             "Implemented vehicle booking, real-time tracking, route optimization, invoicing, ride history, and secure payments.",

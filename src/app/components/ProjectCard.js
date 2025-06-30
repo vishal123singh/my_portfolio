@@ -53,12 +53,10 @@ export default function ProjectCard({
                 fill
                 sizes="100%"
                 style={{
-                  objectFit:
-                    displayImage.includes('kk') || displayImage.includes('logik')
-                      ? 'cover'
-                      : 'contain',
+                  objectFit: 'contain', // Keep full image visible
                   borderTopLeftRadius: '1rem',
                   borderTopRightRadius: '1rem',
+                  backgroundColor: '#f0f0f0',
                 }}
               />
             </div>
@@ -67,7 +65,8 @@ export default function ProjectCard({
           )}
         </div>
 
-        <div className="project-details">
+
+        <div className="project-details h-[min-content]">
           <h3>{title}</h3>
           <p>{description}</p>
 
