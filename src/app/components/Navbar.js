@@ -12,11 +12,10 @@ export default function Navbar() {
       <Link href="/">Home</Link>
       <Link href="/about">About</Link>
       <Link href="/projects">Projects</Link>
+      <Link href="/mockups">MockUps</Link>
+      <Link href="/productivity">Productivity</Link>
       <Link href="/skills">Skills</Link>
       <Link href="/contact">Contact</Link>
-      {/* <button onClick={toggle} style={{ marginLeft: 'auto' }}>
-        {theme === 'dark' ? '🌞' : '🌙'}
-      </button> */}
     </nav>
   );
 }

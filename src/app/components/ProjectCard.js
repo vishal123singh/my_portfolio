@@ -16,6 +16,8 @@ export default function ProjectCard({
   tags = [],
   displayImage = null,
   contributions = [],
+  target = "_blank",
+  liveComponent = null,
 }) {
   const [open, setOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(null);
@@ -45,7 +47,11 @@ export default function ProjectCard({
         onMouseLeave={() => swiperRef.current?.autoplay?.stop()}
       >
         <div className="project-image-wrapper">
-          {displayImage ? (
+          {liveComponent ? (
+            <div className="w-full h-[250px] sm:h-[300px] overflow-hidden rounded-t-xl relative">
+              {liveComponent}
+            </div>
+          ) : displayImage ? (
             <div className="slide-image">
               <Image
                 src={displayImage}
@@ -53,17 +59,18 @@ export default function ProjectCard({
                 fill
                 sizes="100%"
                 style={{
-                  objectFit: 'contain', // Keep full image visible
-                  borderTopLeftRadius: '1rem',
-                  borderTopRightRadius: '1rem',
-                  backgroundColor: '#f0f0f0',
-                }}
-              />
-            </div>
-          ) : (
-            <div className="project-image-placeholder">No Image</div>
+                    objectFit: 'contain',
+                    borderTopLeftRadius: '1rem',
+                    borderTopRightRadius: '1rem',
+                    backgroundColor: '#f0f0f0',
+                  }}
+                />
+              </div>
+            ) : (
+                <div className="project-image-placeholder">No Preview</div>
           )}
         </div>
+
 
 
         <div className="project-details h-[min-content]">
@@ -100,7 +107,7 @@ export default function ProjectCard({
             {link && (
               <a
                 href={link}
-                target="_blank"
+                target={target}
                 rel="noopener noreferrer"
                 className="project-link"
                 style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}

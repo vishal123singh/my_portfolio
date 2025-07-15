@@ -4,7 +4,8 @@ import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import ResumeButton from '@/app/components/ResumeButton';
 import { ThemeProvider } from "@/context/ThemeContext";
-import Assistant from "./components/assitant";
+import AssistantWrapper from '@/app/components/AssistantWrapper';
+
 
 
 const geistSans = Geist({
@@ -29,11 +30,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <Navbar />
-          <Assistant></Assistant>
-          <ResumeButton></ResumeButton>
+          {/* <Navbar />
+          <AssistantWrapper></AssistantWrapper> */}
+          {/* <ResumeButton></ResumeButton> */}
           <main>{children}</main>
-          <Footer />
+          {/* <Footer /> */}
         </ThemeProvider>
       </body>
     </html>
