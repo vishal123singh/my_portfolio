@@ -1,12 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* Add this to your global CSS or import directly in the component */
+@import "highlight.js/styles/github-dark.css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   --bg-dark: #0f172a;
   --text-light: #f1f5f9;
-  --accent: oklch(0.97 0 0);
+  --accent: #00f7ff;
   --btn-hover: #0ea5e9;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -41,7 +43,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --bg-dark: #ffffff;
   --text-light: #1e293b;
   --accent: #4f46e5;
@@ -50,7 +52,7 @@
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-light);
   padding: 0 1rem;
@@ -101,6 +103,31 @@ section {
   background-color: #0ea5e9;
 }
 
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.6); /* slate-500-ish */
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(94, 234, 212, 0.8); /* cyan-300-ish */
+}
+
+/* Firefox support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.6) transparent;
+}
+
 /* === HERO === */
 .hero {
   display: flex;
@@ -128,7 +155,11 @@ section {
 }
 
 .hero-btn {
-  display: inline-block;
+  display: flex;
+  align-self: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   padding: 0.8rem 1.6rem;
   border-radius: 999px;
   font-weight: bold;
@@ -147,7 +178,7 @@ section {
   background: #0f172a;
   color: #e2e8f0;
   padding: 1rem 1.5rem;
-  font-family: 'Fira Code', monospace;
+  font-family: "Fira Code", monospace;
   font-size: 0.9rem;
   border-radius: 0.75rem;
   margin-bottom: 2rem;
@@ -195,6 +226,7 @@ footer {
   border-top: 1px solid #1e293b;
 }
 
+/* ResumeButton.css */
 .resume-floating {
   position: fixed;
   bottom: 1.5rem;
@@ -209,7 +241,6 @@ footer {
   transition: all 0.3s ease-in-out;
   z-index: 999;
 }
-
 .resume-floating:hover {
   background: var(--btn-hover);
   color: white;
@@ -724,7 +755,7 @@ footer {
 }
 
 .project-contributions li::before {
-  content: '•';
+  content: "•";
   color: var(--accent);
   position: absolute;
   left: -0.75rem;
@@ -756,9 +787,15 @@ footer {
 }
 
 @keyframes blink {
-  0% { opacity: 0.2; }
-  50% { opacity: 1; }
-  100% { opacity: 0.2; }
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }
 
 .drop-shadow-lg {
@@ -914,4 +951,9 @@ footer {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* globals.css */
+.text-accent {
+  @apply text-cyan-500;
 }

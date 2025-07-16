@@ -31,8 +31,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 
-
-
 export function SidebarItem({ icon, label, active, onClick, expanded }) {
   return (
     <div
@@ -41,7 +39,7 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
         "group relative flex items-center gap-3 w-full px-5 py-3 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden",
         active
           ? "bg-gradient-to-r from-indigo-700 to-indigo-600 text-white shadow-lg"
-          : "text-white/70 hover:bg-white/5 hover:text-white",
+          : "text-white/70 hover:bg-white/5 hover:text-white"
       )}
     >
       {/* Left Active Bar */}
@@ -55,7 +53,7 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
           "w-6 h-6 flex items-center justify-center text-xl transition-all duration-200",
           active
             ? "text-cyan-400 drop-shadow-[0_0_6px_rgba(34,211,238,0.8)]"
-            : "group-hover:text-cyan-400 group-hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.6)]",
+            : "group-hover:text-cyan-400 group-hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.6)]"
         )}
       >
         {icon}
@@ -66,7 +64,7 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
         <span
           className={cn(
             "text-sm font-medium transition-all duration-200",
-            active ? "text-white" : "text-white/80",
+            active ? "text-white" : "text-white/80"
           )}
         >
           {label}
@@ -78,11 +76,11 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
 
 export function OverviewTab({ projects, tasks, team }) {
   const activeProjects = projects.filter(
-    (p) => p.status !== "completed",
+    (p) => p.status !== "completed"
   ).length;
   const dueTasks = tasks.filter((t) => t.status !== "completed").length;
   const overdueTasks = tasks.filter(
-    (t) => t.status !== "completed" && new Date(t.dueDate) < new Date(),
+    (t) => t.status !== "completed" && new Date(t.dueDate) < new Date()
   ).length;
 
   const projectBudget = `$${projects
@@ -108,7 +106,7 @@ export function OverviewTab({ projects, tasks, team }) {
           title="Tasks Due"
           value={dueTasks}
           change={`${Math.random() > 0.5 ? "+" : "-"}${Math.floor(
-            Math.random() * 5,
+            Math.random() * 5
           )}`}
           icon={<FaTasks></FaTasks>}
         />
@@ -139,7 +137,7 @@ export function OverviewTab({ projects, tasks, team }) {
             Recent Activity
           </h3>
 
-          <div className="space-y-5 max-h-[18rem] overflow-y-auto pr-2">
+          <div className="space-y-5 max-h-[18rem] overflow-y-auto pr-2 custom-scrollbar">
             {recentActivity.length > 0 ? (
               recentActivity.map((activity, index) => (
                 <ActivityItem
@@ -180,7 +178,7 @@ export function OverviewTab({ projects, tasks, team }) {
                     >
                       {heading}
                     </th>
-                  ),
+                  )
                 )}
               </tr>
             </thead>
@@ -244,10 +242,10 @@ export function OverviewTab({ projects, tasks, team }) {
 export function ProjectTimeline({ projects }) {
   const now = new Date();
   const minDate = new Date(
-    Math.min(...projects.map((p) => new Date(p.startDate))),
+    Math.min(...projects.map((p) => new Date(p.startDate)))
   );
   const maxDate = new Date(
-    Math.max(...projects.map((p) => new Date(p.endDate))),
+    Math.max(...projects.map((p) => new Date(p.endDate)))
   );
 
   // Add padding to timeline
@@ -495,7 +493,6 @@ export function ProjectCard({ project }) {
   );
 }
 
-
 export function TaskItem({ task, onComplete }) {
   const priorityColors = {
     high: "bg-red-100 text-red-800",
@@ -553,14 +550,18 @@ export function TaskItem({ task, onComplete }) {
             </h4>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
               <span
-                className={`px-2 py-1 rounded-full font-medium capitalize ${priorityColors[task.priority]}`}
+                className={`px-2 py-1 rounded-full font-medium capitalize ${
+                  priorityColors[task.priority]
+                }`}
               >
                 {task.priority}
               </span>
               <span className="text-gray-500">
                 Due {formatDate(task.dueDate)}
               </span>
-              {isOverdue && <span className="text-red-500 font-semibold">Overdue</span>}
+              {isOverdue && (
+                <span className="text-red-500 font-semibold">Overdue</span>
+              )}
             </div>
           </div>
         </div>
@@ -575,7 +576,6 @@ export function TaskItem({ task, onComplete }) {
     </motion.div>
   );
 }
-
 
 export function TasksTab({ tasks, onCompleteTask }) {
   const [filter, setFilter] = useState("all");
@@ -825,7 +825,6 @@ export function TeamTab({ team }) {
   );
 }
 
-
 export function TeamMemberCard({ member }) {
   return (
     <motion.div
@@ -884,7 +883,6 @@ export function TeamMemberCard({ member }) {
     </motion.div>
   );
 }
-
 
 export function SettingsTab() {
   const [settings, setSettings] = useState({
@@ -1167,8 +1165,6 @@ export function SummaryCard({ label, value, color }) {
   );
 }
 
-
-
 export function ReportVisualization({ type, data = [] }) {
   const total = data.reduce((sum, item) => sum + (item.count || 0), 0);
 
@@ -1255,11 +1251,11 @@ export function ReportVisualization({ type, data = [] }) {
                       cx="18"
                       cy="18"
                       r="15.915"
-                    />,
+                    />
                   );
                   return acc;
                 },
-                { total: 0, segments: [] },
+                { total: 0, segments: [] }
               ).segments
             }
           </svg>
@@ -1319,8 +1315,6 @@ export function ReportVisualization({ type, data = [] }) {
 
   return null;
 }
-
-
 
 export function NotificationBell({ notifications, onDismiss }) {
   const [isOpen, setIsOpen] = useState(false);

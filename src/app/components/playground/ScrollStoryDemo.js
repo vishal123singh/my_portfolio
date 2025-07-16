@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import { motion, useInView, useScroll, useSpring, useTransform } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import { useRef, useState } from "react";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { RefreshCw } from "lucide-react";
 import ParticlesBackground from "@/app/components/ParticlesBackground";
 
 export default function ScrollStoryDemo() {
@@ -27,7 +33,7 @@ export default function ScrollStoryDemo() {
           Replay
         </div>
         <motion.button
-          onClick={() => setKey(prev => prev + 1)}
+          onClick={() => setKey((prev) => prev + 1)}
           whileTap={{ scale: 0.95 }}
           className="text-[var(--accent)] hover:drop-shadow-[0_0_12px_var(--btn-hover)] transition"
           aria-label="Replay"
@@ -36,7 +42,7 @@ export default function ScrollStoryDemo() {
             key={key}
             initial={{ rotate: 0 }}
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, ease: 'easeInOut' }}
+            transition={{ duration: 1, ease: "easeInOut" }}
           >
             <RefreshCw size={22} />
           </motion.div>
@@ -58,7 +64,10 @@ function ScrollContent() {
 
   return (
     <div className="space-y-60 pt-20 px-6 max-w-full mx-auto text-white">
-      <section ref={ref1} className="h-[80vh] flex flex-col justify-center items-center text-center space-y-6">
+      <section
+        ref={ref1}
+        className="h-[80vh] flex flex-col justify-center items-center text-center space-y-6"
+      >
         <motion.h1
           initial={{ opacity: 0, y: 60 }}
           animate={inView1 ? { opacity: 1, y: 0 } : {}}
@@ -69,17 +78,18 @@ function ScrollContent() {
         </motion.h1>
         <motion.div
           initial={{ width: 0 }}
-          animate={inView1 ? { width: '100%' } : {}}
+          animate={inView1 ? { width: "100%" } : {}}
           transition={{ delay: 0.4, duration: 1 }}
           className="h-1 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 rounded-full"
         />
         <motion.p
-          initial={{ opacity: 0, filter: 'blur(10px)' }}
-          animate={inView1 ? { opacity: 1, filter: 'blur(0px)' } : {}}
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={inView1 ? { opacity: 1, filter: "blur(0px)" } : {}}
           transition={{ delay: 0.4, duration: 1 }}
           className="text-lg sm:text-xl max-w-2xl text-gray-300"
         >
-          A showcase of smooth animations, interactive components, and clean UI — built using React + Framer Motion.
+          A showcase of smooth animations, interactive components, and clean UI
+          — built using React + Framer Motion.
         </motion.p>
       </section>
 
@@ -87,7 +97,9 @@ function ScrollContent() {
       <section className="h-[100vh]">
         <motion.div
           className="flex space-x-6 w-[300%] px-10"
-          style={{ x: useTransform(useScroll().scrollYProgress, [0, 1], [0, -800]) }}
+          style={{
+            x: useTransform(useScroll().scrollYProgress, [0, 1], [0, -800]),
+          }}
         >
           {[1, 2, 3, 4, 5].map((item) => (
             <div
@@ -96,7 +108,8 @@ function ScrollContent() {
             >
               <h3 className="text-xl font-bold mb-2">Card {item}</h3>
               <p className="text-white/70">
-                This is a carousel item. It scrolls horizontally based on vertical scroll.
+                This is a carousel item. It scrolls horizontally based on
+                vertical scroll.
               </p>
             </div>
           ))}
@@ -112,25 +125,31 @@ function ScrollContent() {
         >
           <h2 className="text-3xl font-semibold mb-2">Smooth Motion</h2>
           <p className="text-base text-white/80">
-            Every section animates gracefully into view, offering an engaging user experience.
+            Every section animates gracefully into view, offering an engaging
+            user experience.
           </p>
         </motion.div>
       </section>
 
       <section ref={ref3} className="h-[80vh] flex justify-center items-center">
         <motion.div
-          initial={{ x: '-100vw', opacity: 0 }}
+          initial={{ x: "-100vw", opacity: 0 }}
           animate={inView3 ? { x: 0, opacity: 1 } : {}}
           transition={{ duration: 1.2 }}
           className="bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl max-w-md w-full backdrop-blur-lg text-center"
         >
           <h3 className="text-2xl font-bold mb-2 text-white">Final Slide</h3>
           <p className="text-white/80 text-base">
-            Built using <span className="text-cyan-400 font-semibold">Framer Motion</span> &{' '}
-            <span className="text-indigo-400 font-semibold">Tailwind CSS</span>. Fully responsive and production ready.
+            Built using{" "}
+            <span className="text-cyan-400 font-semibold">Framer Motion</span> &{" "}
+            <span className="text-indigo-400 font-semibold">Tailwind CSS</span>.
+            Fully responsive and production ready.
           </p>
           <motion.a
-            whileHover={{ scale: 1.05, boxShadow: '0 0 10px rgba(34,211,238,0.7)' }}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 0 10px rgba(34,211,238,0.7)",
+            }}
             className="inline-block mt-6 px-5 py-3 bg-cyan-500 rounded-xl font-semibold text-white shadow-md transition"
             href="/playground/project-dashboard"
           >

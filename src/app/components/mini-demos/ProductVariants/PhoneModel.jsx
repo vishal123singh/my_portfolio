@@ -1,12 +1,12 @@
 // components/mini-demos/ProductVariants/PhoneModel.tsx
-'use client';
+"use client";
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, useGLTF } from '@react-three/drei';
-import { useRef } from 'react';
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment, useGLTF } from "@react-three/drei";
+import { useRef } from "react";
 
 function Phone() {
-  const { scene } = useGLTF('/models/iphone_16.glb'); // place in public/models
+  const { scene } = useGLTF("/models/phone.glb"); // place in public/models
   useFrame(() => {
     scene.rotation.y += 0.01;
   });
