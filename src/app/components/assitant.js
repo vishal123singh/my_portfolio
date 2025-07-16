@@ -1,35 +1,33 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { FaPaperPlane } from 'react-icons/fa';
-import ReactMarkdown from 'react-markdown';
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FaPaperPlane } from "react-icons/fa";
+import ReactMarkdown from "react-markdown";
 
-export default function Assistant() {
-  const [input, setInput] = useState('');
+export default function Assistant({ onClose }) {
+  const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [showChat, setShowChat] = useState(false);
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
 
   const handleAsk = async () => {
     if (!input.trim()) return;
-    const userMsg = { role: 'user', text: input };
-    setMessages(prev => [...prev, userMsg]);
-    setShowChat(true);
-    setInput('');
+    const userMsg = { role: "user", text: input };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
     setLoading(true);
 
     try {
-      const res = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMsg.text }),
       });
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let result = '';
+      let result = "";
 
       while (true) {
         const { done, value } = await reader.read();
@@ -38,19 +36,19 @@ export default function Assistant() {
         const chunk = decoder.decode(value);
         result += chunk;
 
-        setMessages(prev => {
+        setMessages((prev) => {
           const last = prev[prev.length - 1];
-          if (last?.role === 'assistant') {
-            return [...prev.slice(0, -1), { role: 'assistant', text: result }];
+          if (last?.role === "assistant") {
+            return [...prev.slice(0, -1), { role: "assistant", text: result }];
           } else {
-            return [...prev, { role: 'assistant', text: result }];
+            return [...prev, { role: "assistant", text: result }];
           }
         });
       }
     } catch (err) {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
-        { role: 'assistant', text: 'Something went wrong. Try again!' },
+        { role: "assistant", text: "Something went wrong. Try again!" },
       ]);
     } finally {
       setLoading(false);
@@ -58,225 +56,88 @@ export default function Assistant() {
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <>
-      {/* Assistant Bar Below Navbar */}
-      <div
-        className="ai-bar"
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 1000,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          background: 'rgba(15, 23, 42, 0.6)',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          padding: '1rem 2rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-        }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-800 border border-slate-600 rounded-xl p-6 w-full max-w-2xl max-h-[75vh] flex flex-col"
       >
-        <span style={{ fontWeight: 600, color: '#00f7ff', fontSize: '1rem' }}>
-          Ask VAI
-        </span>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-cyan-400 text-lg font-semibold">
+            Chat with Vishal’s Assistant
+          </h3>
+          <button onClick={onClose} className="text-slate-100 text-lg">
+            ✖
+          </button>
+        </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            background: '#1e293b',
-            borderRadius: '999px',
-            padding: '0.3rem 0.6rem',
-            gap: '0.5rem',
-            flex: 1,
-            maxWidth: '600px',
-          }}
-        >
+        <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`flex ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <div
+                className={`rounded-lg px-4 py-2 max-w-[80%] text-sm leading-relaxed ${
+                  msg.role === "user"
+                    ? "bg-slate-700 text-white"
+                    : "bg-slate-900 text-slate-200"
+                }`}
+              >
+                {msg.role === "assistant" ? (
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                ) : (
+                  msg.text
+                )}
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <motion.p
+              className="text-slate-400 italic"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ repeat: Infinity, duration: 1.2 }}
+            >
+              Vishal’s Assistant is typing...
+            </motion.p>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+
+        <div className="flex items-center bg-slate-900 rounded-full px-3 py-2 gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAsk()}
-            placeholder="e.g. What are Vishal's skills?"
-            style={{
-              flex: 1,
-              padding: '0.5rem 1rem',
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: '#f1f5f9',
-              fontSize: '0.95rem',
-            }}
+            onKeyDown={(e) => e.key === "Enter" && handleAsk()}
+            placeholder="Ask something..."
+            className="flex-1 bg-transparent text-white text-sm outline-none"
           />
           <button
             onClick={handleAsk}
-            style={{
-              background: '#00f7ff',
-              border: 'none',
-              borderRadius: '999px',
-              padding: '0.5rem 0.8rem',
-              color: '#0f172a',
-              fontWeight: 600,
-              boxShadow: '0 0 10px rgba(0, 247, 255, 0.3)',
-            }}
+            className="bg-cyan-400 text-slate-900 px-3 py-1 rounded-full shadow"
           >
             <FaPaperPlane />
           </button>
         </div>
-      </div>
-
-      {/* Modal */}
-      <AnimatePresence>
-        {showChat && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 9999,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              background: 'rgba(0,0,0,0.6)',
-              backdropFilter: 'blur(6px)',
-            }}
-            onClick={() => setShowChat(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                background: '#1e293b',
-                borderRadius: '1rem',
-                padding: '2rem',
-                maxWidth: '700px',
-                width: '90%',
-                maxHeight: '75vh',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                border: '1px solid #334155',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ color: '#00f7ff', fontSize: '1.25rem' }}>Chat with Vishal’s Assistant</h3>
-                <button
-                  onClick={() => setShowChat(false)}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    fontSize: '1.2rem',
-                    color: '#f1f5f9',
-                    cursor: 'pointer',
-                  }}
-                >
-                  ✖
-                </button>
-              </div>
-
-              <div style={{ flex: 1, overflowY: 'auto', marginTop: '1rem' }}>
-                {messages.map((msg, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
-                      alignItems: 'flex-start',
-                      gap: '0.75rem',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    <div
-                      style={{
-                        background: msg.role === 'user' ? '#334155' : '#0f172a',
-                        padding: '0.75rem 1rem',
-                        borderRadius: '1rem',
-                        color: '#f1f5f9',
-                        maxWidth: '80%',
-                        fontSize: '0.95rem',
-                        lineHeight: '1.5',
-                      }}
-                    >
-                      {msg.role === 'assistant' ? (
-                        <ReactMarkdown>{msg.text}</ReactMarkdown>
-                      ) : (
-                        msg.text
-                      )}
-                    </div>
-                  </div>
-                ))}
-                {loading && (
-                  <motion.p
-                    style={{ color: '#94a3b8', fontStyle: 'italic' }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ repeat: Infinity, duration: 1.2 }}
-                  >
-                    Vishal’s Assistant is typing...
-                  </motion.p>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              {/* Chat Input inside modal */}
-              <div
-                style={{
-                  marginTop: '1rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  background: '#0f172a',
-                  borderRadius: '999px',
-                  padding: '0.4rem 0.6rem',
-                  gap: '0.5rem',
-                }}
-              >
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAsk()}
-                  placeholder="Ask something..."
-                  style={{
-                    flex: 1,
-                    padding: '0.5rem 1rem',
-                    background: 'transparent',
-                    border: 'none',
-                    outline: 'none',
-                    color: '#f1f5f9',
-                    fontSize: '0.95rem',
-                  }}
-                />
-                <button
-                  onClick={handleAsk}
-                  style={{
-                    background: '#00f7ff',
-                    border: 'none',
-                    borderRadius: '999px',
-                    padding: '0.5rem 0.8rem',
-                    color: '#0f172a',
-                    fontWeight: 600,
-                    boxShadow: '0 0 10px rgba(0, 247, 255, 0.3)',
-                  }}
-                >
-                  <FaPaperPlane />
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+      </motion.div>
+    </motion.div>
   );
 }

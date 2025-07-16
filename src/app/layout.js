@@ -1,11 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from '@/app/components/Navbar';
-import Footer from '@/app/components/Footer';
-import ResumeButton from '@/app/components/ResumeButton';
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ResumeButton from "@/app/components/ResumeButton";
 import { ThemeProvider } from "@/context/ThemeContext";
-import Assistant from "./components/assitant";
-
+import AssistantWrapper from "@/app/components/AssistantWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Vishal Singh | Portfolio',
-  description: 'Portfolio website of Vishal Singh',
+  title: "Vishal Singh | Portfolio",
+  description: "Portfolio website of Vishal Singh",
 };
 
 export default function RootLayout({ children }) {
@@ -30,7 +29,7 @@ export default function RootLayout({ children }) {
       >
         <ThemeProvider>
           <Navbar />
-          <Assistant></Assistant>
+          <AssistantWrapper></AssistantWrapper>
           <ResumeButton></ResumeButton>
           <main>{children}</main>
           <Footer />
@@ -39,9 +38,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
-
-
-
-
-
