@@ -53,7 +53,7 @@ const uiExperiments = [
   {
     title: "Project Mangement Dashboard",
     slug: "playground/project-dashboard",
-    description: "3D product showcase with animated intro.",
+    description: "Project management dashboard",
     image: "/images/3d-viewer-demo.gif",
     link: "/playground/project-dashboard",
     tags: ["Three.js", "React Three Fiber", "GSAP"],

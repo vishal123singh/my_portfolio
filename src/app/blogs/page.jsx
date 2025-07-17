@@ -4,10 +4,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { FiLinkedin, FiEdit2 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import LoginModal from "../components/Modals/LoginModal";
-import { Send, Share2 } from "lucide-react"; // replace FiLinkedin with Lucide icons
+import { DeleteIcon, EditIcon, Send, Share2 } from "lucide-react"; // replace FiLinkedin with Lucide icons
 
 const TiptapEditor = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -35,15 +34,25 @@ export default function MyBlogsPage() {
 
   const handlePost = async () => {
     try {
-      const res = await fetch("/api/blogs", {
-        method: "POST",
+      const isEdit = blogs.some((b) => b.title === form.title); // naive match
+      const method = isEdit ? "PUT" : "POST";
+      const url = isEdit
+        ? `/api/blogs/${form.title.toLowerCase().replace(/\s+/g, "-")}`
+        : "/api/blogs";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
       const data = await res.json();
+
       if (res.ok) {
-        setBlogs([data.blog, ...blogs]);
+        const updatedList = isEdit
+          ? blogs.map((b) => (b.title === form.title ? data.blog : b))
+          : [data.blog, ...blogs];
+        setBlogs(updatedList);
         setForm({ title: "", content: "" });
         setShowEditor(false);
       } else {
@@ -148,27 +157,60 @@ export default function MyBlogsPage() {
           const imageUrl = imgMatch?.[1];
 
           return (
-            <Link
+            <div
               key={blog.slug}
-              href={`/blogs/${blog.slug}`}
-              className="block bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400 transition duration-300 shadow-md backdrop-blur-sm group"
+              className="relative bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400 transition duration-300 shadow-md backdrop-blur-sm group"
             >
-              {imageUrl && (
-                <img
-                  src={imageUrl}
-                  alt={blog.title}
-                  className="w-full h-40 object-cover rounded-md mb-4"
-                />
+              <Link href={`/blogs/${blog.slug}`}>
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt={blog.title}
+                    className="w-full h-40 object-cover rounded-md mb-4"
+                  />
+                )}
+                <h2 className="text-xl font-semibold mb-2 group-hover:text-cyan-400 transition">
+                  {blog.title}
+                </h2>
+                <p className="text-sm text-slate-400 mb-1">{blog.date}</p>
+                <p className="text-sm text-slate-300 line-clamp-2">
+                  {blog.summary}
+                </p>
+              </Link>
+
+              {isLoggedIn && (
+                <div className="absolute top-2 right-2 flex gap-2">
+                  <EditIcon
+                    title="Edit Blog"
+                    size={16}
+                    onClick={() => {
+                      setForm({ title: blog.title, content: blog.content });
+                      setShowEditor(true);
+                    }}
+                    className="text-sm text-blue-400 hover:text-blue-300"
+                  ></EditIcon>
+                  <DeleteIcon
+                    title="Delete Blog"
+                    size={16}
+                    onClick={async () => {
+                      const confirmed = confirm(
+                        "Are you sure you want to delete this blog?"
+                      );
+                      if (confirmed) {
+                        await fetch(`/api/blogs/${blog.slug}`, {
+                          method: "DELETE",
+                        });
+                        setBlogs(blogs.filter((b) => b.slug !== blog.slug));
+                      }
+                    }}
+                    className="text-sm text-red-400 hover:text-red-300"
+                  ></DeleteIcon>
+                </div>
               )}
-              <h2 className="text-xl font-semibold mb-2 group-hover:text-cyan-400 transition">
-                {blog.title}
-              </h2>
-              <p className="text-sm text-slate-400 mb-1">{blog.date}</p>
-              <p className="text-sm text-slate-300">{blog.summary}</p>
-            </Link>
+            </div>
           );
         })}
-      </div>{" "}
+      </div>
     </div>
   );
 }

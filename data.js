@@ -80,18 +80,13 @@ const projects = [
     images: [
       "/projects/screenshots/oflep/1.png",
       "/projects/screenshots/oflep/2.png",
-      "/projects/screenshots/oflep/3.png",
       "/projects/screenshots/oflep/4.png",
       "/projects/screenshots/oflep/5.png",
-      "/projects/screenshots/oflep/6.png",
       "/projects/screenshots/oflep/7.png",
       "/projects/screenshots/oflep/8.png",
-      "/projects/screenshots/oflep/9.png",
-      "/projects/screenshots/oflep/10.png",
       "/projects/screenshots/oflep/11.png",
       "/projects/screenshots/oflep/12.png",
       "/projects/screenshots/oflep/13.png",
-      "/projects/screenshots/oflep/14.png",
       "/projects/screenshots/oflep/15.png",
     ],
     tags: [
