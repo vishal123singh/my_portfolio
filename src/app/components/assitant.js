@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaPaperPlane } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
+import { ChatBotIcon } from "./AssistantLauncher";
 
 export default function Assistant({ onClose }) {
   const [input, setInput] = useState("");
@@ -78,7 +79,7 @@ export default function Assistant({ onClose }) {
       >
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-cyan-400 text-lg font-semibold">
-            Chat with Vishal’s Assistant
+            Chat with ViVA
           </h3>
           <button onClick={onClose} className="text-slate-100 text-lg">
             ✖
@@ -101,7 +102,10 @@ export default function Assistant({ onClose }) {
                 }`}
               >
                 {msg.role === "assistant" ? (
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  <>
+                    <ChatBotIcon size={32}></ChatBotIcon>
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  </>
                 ) : (
                   msg.text
                 )}
@@ -115,7 +119,7 @@ export default function Assistant({ onClose }) {
               animate={{ opacity: 1 }}
               transition={{ repeat: Infinity, duration: 1.2 }}
             >
-              Vishal’s Assistant is typing...
+              ViVA is typing...
             </motion.p>
           )}
           <div ref={chatEndRef} />

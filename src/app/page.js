@@ -100,21 +100,20 @@ const skillsByCategory = [
 
 function MergedSkillsSection() {
   return (
-    <section className="relative z-10 py-24 px-6  text-white overflow-hidden">
+    <section className="relative z-10 py-16 sm:py-24 px-4 sm:px-6 text-white overflow-hidden">
       {/* Floating Blobs */}
       <div className="absolute top-[-80px] left-[-80px] w-[250px] h-[250px] bg-pink-400/20 rounded-full blur-[120px] animate-pulse pointer-events-none z-0" />
       <div className="absolute bottom-[-80px] right-[-80px] w-[300px] h-[300px] bg-cyan-400/20 rounded-full blur-[120px] animate-pulse pointer-events-none z-0" />
 
-      {/* Section Heading */}
       <motion.h2
-        className="text-3xl md:text-4xl font-bold text-center mb-14 flex items-center justify-center gap-3 z-10 relative"
+        className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-14 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 z-10 relative"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
         viewport={{ once: true }}
       >
-        <BrainCogIcon size={28} color="#f472b6" />
-        My Technical Stack
+        <BrainCogIcon size={32} color="#f472b6" />
+        <span>My Technical Stack</span>
       </motion.h2>
 
       {/* Skills Grid */}
@@ -178,7 +177,7 @@ function HomeHero() {
       />
 
       <div className="max-w-3xl w-full z-10">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 text-center leading-tight max-w-3xl mx-auto">
           Hi, I'm <span className="highlight text-accent">Vishal Singh</span>
         </h1>
 
@@ -245,7 +244,7 @@ function HomeHero() {
             {/* 🚀 Rocket */}
             <Rocket
               size={36}
-              className="text-accent drop-shadow-[0_0_8px_rgba(0,247,255,0.5)]"
+              className="text-white drop-shadow-[0_0_8px_rgba(0,247,255,0.5)]"
             />
 
             {/* 🔥 Thrust Flames */}
