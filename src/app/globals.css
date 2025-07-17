@@ -43,19 +43,12 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-[data-theme="light"] {
-  --bg-dark: #ffffff;
-  --text-light: #1e293b;
-  --accent: #4f46e5;
-  --btn-hover: #7c3aed;
-}
-
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-light);
-  padding: 0 1rem;
+  padding: 0 0;
   scroll-behavior: smooth;
 }
 
@@ -83,49 +76,81 @@ section {
   margin: auto;
 }
 
-/* Custom Scrollbar Styling */
-.modal-content::-webkit-scrollbar {
-  width: 8px;
+.test-theme {
+  --bg-dark: white;
+  --text-light: black;
+  --accent: black;
+  --btn-hover: blue;
 }
 
-.modal-content::-webkit-scrollbar-track {
-  background: #1e293b; /* dark background */
-  border-radius: 8px;
+.test-theme body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  padding: 0 0;
+  scroll-behavior: smooth;
 }
 
-.modal-content::-webkit-scrollbar-thumb {
-  background-color: #00f7ff; /* accent color */
-  border-radius: 8px;
-  border: 2px solid #1e293b;
+.test-theme a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: 0.3s ease;
 }
 
-.modal-content::-webkit-scrollbar-thumb:hover {
-  background-color: #0ea5e9;
+.test-theme a:hover {
+  color: var(--btn-hover);
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
+.test-theme nav {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.test-theme section {
+  padding: 4rem 1rem;
+  max-width: 960px;
+  margin: auto;
+}
+
+/* Chrome, Safari, Edge */
+::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: rgba(100, 116, 139, 0.6); /* slate-500-ish */
   border-radius: 8px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background-color: rgba(94, 234, 212, 0.8); /* cyan-300-ish */
 }
 
-/* Firefox support */
-.custom-scrollbar {
+/* Firefox */
+.scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 116, 139, 0.6) transparent;
+}
+
+.test-theme ::-webkit-scrollbar-thumb {
+  background-color: rgba(14, 165, 233, 0.5); /* sky-500 */
+}
+
+.test-theme ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(34, 211, 238, 0.8); /* sky-400 */
+}
+
+.test-theme .scrollbar {
+  scrollbar-color: rgba(14, 165, 233, 0.5) transparent;
 }
 
 /* === HERO === */

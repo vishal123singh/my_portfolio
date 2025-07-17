@@ -43,7 +43,7 @@ export default function ProjectDashboard() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setProjects(generateDummyProjects());
-      let tasks=generateDummyTasks();
+      let tasks = generateDummyTasks();
       setTasks(tasks);
       setTeamMembers(generateDummyTeam());
       setNotifications(generateDummyNotifications(tasks));
@@ -70,9 +70,11 @@ export default function ProjectDashboard() {
   };
 
   const handleCompleteTask = (taskId) => {
-    setTasks(tasks.map((task) => (
-      task.id === taskId ? { ...task, status: "completed" } : task
-    )));
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, status: "completed" } : task
+      )
+    );
   };
 
   const handleDismissNotification = (id) => {
@@ -98,7 +100,11 @@ export default function ProjectDashboard() {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-2 rounded hover:text-cyan-400"
           >
-            {sidebarOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
+            {sidebarOpen ? (
+              <ChevronLeft size={22} />
+            ) : (
+              <ChevronRight size={22} />
+            )}
           </button>
         </div>
 
@@ -154,14 +160,16 @@ export default function ProjectDashboard() {
         <header className="bg-white text-gray-800 shadow-sm">
           <div className="px-6 py-4 flex justify-between items-center">
             <h2 className="text-xl font-semibold capitalize">
-              {{
-                overview: "Project Overview",
-                projects: "My Projects",
-                tasks: "Task Management",
-                team: "Team Members",
-                reports: "Project Reports",
-                settings: "Settings",
-              }[activeTab]}
+              {
+                {
+                  overview: "Project Overview",
+                  projects: "My Projects",
+                  tasks: "Task Management",
+                  team: "Team Members",
+                  reports: "Project Reports",
+                  settings: "Settings",
+                }[activeTab]
+              }
             </h2>
             <div className="flex items-center gap-4">
               <NotificationBell
@@ -195,20 +203,13 @@ export default function ProjectDashboard() {
                 />
               )}
               {activeTab === "tasks" && (
-                <TasksTab
-                  tasks={tasks}
-                  onCompleteTask={handleCompleteTask}
-                />
+                <TasksTab tasks={tasks} onCompleteTask={handleCompleteTask} />
               )}
-              {activeTab === "team" && (
-                <TeamTab team={teamMembers} />
-              )}
+              {activeTab === "team" && <TeamTab team={teamMembers} />}
               {activeTab === "reports" && (
                 <ReportsTab projects={projects} tasks={tasks} />
               )}
-              {activeTab === "settings" && (
-                <SettingsTab />
-              )}
+              {activeTab === "settings" && <SettingsTab />}
             </>
           )}
         </main>

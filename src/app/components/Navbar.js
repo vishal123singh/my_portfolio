@@ -12,6 +12,7 @@ const navLinks = [
   { label: "Projects", href: "/projects" },
   { label: "Mock-Ups", href: "/mockups" },
   { label: "Blogs", href: "/blogs" },
+  // { label: "Test", href: "/test" },
 ];
 
 export default function Navbar() {
