@@ -34,7 +34,7 @@ export default function ProjectsPage() {
 const uiExperiments = [
   {
     title: "3D Product Viewer",
-    slug: "playground/3d-viewer",
+    slug: "playground/product-demo",
     description: "Interactive 3D scene using react-three-fiber.",
     image: "/images/3d-viewer-demo.gif",
     link: "/playground/3d-viewer",
