@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaPaperPlane } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
-import { ChatBotIcon } from "./AssistantLauncher";
+import { ChatBotIcon } from "./ChatIcon";
 
 export default function Assistant({ onClose }) {
   const [input, setInput] = useState("");
@@ -86,7 +86,7 @@ export default function Assistant({ onClose }) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+        <div className="flex-1 overflow-y-auto space-y-3 mb-4 model-content">
           {messages.map((msg, i) => (
             <div
               key={i}

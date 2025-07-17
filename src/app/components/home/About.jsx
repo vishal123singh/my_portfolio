@@ -3,15 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  FaReact,
-  FaNodeJs,
-  FaPython,
-  FaMobileAlt,
-  FaUnlockAlt,
-} from "react-icons/fa";
+import { FaReact, FaNodeJs, FaPython, FaUnlockAlt } from "react-icons/fa";
 import { SiNextdotjs, SiMongodb, SiAngular, SiFirebase } from "react-icons/si";
-import { Typewriter } from "react-simple-typewriter";
 
 function FlippableProfile() {
   const [code, setCode] = useState("");
@@ -28,12 +21,12 @@ function FlippableProfile() {
       {/* Card Inner */}
       <div className={`flip-card-inner ${flipped ? "flipped" : ""}`}>
         {/* Front Face */}
-        <div className="flip-card-front">
+        <div className="flip-card-front border-1 border-slate-700 shadow-lg relative">
           <Image
-            src="/personal/profile.png"
+            src="/personal/image_2.png"
             alt="Vishal Singh"
             fill
-            className="object-cover rounded-full"
+            className="object-contain rounded-full"
           />
         </div>
         {/* Back Face */}
@@ -154,11 +147,11 @@ export default function About() {
 
         {/* Professional Journey */}
         <div className="mt-20">
-          <h3 className="text-2xl font-bold text-center text-pink-400 mb-12">
+          <h3 className="text-3xl font-bold text-center text-cyan-400 mb-12">
             Professional Journey
           </h3>
 
-          <div className="relative border-l-2 border-pink-500 pl-6 space-y-12">
+          <div className="space-y-8 max-w-3xl mx-auto">
             {[
               {
                 title: "Software Engineer",
@@ -195,27 +188,25 @@ export default function About() {
             ].map((job, index) => (
               <div
                 key={index}
-                className="relative pl-4 before:absolute before:w-3 before:h-3 before:bg-pink-400 before:rounded-full before:left-[-9px] before:top-1.5"
+                className="bg-slate-800 text-white rounded-xl p-6 shadow-lg hover:shadow-cyan-400/30 transition-all"
               >
-                <div className="bg-[#1e293b] rounded-xl p-5 shadow hover:shadow-pink-500/20 transition">
-                  <h4 className="text-lg font-semibold text-white">
-                    {job.title}
-                    {job.company && (
-                      <>
-                        {" "}
-                        —{" "}
-                        <span className="text-cyan-400 font-medium">
-                          {job.company}
-                        </span>
-                      </>
-                    )}
-                  </h4>
-                  <p className="text-sm text-slate-400 mb-1">{job.duration}</p>
-                  <p className="text-sm text-slate-300">{job.description}</p>
-                  <p className="text-sm text-slate-400 mt-2">
-                    <strong className="text-white">Tech:</strong> {job.tech}
-                  </p>
-                </div>
+                <h4 className="text-lg font-semibold">
+                  {job.title}
+                  {job.company && (
+                    <>
+                      {" "}
+                      —{" "}
+                      <span className="text-cyan-300 font-medium">
+                        {job.company}
+                      </span>
+                    </>
+                  )}
+                </h4>
+                <p className="text-sm text-slate-400 mb-2">{job.duration}</p>
+                <p className="text-sm text-slate-300">{job.description}</p>
+                <p className="text-sm text-slate-400 mt-3">
+                  <strong className="text-white">Tech:</strong> {job.tech}
+                </p>
               </div>
             ))}
           </div>

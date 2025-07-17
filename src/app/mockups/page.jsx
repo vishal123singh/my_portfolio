@@ -14,10 +14,7 @@ const CubeSceneMini = dynamic(
     ),
   }
 );
-const ProductDemoMini = dynamic(
-  () => import("@/app/components/ProjectPreviewComponents/ProductDemoMini"),
-  { ssr: false }
-);
+
 const ScrollStoryMini = dynamic(
   () => import("@/app/components/ProjectPreviewComponents/ScrollStoryMini"),
   { ssr: false }

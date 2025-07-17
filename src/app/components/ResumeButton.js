@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function ResumeButton() {
   return (
-    <div className="fixed bottom-6 right-6 z-[999] flex flex-col items-center group">
+    <div className="fixed top-6 right-6 z-[999] flex flex-col items-center group">
       <motion.a
         href="/vishal-resume.pdf"
         download
@@ -24,7 +24,7 @@ export default function ResumeButton() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-pink-400"
+          className="text-pink-300"
         >
           <motion.path
             d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
