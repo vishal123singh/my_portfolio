@@ -2,13 +2,21 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import CodeBlock from "@tiptap/extension-code-block";
+import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
+import { createLowlight } from "lowlight";
+import js from "highlight.js/lib/languages/javascript";
+import ts from "highlight.js/lib/languages/typescript";
+import python from "highlight.js/lib/languages/python";
+import html from "highlight.js/lib/languages/xml";
+import bash from "highlight.js/lib/languages/bash";
+
 import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import { Table } from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
-import { useEffect } from "react";
+
 import {
   Bold,
   Italic,
@@ -16,14 +24,26 @@ import {
   Code,
   Table2,
   Image as ImageIcon,
-} from "lucide-react"; // modern icons
+} from "lucide-react";
+
+import { useEffect } from "react";
+import "highlight.js/styles/github-dark.css"; // highlight theme
+
+// create lowlight instance and register languages
+const lowlight = createLowlight();
+lowlight.register("js", js);
+lowlight.register("ts", ts);
+lowlight.register("python", python);
+lowlight.register("html", html);
+lowlight.register("bash", bash);
 
 export default function TiptapEditor({ value, onChange }) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ codeBlock: false }),
-      CodeBlock,
+      CodeBlockLowlight.configure({ lowlight }),
       Image,
+      Link.configure({ openOnClick: false }),
       Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
@@ -93,17 +113,66 @@ export default function TiptapEditor({ value, onChange }) {
           }}
           icon={<ImageIcon size={16} />}
         />
+        <EditorButton
+          onClick={() => {
+            const url = prompt("Enter link URL");
+            if (url) {
+              editor
+                .chain()
+                .focus()
+                .extendMarkRange("link")
+                .setLink({ href: url })
+                .run();
+            }
+          }}
+          icon={
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M10 13a5 5 0 0 0 7.5 4.33L21 15m-7-6a5 5 0 0 0-7.5-4.33L3 9m5 3h8" />
+            </svg>
+          }
+        />
+        <EditorButton
+          onClick={() => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = async () => {
+              const file = input.files?.[0];
+              if (!file) return;
+
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                editor.chain().focus().setImage({ src: reader.result }).run();
+              };
+              reader.readAsDataURL(file);
+            };
+            input.click();
+          }}
+          icon={<ImageIcon size={16} />}
+        />
       </div>
 
-      {/* Editor */}
-      <div className="h-48 custom-scrollbar overflow-auto prose dark:prose-invert max-w-full [&_img]:w-full [&_img]:max-h-48 [&_img]:rounded-md [&_img]:object-contain [&_table]:w-full [&_table]:border [&_td]:border [&_th]:border">
+      {/* Editor Content */}
+      <div
+        className="h-48 custom-scrollbar overflow-auto max-w-full 
+    prose dark:prose-invert 
+     [&_pre]:text-slate-100 [&_pre]:p-2 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-2 [&_pre]:leading-[1.3]
+    [&_pre_code]:whitespace-pre-wrap [&_pre_code]:break-words [&_pre_code]:p-0 [&_pre_code]:m-0 [&_pre_code]:leading-[1.3]
+    [&_pre_code]:bg-transparent [&_pre_code]:font-mono [&_pre_code]:text-sm"
+      >
         <EditorContent editor={editor} />
       </div>
     </div>
   );
 }
 
-// Custom button component
 function EditorButton({ isActive, onClick, icon }) {
   return (
     <button

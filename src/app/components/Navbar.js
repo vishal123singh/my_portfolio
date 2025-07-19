@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -20,13 +21,48 @@ export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Inside Navbar component
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        // Scrolling down
+        setVisible(false);
+      } else {
+        // Scrolling up
+        setVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
-      <nav className="w-full px-6 py-4 flex justify-between items-center bg-[#0f172a]/70 backdrop-blur-md border-b border-white/10">
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#0f172a]/70 backdrop-blur-md border-b border-white/10 transition-transform duration-300 ${
+          visible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
         {/* Logo or Name */}
         {/* <Link href="/" className="text-cyan-400 font-bold text-lg">
           Vishal
         </Link> */}
+
+        {/* Mobile Menu Button */}
+        <button
+          className="sm:hidden text-white"
+          onClick={() => setMenuOpen(true)}
+        >
+          <Menu size={24} />
+        </button>
 
         {/* Desktop Links */}
         <div className="hidden sm:flex space-x-6 text-sm sm:text-base">
@@ -47,14 +83,6 @@ export default function Navbar() {
             );
           })}
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="sm:hidden text-white"
-          onClick={() => setMenuOpen(true)}
-        >
-          <Menu size={24} />
-        </button>
       </nav>
 
       {/* Mobile Drawer */}

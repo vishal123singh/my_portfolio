@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import LoginModal from "../components/Modals/LoginModal";
-import { DeleteIcon, EditIcon, Send, Share2 } from "lucide-react"; // replace FiLinkedin with Lucide icons
+import { Trash, FilePenLineIcon, Send, Share2 } from "lucide-react"; // replace FiLinkedin with Lucide icons
 
 const TiptapEditor = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -18,18 +18,23 @@ export default function MyBlogsPage() {
   const [form, setForm] = useState({ title: "", content: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedIn);
-    if (loggedIn) setShowEditor(true);
+    if (loggedIn) setIsLoggedIn(true);
     else setShowLogin(true);
 
-    // Fetch blogs
     fetch("/api/blogs")
       .then((res) => res.json())
-      .then((data) => setBlogs(data))
-      .catch((err) => console.error("Failed to load blogs", err));
+      .then((data) => {
+        setBlogs(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load blogs", err);
+        setLoading(false);
+      });
   }, []);
 
   const handlePost = async () => {
@@ -100,9 +105,10 @@ export default function MyBlogsPage() {
               width={20}
               height={20}
               loading="lazy"
-              className="w-5 h-5"
+              className="w-5 h-5 filter brightness-0 invert"
             />
-            {showEditor ? "Cancel" : "Write Blog"}
+
+            {showEditor ? "Cancel" : "Write a blog"}
           </button>
         </div>
       </div>
@@ -151,66 +157,89 @@ export default function MyBlogsPage() {
           </div>
         </motion.div>
       )}
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {blogs.map((blog) => {
-          const imgMatch = blog.content.match(/<img[^>]+src="([^">]+)"/);
-          const imageUrl = imgMatch?.[1];
 
-          return (
-            <div
-              key={blog.slug}
-              className="relative bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400 transition duration-300 shadow-md backdrop-blur-sm group"
-            >
-              <Link href={`/blogs/${blog.slug}`}>
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    alt={blog.title}
-                    className="w-full h-40 object-cover rounded-md mb-4"
-                  />
+      {loading ? (
+        <div className="flex justify-center items-center h-40">
+          <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+          {blogs.map((blog) => {
+            const imgMatch = blog.content.match(/<img[^>]+src="([^">]+)"/);
+            const imageUrl = imgMatch?.[1];
+
+            return (
+              <div
+                key={blog.slug}
+                className="relative bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400 transition duration-300 shadow-md backdrop-blur-sm group"
+              >
+                <Link href={`/blogs/${blog.slug}`}>
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={blog.title}
+                      className="w-full h-30 object-cover rounded-md mb-4 mt-1"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        const fallback = document.createElement("div");
+                        fallback.textContent = "No preview available";
+                        fallback.className =
+                          "text-sm text-slate-400 italic mb-4 mt-1";
+                        e.target.parentNode.insertBefore(
+                          fallback,
+                          e.target.nextSibling
+                        );
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-30 object-cover text-sm text-slate-400 italic mb-4 mt-1">
+                      No preview available
+                    </div>
+                  )}
+
+                  <h2 className="text-lg font-semibold mb-2 group-hover:text-cyan-400 transition">
+                    {blog.title}
+                  </h2>
+                  <p className="text-sm text-slate-400 mb-1">{blog.date}</p>
+                  <p className="text-sm text-slate-300 line-clamp-2">
+                    {blog.summary}
+                  </p>
+                </Link>
+
+                {isLoggedIn && (
+                  <div className="absolute top-2 right-2 flex gap-2">
+                    <FilePenLineIcon
+                      title="Edit Blog"
+                      size={16}
+                      onClick={() => {
+                        setForm({ title: blog.title, content: blog.content });
+                        setShowEditor(true);
+                      }}
+                      className="text-sm text-white-400 hover:text-blue-300"
+                    ></FilePenLineIcon>
+                    <Trash
+                      title="Delete Blog"
+                      size={16}
+                      onClick={async () => {
+                        const confirmed = confirm(
+                          "Are you sure you want to delete this blog?"
+                        );
+                        if (confirmed) {
+                          await fetch(`/api/blogs/${blog.slug}`, {
+                            method: "DELETE",
+                          });
+                          setBlogs(blogs.filter((b) => b.slug !== blog.slug));
+                        }
+                      }}
+                      className="text-sm text-red-400 hover:text-red-300"
+                    ></Trash>
+                  </div>
                 )}
-                <h2 className="text-xl font-semibold mb-2 group-hover:text-cyan-400 transition">
-                  {blog.title}
-                </h2>
-                <p className="text-sm text-slate-400 mb-1">{blog.date}</p>
-                <p className="text-sm text-slate-300 line-clamp-2">
-                  {blog.summary}
-                </p>
-              </Link>
-
-              {isLoggedIn && (
-                <div className="absolute top-2 right-2 flex gap-2">
-                  <EditIcon
-                    title="Edit Blog"
-                    size={16}
-                    onClick={() => {
-                      setForm({ title: blog.title, content: blog.content });
-                      setShowEditor(true);
-                    }}
-                    className="text-sm text-blue-400 hover:text-blue-300"
-                  ></EditIcon>
-                  <DeleteIcon
-                    title="Delete Blog"
-                    size={16}
-                    onClick={async () => {
-                      const confirmed = confirm(
-                        "Are you sure you want to delete this blog?"
-                      );
-                      if (confirmed) {
-                        await fetch(`/api/blogs/${blog.slug}`, {
-                          method: "DELETE",
-                        });
-                        setBlogs(blogs.filter((b) => b.slug !== blog.slug));
-                      }
-                    }}
-                    className="text-sm text-red-400 hover:text-red-300"
-                  ></DeleteIcon>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

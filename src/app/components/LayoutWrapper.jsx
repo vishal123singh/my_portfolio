@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ResumeButton from "./ResumeButton";
 import AssistantWrapper from "./AssistantWrapper";
+import BackButton from "./common/BackButton";
 
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
@@ -48,9 +49,10 @@ export default function LayoutWrapper({ children }) {
   return (
     <>
       {!hideNavbar && <Navbar />}
+      {<BackButton label="Back" />}
       {!hideAssistant && <AssistantWrapper />}
       {!hideResumeButton && <ResumeButton />}
-      <main>{children}</main>
+      <main className="pt-20">{children}</main>
       {!hideFooter && <Footer />}
     </>
   );
