@@ -30,14 +30,15 @@ export default function ProjectsPage() {
 
 const uiExperiments = [
   {
-    title: "3D Product Viewer",
-    slug: "playground/product-demo",
-    description: "Interactive 3D scene using react-three-fiber.",
+    title: "Project Mangement Dashboard",
+    slug: "playground/project-dashboard",
+    description: "Project management dashboard",
     image: "/images/3d-viewer-demo.gif",
-    link: "/playground/3d-viewer",
-    tags: ["Three.js", "React Three Fiber", "WebGL"],
-    liveComponent: <CubeSceneMini />, // 👈 interactive preview
+    link: "/playground/project-dashboard",
+    tags: ["React", "Next.js", "Tailwind CSS", "Project Management"],
+    liveComponent: <ProjectDashboard />,
   },
+
   {
     title: "Scroll Storytelling",
     slug: "playground/scroll-storytelling",
@@ -48,13 +49,13 @@ const uiExperiments = [
     liveComponent: <ScrollStoryMini />,
   },
   {
-    title: "Project Mangement Dashboard",
-    slug: "playground/project-dashboard",
-    description: "Project management dashboard",
+    title: "3D Product Viewer",
+    slug: "playground/product-demo",
+    description: "Interactive 3D scene using react-three-fiber.",
     image: "/images/3d-viewer-demo.gif",
-    link: "/playground/project-dashboard",
-    tags: ["Three.js", "React Three Fiber", "GSAP"],
-    liveComponent: <ProjectDashboard />,
+    link: "/playground/3d-viewer",
+    tags: ["Three.js", "React Three Fiber", "WebGL"],
+    liveComponent: <CubeSceneMini />, // 👈 interactive preview
   },
 ];
 

@@ -2,9 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function BackButton({ label = "Back" }) {
   const router = useRouter();
+  const pathname = usePathname();
+  if (pathname === "/") {
+    return null; // Don't show back button on the archery page
+  }
 
   return (
     <button

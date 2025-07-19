@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
-import { useRef } from 'react';
-import * as THREE from 'three';
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment } from "@react-three/drei";
+import { useRef } from "react";
+import * as THREE from "three";
 
 function CubeContent() {
-  const meshRef = useRef(null)
+  const meshRef = useRef(null);
 
   useFrame(({ clock }) => {
     meshRef.current.rotation.y += 0.01;
