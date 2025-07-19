@@ -131,7 +131,7 @@ function Skills() {
                   className="group flex flex-col items-center text-sm text-slate-300 hover:text-white transition duration-200"
                   title={item.label}
                 >
-                  <div className="text-3xl group-hover:scale-110 transition-transform">
+                  <div className="text-3xl group-hover:scale-110 transition-transform glow-icon">
                     {item.icon}
                   </div>
                   <span className="mt-1 text-xs text-center">{item.label}</span>

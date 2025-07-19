@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 
 export default function ResumeButton() {
   return (
-    <div className="fixed top-6 right-6 z-[999] flex flex-col items-center group">
+    <div className="fixed top-4 right-0 z-[999] flex flex-col items-center group">
       <motion.a
         href="/vishal-resume.pdf"
         download
         whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.95 }}
-        className="text-pink-400 hover:text-pink-300 transition-all duration-300"
+        className="text-cyan hover:text-blue transition-all duration-300"
         aria-label="Download Resume"
       >
         {/* Animated Download Icon */}
@@ -24,7 +24,7 @@ export default function ResumeButton() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-pink-300"
+          className="text-cyan"
         >
           <motion.path
             d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"

@@ -7,49 +7,73 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  useMotionValueEvent,
 } from "framer-motion";
-import { RefreshCw } from "lucide-react";
 import ParticlesBackground from "@/app/components/ParticlesBackground";
 
 export default function ScrollStoryDemo() {
-  const [key, setKey] = useState(0);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const percentage = useTransform(scrollYProgress, [0, 1], [0, 100]);
+
+  const [activeSection, setActiveSection] = useState(0);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest < 0.2) setActiveSection(0);
+    else if (latest < 0.45) setActiveSection(1);
+    else if (latest < 0.75) setActiveSection(2);
+    else setActiveSection(3);
+  });
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-900/70 via-gray-800/70 to-black/70 text-white">
       <ParticlesBackground />
 
+      {/* Scroll progress bar */}
       <motion.div
         style={{ scaleX: progress }}
         className="fixed top-0 left-0 h-1 bg-emerald-400 origin-left z-50"
       />
+      <motion.div
+        style={{ left: useTransform(scrollYProgress, [0, 1], ["0%", "100%"]) }}
+        className="fixed top-2 text-white/60 text-xs z-50 px-2"
+      >
+        {percentage.get().toFixed(0)}%
+      </motion.div>
 
-      <div className="absolute top-[20%] left-[10%] w-72 h-72 bg-pink-400/20 rounded-full blur-[100px] opacity-20 animate-pulse pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[15%] w-60 h-60 bg-cyan-400/20 rounded-full blur-[80px] opacity-20 animate-pulse pointer-events-none" />
-
-      <div className="fixed top-6 right-6 z-[5000] group">
-        <div className="absolute -top-8 right-0 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-          Replay
-        </div>
-        <motion.button
-          onClick={() => setKey((prev) => prev + 1)}
-          whileTap={{ scale: 0.95 }}
-          className="text-[var(--accent)] hover:drop-shadow-[0_0_12px_var(--btn-hover)] transition"
-          aria-label="Replay"
-        >
+      {/* Scroll section indicator */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 space-y-4">
+        {["Hero", "Carousel", "Motion", "Final"].map((_, index) => (
           <motion.div
-            key={key}
-            initial={{ rotate: 0 }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-          >
-            <RefreshCw size={22} />
-          </motion.div>
-        </motion.button>
+            key={index}
+            animate={{ scale: activeSection === index ? 1.2 : 1 }}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              activeSection === index ? "bg-emerald-400" : "bg-white/30"
+            }`}
+          />
+        ))}
       </div>
 
-      <ScrollContent key={key} />
+      {/* Scroll hint */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 1,
+          delay: 2,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-sm z-30"
+      >
+        ↓ Scroll to explore
+      </motion.div>
+
+      {/* Decorative Glows */}
+      {/* <div className="absolute top-[20%] left-[10%] w-72 h-72 bg-pink-400/20 rounded-full blur-[100px] opacity-20 animate-pulse pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[15%] w-60 h-60 bg-cyan-400/20 rounded-full blur-[80px] opacity-20 animate-pulse pointer-events-none" /> */}
+
+      <ScrollContent />
     </div>
   );
 }
@@ -63,7 +87,8 @@ function ScrollContent() {
   const inView3 = useInView(ref3, { once: true });
 
   return (
-    <div className="space-y-60 pt-20 px-6 max-w-full mx-auto text-white">
+    <div className="space-y-60 pt-20 px-6 max-w-full mx-auto">
+      {/* Section 1: Hero */}
       <section
         ref={ref1}
         className="h-[80vh] flex flex-col justify-center items-center text-center space-y-6"
@@ -93,8 +118,8 @@ function ScrollContent() {
         </motion.p>
       </section>
 
-      {/* Carousel Section */}
-      <section className="h-[100vh]">
+      {/* Section 2: Carousel */}
+      <section className="relative h-[100vh] overflow-hidden">
         <motion.div
           className="flex space-x-6 w-[300%] px-10"
           style={{
@@ -102,7 +127,11 @@ function ScrollContent() {
           }}
         >
           {[1, 2, 3, 4, 5].map((item) => (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: item * 0.1 }}
               key={item}
               className="w-[80vw] sm:w-[400px] shrink-0 bg-white/10 border border-white/20 p-6 rounded-2xl shadow-md backdrop-blur-md"
             >
@@ -111,11 +140,12 @@ function ScrollContent() {
                 This is a carousel item. It scrolls horizontally based on
                 vertical scroll.
               </p>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </section>
 
+      {/* Section 3: Motion Card */}
       <section ref={ref2} className="h-[80vh] flex justify-center items-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.6 }}
@@ -131,6 +161,7 @@ function ScrollContent() {
         </motion.div>
       </section>
 
+      {/* Section 4: Final CTA */}
       <section ref={ref3} className="h-[80vh] flex justify-center items-center">
         <motion.div
           initial={{ x: "-100vw", opacity: 0 }}

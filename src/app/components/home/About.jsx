@@ -135,14 +135,28 @@ export default function About() {
         </p>
 
         {/* Tech Icons */}
-        <div className="mt-12 flex flex-wrap justify-center gap-6 text-3xl text-slate-400">
-          <FaReact title="React/React Native" />
-          <SiNextdotjs title="Next.js" />
-          <FaNodeJs title="Node.js" />
-          <SiMongodb title="MongoDB" />
-          <SiAngular title="Angular" />
-          <SiFirebase title="Firebase" />
-          <FaPython title="Python" />
+        <div className="flex justify-center items-center flex-wrap gap-6 text-4xl mt-4">
+          <span className="icon-metal text-[#61DAFB]">
+            <FaReact />
+          </span>
+          <span className="icon-metal text-white">
+            <SiNextdotjs />
+          </span>
+          <span className="icon-metal text-[#339933]">
+            <FaNodeJs />
+          </span>
+          <span className="icon-metal text-[#47A248]">
+            <SiMongodb />
+          </span>
+          <span className="icon-metal text-[#DD0031]">
+            <SiAngular />
+          </span>
+          <span className="icon-metal text-[#FFCA28]">
+            <SiFirebase />
+          </span>
+          <span className="icon-metal text-[#3776AB]">
+            <FaPython />
+          </span>
         </div>
 
         {/* Professional Journey */}
