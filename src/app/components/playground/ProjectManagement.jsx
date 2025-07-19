@@ -82,23 +82,23 @@ export default function ProjectDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-black text-white">
+    <div className="flex h-screen bg-gray-900 text-white">
       {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? "w-64" : "w-20"
-        } bg-indigo-700 transition-all duration-300 overflow-hidden`}
+        } bg-indigo-900 transition-all duration-300 overflow-hidden border-r border-indigo-800`}
       >
-        <div className="p-4 flex items-center justify-between border-b border-white/10">
+        <div className="p-4 flex items-center justify-between border-b border-indigo-800">
           {sidebarOpen && (
             <h1 className="text-2xl font-extrabold tracking-tight text-white">
               <span className="text-indigo-300">Project</span>
-              <span className="text-cyan-300">Hub</span>
+              <span className="text-cyan-400">Hub</span>
             </h1>
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded hover:text-cyan-400"
+            className="p-2 rounded-full hover:bg-indigo-800 text-indigo-300 hover:text-white transition"
           >
             {sidebarOpen ? (
               <ChevronLeft size={22} />
@@ -108,7 +108,7 @@ export default function ProjectDashboard() {
           </button>
         </div>
 
-        <nav className="mt-6 flex flex-col gap-2">
+        <nav className="mt-6 flex flex-col gap-1 px-2">
           <SidebarItem
             icon={<Home size={20} />}
             label="Dashboard"
@@ -157,9 +157,9 @@ export default function ProjectDashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Navigation */}
-        <header className="bg-white text-gray-800 shadow-sm">
+        <header className="bg-gray-800 border-b border-gray-700">
           <div className="px-6 py-4 flex justify-between items-center">
-            <h2 className="text-xl font-semibold capitalize">
+            <h2 className="text-xl font-semibold capitalize text-white">
               {
                 {
                   overview: "Project Overview",
@@ -182,7 +182,7 @@ export default function ProjectDashboard() {
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-black to-gray-900 p-6">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-900 to-gray-800 p-6">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />

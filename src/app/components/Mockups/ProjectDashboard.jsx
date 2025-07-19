@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, formatDate, generateRecentActivity } from "@/lib/utils.js"; // Optional utility for class merging
+import { cn, formatDate, generateRecentActivity } from "@/lib/utils.js";
 import { useState } from "react";
 import {
   Plus,
@@ -31,6 +31,50 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Updated color palette
+const colors = {
+  primary: {
+    light: "#6366f1",
+    main: "#4f46e5",
+    dark: "#4338ca",
+  },
+  secondary: {
+    light: "#ec4899",
+    main: "#db2777",
+    dark: "#be185d",
+  },
+  success: {
+    light: "#10b981",
+    main: "#059669",
+    dark: "#047857",
+  },
+  warning: {
+    light: "#f59e0b",
+    main: "#d97706",
+    dark: "#b45309",
+  },
+  danger: {
+    light: "#ef4444",
+    main: "#dc2626",
+    dark: "#b91c1c",
+  },
+  info: {
+    light: "#06b6d4",
+    main: "#0891b2",
+    dark: "#0e7490",
+  },
+  dark: {
+    light: "#334155",
+    main: "#1e293b",
+    dark: "#0f172a",
+  },
+  light: {
+    light: "#f8fafc",
+    main: "#f1f5f9",
+    dark: "#e2e8f0",
+  },
+};
+
 export function SidebarItem({ icon, label, active, onClick, expanded }) {
   return (
     <div
@@ -38,13 +82,15 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
       className={cn(
         "group relative flex items-center gap-3 w-full px-5 py-3 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden",
         active
-          ? "bg-gradient-to-r from-indigo-700 to-indigo-600 text-white shadow-lg"
-          : "text-white/70 hover:bg-white/5 hover:text-white"
+          ? `bg-gradient-to-r from-${colors.primary.dark} to-${colors.primary.main} text-white shadow-lg`
+          : "text-white/90 hover:bg-white/10 hover:text-white"
       )}
     >
       {/* Left Active Bar */}
       {active && (
-        <div className="absolute left-0 top-0 h-full w-1 bg-cyan-400 rounded-tr-md rounded-br-md shadow-md animate-pulse" />
+        <div
+          className={`absolute left-0 top-0 h-full w-1 bg-${colors.info.main} rounded-tr-md rounded-br-md shadow-md`}
+        />
       )}
 
       {/* Icon */}
@@ -52,7 +98,7 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
         className={cn(
           "w-6 h-6 flex items-center justify-center text-xl transition-all duration-200",
           active
-            ? "text-cyan-400 drop-shadow-[0_0_6px_rgba(34,211,238,0.8)]"
+            ? `text-${colors.info.main} drop-shadow-[0_0_6px_rgba(6,182,212,0.8)]`
             : "group-hover:text-cyan-400 group-hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.6)]"
         )}
       >
@@ -64,7 +110,7 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
         <span
           className={cn(
             "text-sm font-medium transition-all duration-200",
-            active ? "text-white" : "text-white/80"
+            active ? "text-white" : "text-white/90"
           )}
         >
           {label}
@@ -100,7 +146,7 @@ export function OverviewTab({ projects, tasks, team }) {
           title="Active Projects"
           value={activeProjects}
           change={`+${Math.floor(Math.random() * 3)}`}
-          icon={<ActivityIcon></ActivityIcon>}
+          icon={<ActivityIcon className="text-indigo-600" />}
         />
         <StatCard
           title="Tasks Due"
@@ -108,31 +154,37 @@ export function OverviewTab({ projects, tasks, team }) {
           change={`${Math.random() > 0.5 ? "+" : "-"}${Math.floor(
             Math.random() * 5
           )}`}
-          icon={<FaTasks></FaTasks>}
+          icon={<FaTasks className="text-indigo-600" />}
         />
         <StatCard
           title="Team Members"
           value={team.length}
           change={`+${Math.floor(Math.random() * 2)}`}
-          icon={<FaPeopleCarry></FaPeopleCarry>}
+          icon={<FaPeopleCarry className="text-indigo-600" />}
+        />
+        <StatCard
+          title="Project Budget"
+          value={projectBudget}
+          change={`+${Math.floor(Math.random() * 5)}%`}
+          icon={<ActivityIcon className="text-indigo-600" />}
         />
       </div>
 
       {/* Timeline + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Project Timeline Section */}
-        <div className="lg:col-span-2 bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/10">
+        <div className="lg:col-span-2 bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
           <h3 className="text-xl font-semibold text-white mb-6">
             Project Timeline
           </h3>
 
-          <div className="relative h-72 bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+          <div className="relative h-72 bg-white/5 rounded-xl border border-white/20 overflow-hidden">
             <ProjectTimeline projects={projects} />
           </div>
         </div>
 
         {/* Recent Activity Section */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/10">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
           <h3 className="text-xl font-semibold text-white mb-6">
             Recent Activity
           </h3>
@@ -149,14 +201,14 @@ export function OverviewTab({ projects, tasks, team }) {
                 />
               ))
             ) : (
-              <p className="text-sm text-gray-400">No recent activity</p>
+              <p className="text-sm text-white/70">No recent activity</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Priority Tasks Table */}
-      <div className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/10">
+      <div className="bg-gradient-to-br from-white/10 to-white/20 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-2xl font-bold text-white tracking-tight">
             Priority Tasks
@@ -168,7 +220,7 @@ export function OverviewTab({ projects, tasks, team }) {
 
         <div className="overflow-x-auto rounded-xl">
           <table className="min-w-full text-sm text-white rounded-xl overflow-hidden">
-            <thead className="bg-white/10 text-white/70">
+            <thead className="bg-white/20 text-white/90">
               <tr>
                 {["Task", "Project", "Due Date", "Priority", "Status"].map(
                   (heading) => (
@@ -204,10 +256,10 @@ export function OverviewTab({ projects, tasks, team }) {
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                           task.priority === "High"
-                            ? "bg-red-500/10 text-red-400"
+                            ? "bg-red-500/20 text-red-400"
                             : task.priority === "Medium"
-                            ? "bg-yellow-400/10 text-yellow-300"
-                            : "bg-green-500/10 text-green-400"
+                            ? "bg-yellow-500/20 text-yellow-300"
+                            : "bg-green-500/20 text-green-400"
                         }`}
                       >
                         {task.priority}
@@ -217,12 +269,12 @@ export function OverviewTab({ projects, tasks, team }) {
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                           task.status === "Completed"
-                            ? "bg-green-500/10 text-green-400"
+                            ? "bg-green-500/20 text-green-400"
                             : task.status === "In Progress"
-                            ? "bg-blue-500/10 text-blue-400"
+                            ? "bg-blue-500/20 text-blue-400"
                             : task.status === "Pending"
-                            ? "bg-yellow-500/10 text-yellow-400"
-                            : "bg-gray-500/10 text-gray-300"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : "bg-gray-500/20 text-gray-300"
                         }`}
                       >
                         {task.status}
@@ -258,16 +310,16 @@ export function ProjectTimeline({ projects }) {
     ((new Date(date) - minDate) / (1000 * 60 * 60 * 24) / totalDays) * 100;
 
   return (
-    <div className="relative w-full h-64 p-4 bg-white rounded-lg shadow">
+    <div className="relative w-full h-64 p-4 bg-white/10 rounded-lg shadow border border-white/20">
       {/* Timeline axis */}
-      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-dotted bg-gray-300" />
+      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-dotted bg-white/30" />
 
       {/* Now marker */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+        className="absolute top-0 bottom-0 w-0.5 bg-red-400"
         style={{ left: `${getLeftOffset(now)}%` }}
       >
-        <div className="absolute -top-6 -left-4 text-xs text-red-500 font-semibold">
+        <div className="absolute -top-6 -left-4 text-xs text-red-400 font-semibold">
           Now
         </div>
       </div>
@@ -296,7 +348,7 @@ export function ProjectTimeline({ projects }) {
               width: `${width}%`,
             }}
           >
-            <div className="absolute -top-5 left-0 text-xs font-medium text-gray-700">
+            <div className="absolute -top-5 left-0 text-xs font-medium text-white">
               {project.name}
             </div>
           </div>
@@ -304,10 +356,10 @@ export function ProjectTimeline({ projects }) {
       })}
 
       {/* Optional: Date labels at ends */}
-      <div className="absolute bottom-2 left-0 text-xs text-gray-500">
+      <div className="absolute bottom-2 left-0 text-xs text-white/70">
         {minDate.toLocaleDateString()}
       </div>
-      <div className="absolute bottom-2 right-0 text-xs text-gray-500">
+      <div className="absolute bottom-2 right-0 text-xs text-white/70">
         {maxDate.toLocaleDateString()}
       </div>
     </div>
@@ -318,15 +370,15 @@ export function StatCard({ title, value, change, icon }) {
   const isPositive = change.startsWith("+");
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-md transform transition-transform duration-200 hover:scale-[1.02] will-change-transform">
+    <div className="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-md transform transition-transform duration-200 hover:scale-[1.02] will-change-transform">
       <div className="flex items-center justify-between">
         {/* Text Info */}
         <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <h3 className="text-4xl font-bold text-gray-800 mt-1">{value}</h3>
+          <p className="text-sm font-medium text-white/80">{title}</p>
+          <h3 className="text-4xl font-bold text-white mt-1">{value}</h3>
           <p
             className={`text-sm mt-2 font-semibold flex items-center gap-1 ${
-              isPositive ? "text-green-500" : "text-red-500"
+              isPositive ? "text-green-400" : "text-red-400"
             }`}
           >
             {isPositive ? "▲" : "▼"} {change} from last week
@@ -334,7 +386,7 @@ export function StatCard({ title, value, change, icon }) {
         </div>
 
         {/* Icon */}
-        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-xl shadow-sm">
+        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 text-indigo-400 text-xl shadow-sm">
           {icon}
         </div>
       </div>
@@ -356,14 +408,12 @@ export function ProjectsTab({ projects, onAddProject }) {
   });
 
   return (
-    <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg text-white space-y-8">
+    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-lg text-white space-y-8">
       {/* Header & Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        {/* <h3 className="text-2xl font-bold tracking-tight">📁 All Projects</h3> */}
-
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <Input
-            icon={<Search></Search>}
+            icon={<Search className="text-white/70" />}
             placeholder="Search projects..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -400,7 +450,7 @@ export function ProjectsTab({ projects, onAddProject }) {
             <ProjectCard key={project.id} project={project} />
           ))
         ) : (
-          <div className="col-span-full text-center py-16 text-gray-400 text-sm border border-dashed border-white/10 rounded-lg">
+          <div className="col-span-full text-center py-16 text-white/50 text-sm border border-dashed border-white/20 rounded-lg">
             No projects found matching your filters.
           </div>
         )}
@@ -411,10 +461,10 @@ export function ProjectsTab({ projects, onAddProject }) {
 
 export function ProjectCard({ project }) {
   const statusStyles = {
-    planning: "bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/40",
-    active: "bg-green-500/10 text-green-400 ring-1 ring-green-500/40",
-    "on-hold": "bg-yellow-500/10 text-yellow-400 ring-1 ring-yellow-500/40",
-    completed: "bg-gray-500/10 text-gray-400 ring-1 ring-gray-500/40",
+    planning: "bg-blue-500/20 text-blue-400 ring-1 ring-blue-500/40",
+    active: "bg-green-500/20 text-green-400 ring-1 ring-green-500/40",
+    "on-hold": "bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/40",
+    completed: "bg-gray-500/20 text-gray-400 ring-1 ring-gray-500/40",
   };
 
   const progressColor =
@@ -431,7 +481,7 @@ export function ProjectCard({ project }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="rounded-2xl border border-white/10 bg-white/5 text-white shadow hover:shadow-xl overflow-hidden cursor-pointer"
+      className="rounded-2xl border border-white/20 bg-white/5 text-white shadow hover:shadow-xl overflow-hidden cursor-pointer"
     >
       <div className="p-5 space-y-4">
         {/* Header */}
@@ -448,7 +498,7 @@ export function ProjectCard({ project }) {
 
         {/* Progress */}
         <div>
-          <div className="flex justify-between text-xs text-gray-400 mb-1">
+          <div className="flex justify-between text-xs text-white/60 mb-1">
             <span>Progress</span>
             <span>{project.progress}%</span>
           </div>
@@ -465,19 +515,19 @@ export function ProjectCard({ project }) {
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <p className="text-gray-400">Start</p>
+            <p className="text-white/60">Start</p>
             <p>{formatDate(project.startDate)}</p>
           </div>
           <div>
-            <p className="text-gray-400">End</p>
+            <p className="text-white/60">End</p>
             <p>{formatDate(project.endDate)}</p>
           </div>
           <div>
-            <p className="text-gray-400">Budget</p>
+            <p className="text-white/60">Budget</p>
             <p>${project.budget.toLocaleString()}</p>
           </div>
           <div>
-            <p className="text-gray-400">Tasks</p>
+            <p className="text-white/60">Tasks</p>
             <p>{Math.floor(project.budget / 500)}</p>
           </div>
         </div>
@@ -495,9 +545,9 @@ export function ProjectCard({ project }) {
 
 export function TaskItem({ task, onComplete }) {
   const priorityColors = {
-    high: "bg-red-100 text-red-800",
-    medium: "bg-yellow-100 text-yellow-800",
-    low: "bg-green-100 text-green-800",
+    high: "bg-red-500/20 text-red-400",
+    medium: "bg-yellow-500/20 text-yellow-400",
+    low: "bg-green-500/20 text-green-400",
   };
 
   const isOverdue =
@@ -507,9 +557,9 @@ export function TaskItem({ task, onComplete }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.015 }}
+      whileHover={{ scale: 1.015, boxShadow: "0px 8px 24px rgba(0,0,0,0.12)" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="border rounded-lg p-4 bg-white/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow"
+      className="border border-white/20 rounded-lg p-4 bg-white/10 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow"
     >
       <div className="flex items-start justify-between">
         <div className="flex items-start">
@@ -519,7 +569,7 @@ export function TaskItem({ task, onComplete }) {
             className={`mt-1 flex-shrink-0 h-5 w-5 rounded border transition ${
               task.status === "completed"
                 ? "bg-green-500 border-green-500"
-                : "border-gray-300"
+                : "border-white/30"
             }`}
           >
             {task.status === "completed" && (
@@ -542,8 +592,8 @@ export function TaskItem({ task, onComplete }) {
             <h4
               className={`text-sm font-medium transition ${
                 task.status === "completed"
-                  ? "text-gray-500 line-through"
-                  : "text-gray-900"
+                  ? "text-white/50 line-through"
+                  : "text-white"
               }`}
             >
               {task.name}
@@ -556,18 +606,18 @@ export function TaskItem({ task, onComplete }) {
               >
                 {task.priority}
               </span>
-              <span className="text-gray-500">
+              <span className="text-white/60">
                 Due {formatDate(task.dueDate)}
               </span>
               {isOverdue && (
-                <span className="text-red-500 font-semibold">Overdue</span>
+                <span className="text-red-400 font-semibold">Overdue</span>
               )}
             </div>
           </div>
         </div>
 
         {/* Menu Button (Three Dots) */}
-        <button className="text-gray-400 hover:text-gray-600 transition">
+        <button className="text-white/40 hover:text-white transition">
           <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
           </svg>
@@ -608,12 +658,15 @@ export function TasksTab({ tasks, onCompleteTask }) {
   };
 
   return (
-    <div className="bg-white/5 p-6 rounded-2xl shadow-lg border border-white/10 text-white space-y-6">
+    <div className="bg-white/5 p-6 rounded-2xl shadow-lg border border-white/20 text-white space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex gap-3">
           <Select value={filter} onValueChange={setFilter}>
-            <SelectContent>
+            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+              <SelectValue placeholder="Filter tasks" />
+            </SelectTrigger>
+            <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
@@ -624,6 +677,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
             variant="default"
             size="sm"
             onClick={() => setShowForm(!showForm)}
+            className="bg-indigo-600 hover:bg-indigo-700"
           >
             {showForm ? (
               <X size={16} className="mr-2" />
@@ -641,7 +695,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
           <motion.form
             key="add-task-form"
             onSubmit={handleAddTask}
-            className="bg-white/10 border border-white/10 p-4 rounded-xl grid md:grid-cols-4 gap-4"
+            className="bg-white/10 border border-white/20 p-4 rounded-xl grid md:grid-cols-4 gap-4"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -652,16 +706,19 @@ export function TasksTab({ tasks, onCompleteTask }) {
               placeholder="Task description"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-              className="md:col-span-2"
+              className="md:col-span-2 bg-white/10 border-white/20 text-white"
             />
             <Select defaultValue="medium">
-              <SelectContent className="bg-white/10 text-white border-white/20 backdrop-blur-md">
+              <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectValue placeholder="Priority" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
                 <SelectItem value="high">High</SelectItem>
                 <SelectItem value="medium">Medium</SelectItem>
                 <SelectItem value="low">Low</SelectItem>
               </SelectContent>
             </Select>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
               Add Task
             </Button>
           </motion.form>
@@ -680,7 +737,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center justify-between bg-white/10 border border-white/10 p-4 rounded-xl hover:bg-white/20 transition"
+                className="flex items-center justify-between bg-white/10 border border-white/20 p-4 rounded-xl hover:bg-white/20 transition"
               >
                 <div className="flex flex-col">
                   <span className="font-medium text-white/90">{task.name}</span>
@@ -689,13 +746,17 @@ export function TasksTab({ tasks, onCompleteTask }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="capitalize">
+                  <Badge
+                    variant="outline"
+                    className="capitalize bg-white/10 border-white/20 text-white"
+                  >
                     {task.priority}
                   </Badge>
                   <Button
                     variant="secondary"
                     size="icon"
                     onClick={() => onCompleteTask(task.id)}
+                    className="bg-green-600 hover:bg-green-700 text-white"
                   >
                     <CheckCircle size={16} />
                   </Button>
@@ -707,7 +768,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
               key="empty"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center text-white/50 text-sm py-10 border border-dashed border-white/10 rounded-lg"
+              className="text-center text-white/50 text-sm py-10 border border-dashed border-white/20 rounded-lg"
             >
               No tasks found matching your filter.
             </motion.div>
@@ -743,10 +804,9 @@ export function TeamTab({ team }) {
   };
 
   return (
-    <div className="bg-white/5 backdrop-blur-lg p-6 rounded-2xl border border-white/10 shadow-xl text-white space-y-6">
+    <div className="bg-white/5 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl text-white space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        {/* <h3 className="text-2xl font-bold tracking-tight">Team Members</h3> */}
         <Button
           variant="secondary"
           className="bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -760,7 +820,7 @@ export function TeamTab({ team }) {
       {showInviteForm && (
         <form
           onSubmit={handleInviteSubmit}
-          className="p-5 rounded-xl bg-white/10 border border-white/10 space-y-4"
+          className="p-5 rounded-xl bg-white/10 border border-white/20 space-y-4"
         >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Email Input */}
@@ -816,7 +876,7 @@ export function TeamTab({ team }) {
             <TeamMemberCard key={member.id} member={member} />
           ))
         ) : (
-          <div className="col-span-full text-center py-10 text-gray-400 border border-dashed border-white/10 rounded-lg">
+          <div className="col-span-full text-center py-10 text-white/50 border border-dashed border-white/20 rounded-lg">
             No team members found.
           </div>
         )}
@@ -832,7 +892,7 @@ export function TeamMemberCard({ member }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       whileHover={{ scale: 1.015 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-white/10 bg-white/5 backdrop-blur-lg text-white"
+      className="rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-white/20 bg-white/5 backdrop-blur-lg text-white"
     >
       {/* Header */}
       <div className="flex items-center gap-4 p-5">
@@ -852,19 +912,19 @@ export function TeamMemberCard({ member }) {
       {/* Info Grid */}
       <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-5 pb-4 text-sm">
         <div>
-          <p className="text-white/40">Role</p>
+          <p className="text-white/60">Role</p>
           <p className="capitalize font-medium">{member.role}</p>
         </div>
         <div>
-          <p className="text-white/40">Joined</p>
+          <p className="text-white/60">Joined</p>
           <p>{formatDate(member.joined)}</p>
         </div>
         <div>
-          <p className="text-white/40">Tasks</p>
+          <p className="text-white/60">Tasks</p>
           <p>{Math.floor(Math.random() * 20) + 5}</p>
         </div>
         <div>
-          <p className="text-white/40">Projects</p>
+          <p className="text-white/60">Projects</p>
           <p>{Math.floor(Math.random() * 5) + 1}</p>
         </div>
       </div>
@@ -902,38 +962,41 @@ export function SettingsTab() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 max-w-full mx-auto space-y-8">
-      <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20 max-w-full mx-auto space-y-8">
+      <h2 className="text-2xl font-bold text-white tracking-tight">
         Account Settings
       </h2>
 
       {/* Toggle Settings */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">Dark Mode</span>
+          <span className="text-sm font-medium text-white/90">Dark Mode</span>
           <Switch
             checked={settings.darkMode}
             onCheckedChange={() => handleToggle("darkMode")}
+            className="data-[state=checked]:bg-indigo-600"
           />
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-white/90">
             Email Notifications
           </span>
           <Switch
             checked={settings.notifications}
             onCheckedChange={() => handleToggle("notifications")}
+            className="data-[state=checked]:bg-indigo-600"
           />
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-white/90">
             Weekly Reports
           </span>
           <Switch
             checked={settings.weeklyReport}
             onCheckedChange={() => handleToggle("weeklyReport")}
+            className="data-[state=checked]:bg-indigo-600"
           />
         </div>
       </div>
@@ -941,18 +1004,17 @@ export function SettingsTab() {
       {/* Select Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">
+          <label className="block mb-1 text-sm font-medium text-white/90">
             Timezone
           </label>
           <Select
-            className="text-black"
             value={settings.timezone}
             onValueChange={(v) => handleSelectChange("timezone", v)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
               <SelectValue placeholder="Select timezone" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
               <SelectItem value="UTC">UTC</SelectItem>
               <SelectItem value="EST">Eastern (EST)</SelectItem>
               <SelectItem value="PST">Pacific (PST)</SelectItem>
@@ -961,17 +1023,17 @@ export function SettingsTab() {
           </Select>
         </div>
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">
+          <label className="block mb-1 text-sm font-medium text-white/90">
             Language
           </label>
           <Select
             value={settings.language}
             onValueChange={(v) => handleSelectChange("language", v)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
               <SelectItem value="en">English</SelectItem>
               <SelectItem value="es">Spanish</SelectItem>
               <SelectItem value="fr">French</SelectItem>
@@ -993,64 +1055,21 @@ export function SettingsTab() {
 
 export function ActivityItem({ user, action, project, time }) {
   return (
-    <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 transition-all">
+    <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/10 transition-all">
       {/* Avatar / Icon */}
-      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg shadow-inner">
+      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-lg shadow-inner">
         <User></User>
       </div>
 
       {/* Activity Content */}
       <div className="flex-1">
-        <p className="text-sm text-gray-800 leading-snug">
+        <p className="text-sm text-white leading-snug">
           <span className="font-semibold">{user}</span> {action} in{" "}
-          <span className="text-indigo-600 font-medium">{project}</span>
+          <span className="text-indigo-400 font-medium">{project}</span>
         </p>
-        <p className="text-xs text-gray-400 mt-1">{time}</p>
+        <p className="text-xs text-white/50 mt-1">{time}</p>
       </div>
     </div>
-  );
-}
-
-export function TableRow({ task, project, due, priority, status }) {
-  const priorityClasses = {
-    High: "bg-red-100 text-red-800",
-    Medium: "bg-yellow-100 text-yellow-800",
-    Low: "bg-green-100 text-green-800",
-  };
-
-  const statusClasses = {
-    "In Progress": "bg-blue-100 text-blue-800",
-    Pending: "bg-yellow-100 text-yellow-800",
-    "Not Started": "bg-gray-100 text-gray-800",
-    Completed: "bg-green-100 text-green-800",
-  };
-
-  return (
-    <tr className="hover:bg-gray-50 transition">
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-        {task}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {project}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {due}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span
-          className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${priorityClasses[priority]}`}
-        >
-          {priority}
-        </span>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span
-          className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${statusClasses[status]}`}
-        >
-          {status}
-        </span>
-      </td>
-    </tr>
   );
 }
 
@@ -1096,7 +1115,7 @@ export function ReportsTab({ projects, tasks }) {
           <SelectTrigger className="w-[220px] bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Select report type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
             <SelectItem value="project-progress">Project Progress</SelectItem>
             <SelectItem value="task-distribution">Task Distribution</SelectItem>
             <SelectItem value="task-priority">Task Priority</SelectItem>
@@ -1105,7 +1124,7 @@ export function ReportsTab({ projects, tasks }) {
       </div>
 
       {/* Chart Area */}
-      <Card className="bg-white/5 border border-white/10 backdrop-blur-md shadow-lg rounded-xl">
+      <Card className="bg-white/10 border border-white/20 backdrop-blur-md shadow-lg rounded-xl">
         <CardHeader className="text-white font-semibold text-lg">
           {reportType
             .split("-")
@@ -1114,7 +1133,7 @@ export function ReportsTab({ projects, tasks }) {
         </CardHeader>
         <CardContent>
           <div className="h-96 flex items-center justify-center">
-            <ReportVisualization type={reportType} data={[]} />
+            <ReportVisualization type={reportType} data={reportData} />
           </div>
         </CardContent>
       </Card>
@@ -1131,20 +1150,24 @@ export function ReportsTab({ projects, tasks }) {
 
 export function SummaryCard({ label, value, color }) {
   const colorMap = {
-    blue: { bg: "bg-blue-50", text: "text-blue-700", number: "text-blue-900" },
+    blue: {
+      bg: "bg-blue-500/10",
+      text: "text-blue-400",
+      border: "border-blue-500/20",
+    },
     purple: {
-      bg: "bg-purple-50",
-      text: "text-purple-700",
-      number: "text-purple-900",
+      bg: "bg-purple-500/10",
+      text: "text-purple-400",
+      border: "border-purple-500/20",
     },
     green: {
-      bg: "bg-green-50",
-      text: "text-green-700",
-      number: "text-green-900",
+      bg: "bg-green-500/10",
+      text: "text-green-400",
+      border: "border-green-500/20",
     },
   };
 
-  const { bg, text, number } = colorMap[color];
+  const { bg, text, border } = colorMap[color];
 
   return (
     <motion.div
@@ -1153,12 +1176,12 @@ export function SummaryCard({ label, value, color }) {
       whileHover={{ scale: 1.03, boxShadow: "0px 8px 24px rgba(0,0,0,0.12)" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      <Card className={`${bg} border-none`}>
+      <Card className={`${bg} ${border} border backdrop-blur-sm`}>
         <CardHeader className={`text-sm font-medium ${text}`}>
           {label}
         </CardHeader>
         <CardContent>
-          <p className={`text-3xl font-bold ${number}`}>{value}</p>
+          <p className={`text-3xl font-bold text-white`}>{value}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -1325,27 +1348,24 @@ export function NotificationBell({ notifications, onDismiss }) {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="relative p-2 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition"
+        className="relative p-2 rounded-full bg-white/10 border border-white/20 shadow-sm hover:bg-white/20 transition"
       >
-        <Bell className="w-5 h-5 text-gray-600" />
+        <Bell className="w-5 h-5 text-white" />
         {notifications.length > 0 && (
           <span className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-red-500 rounded-full animate-ping" />
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
-          <div className="px-4 py-3 border-b flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-gray-800">
-              Notifications
-            </h3>
+        <div className="absolute right-0 mt-3 w-80 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg z-20 overflow-hidden">
+          <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-white">Notifications</h3>
             {notifications.length > 0 && (
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  // Optional: handle "mark all as read" outside
                 }}
-                className="text-xs text-indigo-600 hover:underline"
+                className="text-xs text-indigo-400 hover:underline"
               >
                 Mark all as read
               </button>
@@ -1357,23 +1377,23 @@ export function NotificationBell({ notifications, onDismiss }) {
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="px-4 py-3 hover:bg-gray-50 transition"
+                  className="px-4 py-3 hover:bg-white/10 transition border-b border-white/10 last:border-b-0"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-sm font-medium text-gray-800">
+                      <p className="text-sm font-medium text-white">
                         {notification.title}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-white/70 mt-0.5">
                         {notification.message}
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs text-white/50 mt-1">
                         {notification.time}
                       </p>
                     </div>
                     <button
                       onClick={() => onDismiss(notification.id)}
-                      className="text-gray-400 hover:text-red-500 text-sm ml-3"
+                      className="text-white/40 hover:text-red-400 text-sm ml-3"
                     >
                       ×
                     </button>
@@ -1381,7 +1401,7 @@ export function NotificationBell({ notifications, onDismiss }) {
                 </div>
               ))
             ) : (
-              <div className="text-center px-6 py-10 text-gray-500 text-sm">
+              <div className="text-center px-6 py-10 text-white/50 text-sm">
                 No new notifications
               </div>
             )}
@@ -1398,9 +1418,9 @@ export function UserProfile() {
       <img
         src="https://randomuser.me/api/portraits/women/44.jpg"
         alt="User"
-        className="w-8 h-8 rounded-full"
+        className="w-8 h-8 rounded-full border-2 border-white/20"
       />
-      <span className="text-sm font-medium text-gray-700">Sarah Johnson</span>
+      <span className="text-sm font-medium text-white">Sarah Johnson</span>
     </div>
   );
 }
