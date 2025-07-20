@@ -983,22 +983,6 @@ footer {
   @apply text-cyan-500;
 }
 
-.img-container {
-  width: 100%;
-  background-color: #1e293b; /* light blue */
-  padding: 1rem 0;
-  margin: 1.5rem 0;
-  text-align: center;
-  border-radius: 0.5rem;
-}
-
-.img-container img {
-  max-width: 200px; /* or use 20% */
-  height: auto;
-  border-radius: 0.5rem;
-  display: inline-block;
-}
-
 .icon-metal {
   transition: filter 0.3s ease, transform 0.3s ease;
 }
@@ -1014,4 +998,77 @@ footer {
 
 .group:hover .glow-icon {
   filter: drop-shadow(0 0 6px currentColor) brightness(1.2);
+}
+
+/* css for image in editor */
+
+.img-container {
+  text-align: center;
+  margin: 2rem auto;
+}
+
+.img-container img {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  display: inline-block;
+  object-fit: contain;
+}
+
+.image-row {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+
+.image-row img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  object-fit: contain;
+}
+/* css for image in editor */
+
+/* css for images in blog details page */
+
+.img-container-blog {
+  width: 100%;
+  background-color: #1e293b; /* light blue */
+  padding: 1rem 0;
+  margin: 1.5rem 0;
+  text-align: center;
+  border-radius: 0.5rem;
+}
+
+.img-container-blog img {
+  max-width: 200px; /* or use 20% */
+  height: auto;
+  border-radius: 0.5rem;
+  display: inline-block;
+}
+
+/* css for images in blog details page */
+
+@media (max-width: 640px) {
+  .image-row img {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .image-row img {
+    flex: 0 0 calc(50% - 1rem); /* 2 per row on tablets */
+    max-width: calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .image-row img {
+    flex: 0 0 100%; /* 1 per row on phones */
+    max-width: 100%;
+  }
 }

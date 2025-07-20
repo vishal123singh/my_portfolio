@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { FaPaperPlane } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { ChatBotIcon } from "./ChatIcon";
+import { UserIcon, X } from "lucide-react";
 
 export default function Assistant({ onClose }) {
   const [input, setInput] = useState("");
@@ -81,36 +82,16 @@ export default function Assistant({ onClose }) {
           <h3 className="text-cyan-400 text-lg font-semibold">
             Chat with ViVA
           </h3>
-          <button onClick={onClose} className="text-slate-100 text-lg">
-            ✖
-          </button>
+
+          <X
+            onClick={onClose}
+            className="text-slate-100 text-lg hover:text-cyan-400 cursor-pointer"
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-3 mb-4 model-content">
           {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`flex ${
-                msg.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`rounded-lg px-4 py-2 max-w-[80%] text-sm leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-slate-700 text-white"
-                    : "bg-slate-900 text-slate-200"
-                }`}
-              >
-                {msg.role === "assistant" ? (
-                  <>
-                    <ChatBotIcon size={32}></ChatBotIcon>
-                    <ReactMarkdown>{msg.text}</ReactMarkdown>
-                  </>
-                ) : (
-                  msg.text
-                )}
-              </div>
-            </div>
+            <ChatMessage key={i} msg={msg} i={i} />
           ))}
           {loading && (
             <motion.p
@@ -143,5 +124,47 @@ export default function Assistant({ onClose }) {
         </div>
       </motion.div>
     </motion.div>
+  );
+}
+
+function ChatMessage({ msg, i }) {
+  const isUser = msg.role === "user";
+
+  return (
+    <div
+      key={i}
+      className={`flex items-start space-x-2 ${
+        isUser ? "justify-end space-x-reverse" : "justify-start"
+      }`}
+    >
+      {/* Avatar */}
+      <div className="flex-shrink-0">
+        {isUser ? null : <ChatBotIcon size={32} />}
+      </div>
+
+      {/* Bubble */}
+      <div
+        className={`
+          relative
+          max-w-[75%]
+          px-4 py-3
+          text-sm leading-snug
+          rounded-2xl
+          ${isUser ? "bg-indigo-600 text-white" : "bg-gray-800 text-gray-100"}
+        `}
+      >
+        {/* Content */}
+        {isUser ? (
+          <span>{msg.text}</span>
+        ) : (
+          <div className="flex items-start space-x-2">
+            {/* Wrap markdown in a styled div instead */}
+            <div className="prose prose-sm prose-invert">
+              <ReactMarkdown>{msg.text}</ReactMarkdown>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

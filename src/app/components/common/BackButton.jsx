@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function BackButton({ label = "Back" }) {
   const router = useRouter();
   const pathname = usePathname();
-  if (pathname === "/") {
+  if (pathname === "/" || pathname.includes("/blogs/")) {
     return null; // Don't show back button on the archery page
   }
 

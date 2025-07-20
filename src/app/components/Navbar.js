@@ -58,7 +58,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button
-          className="sm:hidden text-white"
+          className="sm:hidden text-white absolute left-6 top-4"
           onClick={() => setMenuOpen(true)}
         >
           <Menu size={24} />
@@ -89,23 +89,23 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="fixed inset-0 z-50"
+            className="fixed inset-0 z-[52]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* Overlay for click outside to close */}
+            {/* Overlay */}
             <div
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setMenuOpen(false)}
             />
 
-            {/* Drawer */}
+            {/* Drawer sliding from LEFT */}
             <motion.div
-              className="absolute top-0 right-0 w-1/2 h-screen bg-slate-900 text-white px-6 py-6 flex flex-col space-y-6 z-1000"
-              initial={{ x: "100%" }}
+              className="absolute top-0 left-0 w-1/2 h-screen bg-slate-900 text-white px-6 py-6 flex flex-col space-y-6 z-1000"
+              initial={{ x: "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               {/* Close Button */}
