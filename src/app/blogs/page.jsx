@@ -39,11 +39,11 @@ export default function MyBlogsPage() {
 
   const handlePost = async () => {
     try {
-      const isEdit = blogs.some((b) => b.title === form.title); // naive match
+      // Find by title, but use _id for update
+      const existing = blogs.find((b) => b.title === form.title);
+      const isEdit = !!existing;
       const method = isEdit ? "PUT" : "POST";
-      const url = isEdit
-        ? `/api/blogs/${form.title.toLowerCase().replace(/\s+/g, "-")}`
-        : "/api/blogs";
+      const url = isEdit ? `/api/blogs/${existing._id}` : "/api/blogs";
 
       const res = await fetch(url, {
         method,
@@ -55,7 +55,7 @@ export default function MyBlogsPage() {
 
       if (res.ok) {
         const updatedList = isEdit
-          ? blogs.map((b) => (b.title === form.title ? data.blog : b))
+          ? blogs.map((b) => (b._id === data.blog._id ? data.blog : b))
           : [data.blog, ...blogs];
         setBlogs(updatedList);
         setForm({ title: "", content: "" });
@@ -88,29 +88,30 @@ export default function MyBlogsPage() {
         <p className="text-base text-slate-400">
           Thoughts, tutorials, and technical deep dives from my journey.
         </p>
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={() => {
-              if (!isLoggedIn) {
-                setShowLogin(true);
-              } else {
-                setShowEditor(!showEditor);
-              }
-            }}
-            className="flex items-center gap-2 text-sm bg-cyan-600 hover:bg-cyan-500 px-5 py-2 rounded-full font-medium transition shadow"
-          >
-            <img
-              src="/images/writing.png"
-              alt="Write Icon"
-              width={20}
-              height={20}
-              loading="lazy"
-              className="w-5 h-5 filter brightness-0 invert"
-            />
-
-            {showEditor ? "Cancel" : "Write a blog"}
-          </button>
-        </div>
+        {!showEditor && (
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={() => {
+                if (!isLoggedIn) {
+                  setShowLogin(true);
+                } else {
+                  setShowEditor(!showEditor);
+                }
+              }}
+              className="flex items-center gap-2 text-sm bg-cyan-600 hover:bg-cyan-500 px-5 py-2 rounded-full font-medium transition shadow"
+            >
+              <img
+                src="/images/writing.png"
+                alt="Write Icon"
+                width={20}
+                height={20}
+                loading="lazy"
+                className="w-5 h-5 filter brightness-0 invert"
+              />
+              "Write a blog"
+            </button>
+          </div>
+        )}
       </div>
       {showEditor && (
         <motion.div
@@ -125,11 +126,12 @@ export default function MyBlogsPage() {
             onChange={(e) => setForm({ ...form, title: e.target.value })}
           />
 
-          <div className="h-64">
+          <div className="h-[60vh] mb-6">
             <TiptapEditor
               immediatelyRender={false}
               value={form.content}
               onChange={(val) => setForm({ ...form, content: val })}
+              onClose={() => setShowEditor(false)}
             ></TiptapEditor>
           </div>
 
@@ -170,10 +172,10 @@ export default function MyBlogsPage() {
 
             return (
               <div
-                key={blog.slug}
+                key={blog._id}
                 className="relative bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400 transition duration-300 shadow-md backdrop-blur-sm group"
               >
-                <Link href={`/blogs/${blog.slug}`}>
+                <Link href={`/blogs/${blog._id}`}>
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -225,10 +227,10 @@ export default function MyBlogsPage() {
                           "Are you sure you want to delete this blog?"
                         );
                         if (confirmed) {
-                          await fetch(`/api/blogs/${blog.slug}`, {
+                          await fetch(`/api/blogs/${blog._id}`, {
                             method: "DELETE",
                           });
-                          setBlogs(blogs.filter((b) => b.slug !== blog.slug));
+                          setBlogs(blogs.filter((b) => b._id !== blog._id));
                         }
                       }}
                       className="text-sm text-red-400 hover:text-red-300"

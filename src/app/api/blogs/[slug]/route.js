@@ -4,15 +4,15 @@ import { connectDB } from "@/lib/mongoose";
 import Blog from "@/models/Blog";
 
 export async function GET(req, { params }) {
-  const { slug } = params;
+  const { slug: id } = params;
 
-  if (!slug) {
-    return NextResponse.json({ error: "Missing slug" }, { status: 400 });
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
   }
 
   try {
     await connectDB();
-    const blog = await Blog.findOne({ slug });
+    const blog = await Blog.findById(id);
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
@@ -28,7 +28,7 @@ export async function GET(req, { params }) {
 // UPDATE a blog by slug
 export async function PUT(req, { params }) {
   try {
-    const { slug } = params;
+    const { slug: id } = params;
     const body = await req.json();
     const { title, content } = body;
 
@@ -41,8 +41,8 @@ export async function PUT(req, { params }) {
     const summary = content.replace(/<[^>]*>?/gm, "").slice(0, 100) + "...";
     const updatedSlug = title.toLowerCase().replace(/\s+/g, "-");
 
-    const blog = await Blog.findOneAndUpdate(
-      { slug },
+    const blog = await Blog.findByIdAndUpdate(
+      id,
       {
         title,
         content,
@@ -70,10 +70,10 @@ export async function PUT(req, { params }) {
 // DELETE a blog by slug
 export async function DELETE(req, { params }) {
   try {
-    const { slug } = params;
+    const { slug: id } = params;
     await connectDB();
 
-    const deleted = await Blog.findOneAndDelete({ slug });
+    const deleted = await Blog.findByIdAndDelete(id);
 
     if (!deleted) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });

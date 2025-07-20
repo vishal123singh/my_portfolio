@@ -16,10 +16,13 @@ export default function BlogDetailPage() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processedContent, setProcessedContent] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null); // comment id being replied to
+  const [replyContent, setReplyContent] = useState("");
+  const [replyName, setReplyName] = useState("");
+  const [replyEmail, setReplyEmail] = useState("");
 
   useEffect(() => {
     if (slug) {
-      // Fetch blog post
       fetch(`/api/blogs/${slug}`)
         .then((res) => res.json())
         .then((data) => {
@@ -28,7 +31,6 @@ export default function BlogDetailPage() {
         })
         .catch(() => setLoading(false));
 
-      // Fetch comments
       fetch(`/api/blogs/${slug}/comments`)
         .then((res) => res.json())
         .then((data) => {
@@ -38,11 +40,11 @@ export default function BlogDetailPage() {
   }, [slug]);
 
   useEffect(() => {
-    hljs.highlightAll();
-    document.querySelectorAll("article img").forEach((img) => {
-      if (!img.src || img.src.trim() === "") img.remove();
+    if (!processedContent) return;
+    document.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightElement(block);
     });
-  }, [blog]);
+  }, [processedContent]);
 
   useEffect(() => {
     if (!blog?.content) return;
@@ -54,7 +56,7 @@ export default function BlogDetailPage() {
       if (img.parentElement?.classList.contains("img-container")) return;
 
       const wrapper = document.createElement("div");
-      wrapper.className = "img-container";
+      wrapper.className = "img-container-blog";
       img.replaceWith(wrapper);
       wrapper.appendChild(img);
     });
@@ -66,20 +68,14 @@ export default function BlogDetailPage() {
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       const response = await fetch(`/api/blogs/${slug}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name,
-          email,
-          content: newComment,
-        }),
+        body: JSON.stringify({ name, email, content: newComment }),
       });
-
       if (response.ok) {
         const data = await response.json();
         setComments([...comments, data]);
@@ -89,6 +85,46 @@ export default function BlogDetailPage() {
       }
     } catch (error) {
       console.error("Error submitting comment:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleReply = (commentId) => {
+    setReplyingTo(commentId);
+    setReplyContent("");
+    setReplyName("");
+    setReplyEmail("");
+  };
+
+  const handleSubmitReply = async (e, parentId) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`/api/blogs/${slug}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: replyName,
+          email: replyEmail,
+          content: replyContent,
+          parentId,
+        }),
+      });
+      if (response.ok) {
+        const updated = await response.json();
+        setComments((prev) =>
+          prev.map((c) => (c._id === updated._id ? updated : c))
+        );
+        setReplyingTo(null);
+        setReplyContent("");
+        setReplyName("");
+        setReplyEmail("");
+      }
+    } catch (error) {
+      console.error("Error submitting reply:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -147,25 +183,101 @@ export default function BlogDetailPage() {
         <h2 className="text-2xl font-bold mb-6">
           Comments ({comments.length})
         </h2>
-
         {comments.length > 0 ? (
           <div className="space-y-6">
             {comments.map((comment) => (
               <div
-                key={comment.id}
+                key={comment._id}
                 className="border-b border-gray-300 pb-6 last:border-0"
               >
                 <div className="flex items-center mb-2">
-                  <h3 className="font-semibold text-base text-gray-800">
+                  <h3 className="font-semibold text-base text-gray-300 text-sm">
                     {comment.name}
                   </h3>
-                  <span className="text-gray-500 text-sm ml-3">
+                  <span className="text-gray-300 text-sm ml-3 text-xs">
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed text-sm">
                   {comment.content}
                 </p>
+                <button
+                  className="text-cyan-400 text-xs mt-2 hover:underline"
+                  onClick={() => handleReply(comment._id)}
+                >
+                  Reply
+                </button>
+                {/* Replies */}
+                {comment.replies && comment.replies.length > 0 && (
+                  <div className="ml-6 mt-4 space-y-4">
+                    {comment.replies.map((reply, idx) => (
+                      <div
+                        key={reply._id || idx}
+                        className="bg-slate-700 rounded-lg p-3"
+                      >
+                        <div className="flex items-center mb-1">
+                          <span className="font-semibold text-sm text-gray-200">
+                            {reply.name}
+                          </span>
+                          <span className="text-gray-400 text-xs ml-2">
+                            {new Date(reply.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-gray-200 text-sm">{reply.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* Reply Form */}
+                {replyingTo === comment._id && (
+                  <form
+                    className="mt-4 ml-6 bg-slate-700 rounded-lg p-4 space-y-2"
+                    onSubmit={(e) => handleSubmitReply(e, comment._id)}
+                  >
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        required
+                        placeholder="Your name"
+                        className="px-2 py-1 rounded bg-slate-800 text-white border border-slate-600 text-sm"
+                        value={replyName}
+                        onChange={(e) => setReplyName(e.target.value)}
+                      />
+                      <input
+                        type="email"
+                        required
+                        placeholder="your@email.com"
+                        className="px-2 py-1 rounded bg-slate-800 text-white border border-slate-600 text-sm"
+                        value={replyEmail}
+                        onChange={(e) => setReplyEmail(e.target.value)}
+                      />
+                    </div>
+                    <textarea
+                      required
+                      rows="2"
+                      placeholder="Your reply..."
+                      className="w-full px-2 py-1 rounded bg-slate-800 text-white border border-slate-600 text-sm"
+                      value={replyContent}
+                      onChange={(e) => setReplyContent(e.target.value)}
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="bg-cyan-400 text-slate-900 px-3 py-1 rounded font-bold text-sm hover:bg-cyan-300 disabled:opacity-60"
+                      >
+                        {isSubmitting ? "Replying..." : "Post Reply"}
+                      </button>
+                      <button
+                        type="button"
+                        className="text-gray-300 text-sm"
+                        onClick={() => setReplyingTo(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
             ))}
           </div>

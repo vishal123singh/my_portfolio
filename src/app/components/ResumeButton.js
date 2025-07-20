@@ -7,7 +7,7 @@ export default function ResumeButton() {
   const pathname = usePathname();
   if (pathname === "/") {
     return (
-      <div className="fixed top-4 right-0 z-[999] flex flex-col items-center group">
+      <div className="fixed top-4 right-0 z-[51] flex flex-col items-center group">
         <motion.a
           href="/vishal-resume.pdf"
           download
