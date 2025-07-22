@@ -3,7 +3,7 @@ import { easeOut, motion, useScroll, useTransform } from "framer-motion";
 
 export default function CarouselSection() {
   const { scrollYProgress } = useScroll();
-const x = useTransform(scrollYProgress, [0, 1], [0, -100]);
+const x = useTransform(scrollYProgress, [0, 1.6], [0, 1]);
 
   const projects = [
     {
