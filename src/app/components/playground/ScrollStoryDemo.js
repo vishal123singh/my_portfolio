@@ -13,6 +13,9 @@ import {
   animate,
 } from "framer-motion";
 import ParticlesBackground from "@/app/components/ParticlesBackground";
+import CarouselSection from "../scrollStory/CarouselSection";
+import ParallaxImageScroll from "../scrollStory/ParallaxImageScroll";
+import SmoothMotionSection from "../scrollStory/SmoothMotionSection";
 
 export default function ScrollStoryDemo() {
   const containerRef = useRef(null);
@@ -31,14 +34,47 @@ export default function ScrollStoryDemo() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest < 0.2) setActiveSection(0);
-    else if (latest < 0.45) setActiveSection(1);
-    else if (latest < 0.75) setActiveSection(2);
-    else setActiveSection(3);
+  // useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  //   if (latest < 0.2) setActiveSection(0);
+  //   else if (latest < 0.15) setActiveSection(1);
+  //   else if (latest < 0.25) setActiveSection(2);
+  //   else if (latest < 0.35) setActiveSection(3);
+  //   else if (latest < 0.45) setActiveSection(4);
+  //   else if (latest < 0.50) setActiveSection(5);
+  //   else setActiveSection(6);
 
-    setShowBackToTop(latest > 0.3);
+  //   setShowBackToTop(latest > 0.3);
+  // });
+
+  useEffect(() => {
+  const sectionIds = Array.from({ length: 7 }, (_, i) => `section-${i}`);
+  const observers = [];
+
+  sectionIds.forEach((id, index) => {
+    const sectionEl = document.getElementById(id);
+    if (!sectionEl) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+          setActiveSection(index);
+        }
+      },
+      {
+        root: containerRef.current ?? null,
+        threshold: [0.4], // Adjust to sensitivity
+      }
+    );
+
+    observer.observe(sectionEl);
+    observers.push(observer);
   });
+
+  return () => {
+    observers.forEach((observer) => observer.disconnect());
+  };
+}, []);
+
 
   const scrollToSection = (index) => {
     const section = document.getElementById(`section-${index}`);
@@ -65,7 +101,7 @@ export default function ScrollStoryDemo() {
           </motion.div>
 
           <div className="hidden md:flex gap-6">
-            {["Hero", "Features", "Animation", "Get Started"].map(
+            {["Hero", "Features", "Animation", "Work People", "ParallaX Image", "Framer Motion", "Get Started"].map(
               (label, index) => (
                 <motion.button
                   key={index}
@@ -159,7 +195,7 @@ export default function ScrollStoryDemo() {
         transition={{ delay: 1 }}
         className="fixed left-4 top-1/2 -translate-y-1/2 z-40 space-y-4 hidden md:block"
       >
-        {["Hero", "Features", "Animation", "Get Started"].map(
+        {["Hero", "Features", "Animation", "Work People", "ParallaX Image", "Framer Motion", "Get Started"].map(
           (label, index) => (
             <motion.button
               key={index}
@@ -309,7 +345,7 @@ function ScrollContent() {
   ];
 
   return (
-    <div className="space-y-0 pt-20 pb-40 px-4 sm:px-6 max-w-7xl mx-auto">
+    <div className="space-y-0 pb-4 px-4 sm:px-6 max-w-7xl mx-auto">
       {/* Section 1: Hero */}
       <section
         id="section-0"
@@ -384,7 +420,7 @@ function ScrollContent() {
         <div className="absolute top-1/4 left-0 right-0 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}  
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.6 }}
             className="text-3xl sm:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500"
@@ -502,9 +538,23 @@ function ScrollContent() {
         </motion.div>
       </section>
 
-      {/* Section 4: Final CTA */}
+      {/* section 4: moving people showcase */}
+      <section id="section-3">
+          <CarouselSection />
+      </section>
+      {/* section 5: parallaX Image */}
+      <section id="section-4" className="min-h-screen ">
+        <ParallaxImageScroll />
+      </section>
+
+      {/* section 6:  */}
+      <section id="section-5">
+        <SmoothMotionSection />
+      </section>
+
+      {/* Section 7: Final CTA */}
       <section
-        id="section-3"
+        id="section-6"
         ref={ref3}
         className="min-h-screen flex justify-center items-center px-4 relative"
       >
