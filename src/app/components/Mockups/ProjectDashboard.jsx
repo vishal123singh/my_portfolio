@@ -79,17 +79,17 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
   return (
     <div
       onClick={onClick}
-      className={cn(
-        "group relative flex items-center gap-3 w-full px-5 py-3 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden",
+      className={cn( 
+        "group relative flex items-center gap-3 w-full px-5 py-3 rounded-lg cursor-pointer transition-all ease-in-out duration-500 overflow-hidden",
         active
-          ? `bg-gradient-to-r from-${colors.primary.dark} to-${colors.primary.main} text-white shadow-lg`
-          : "text-white/90 hover:bg-white/10 hover:text-white"
+          ? `bg-[#0B1739]  text-white shadow-xl`
+          : "text-white/90 hover:bg-[#0B1739] hover:text-white"
       )}
     >
       {/* Left Active Bar */}
       {active && (
         <div
-          className={`absolute left-0 top-0 h-full w-1 bg-${colors.info.main} rounded-tr-md rounded-br-md shadow-md`}
+          className={`absolute left-0 top-0 h-full w-1 bg-${colors.info.main} rounded-tr-md rounded-br-md shadow-xl`}
         />
       )}
 
@@ -110,7 +110,7 @@ export function SidebarItem({ icon, label, active, onClick, expanded }) {
         <span
           className={cn(
             "text-sm font-medium transition-all duration-200",
-            active ? "text-white" : "text-white/90"
+            active ? "text-[#CB3CFF]" : "text-[#AEB9E1]"
           )}
         >
           {label}
@@ -173,18 +173,18 @@ export function OverviewTab({ projects, tasks, team }) {
       {/* Timeline + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Project Timeline Section */}
-        <div className="lg:col-span-2 bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
+        <div className="lg:col-span-2 bg-[#0B1739] backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
           <h3 className="text-xl font-semibold text-white mb-6">
             Project Timeline
           </h3>
 
-          <div className="relative h-72 bg-white/5 rounded-xl border border-white/20 overflow-hidden">
+          <div className="relative h-72 rounded-xl border border-white/20 overflow-hidden">
             <ProjectTimeline projects={projects} />
           </div>
         </div>
 
         {/* Recent Activity Section */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
+        <div className="bg-[#0B1739] backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
           <h3 className="text-xl font-semibold text-white mb-6">
             Recent Activity
           </h3>
@@ -208,7 +208,7 @@ export function OverviewTab({ projects, tasks, team }) {
       </div>
 
       {/* Priority Tasks Table */}
-      <div className="bg-gradient-to-br from-white/10 to-white/20 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
+      <div className="bg-gradient-to-br from-[#0B1739] to-[#0B1739]/20 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-2xl font-bold text-white tracking-tight">
             Priority Tasks
@@ -220,13 +220,13 @@ export function OverviewTab({ projects, tasks, team }) {
 
         <div className="overflow-x-auto rounded-xl">
           <table className="min-w-full text-sm text-white rounded-xl overflow-hidden">
-            <thead className="bg-white/20 text-white/90">
+            <thead className="bg-[#0B1739]/20 text-[#0B1739]/90">
               <tr>
                 {["Task", "Project", "Due Date", "Priority", "Status"].map(
                   (heading) => (
                     <th
                       key={heading}
-                      className="px-6 py-3 text-left font-semibold uppercase tracking-wide text-xs"
+                      className="px-6 py-3 text-left text-white font-semibold uppercase tracking-wide text-xs"
                     >
                       {heading}
                     </th>
@@ -235,7 +235,7 @@ export function OverviewTab({ projects, tasks, team }) {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-[#0B1739]">
               {priorityTasks.map((task, index) => {
                 const project =
                   projects.find((p) => p.id === task.projectId)?.name ||
@@ -245,7 +245,7 @@ export function OverviewTab({ projects, tasks, team }) {
                 return (
                   <tr
                     key={task.id}
-                    className={`${bgClass} hover:bg-white/10 transition`}
+                    className={`${bgClass} hover:bg-[#0B1739] transition`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">{task.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{project}</td>
@@ -310,7 +310,7 @@ export function ProjectTimeline({ projects }) {
     ((new Date(date) - minDate) / (1000 * 60 * 60 * 24) / totalDays) * 100;
 
   return (
-    <div className="relative w-full h-64 p-4 bg-white/10 rounded-lg shadow border border-white/20">
+    <div className="relative w-full h-full p-4 bg-[#0B1739] rounded-lg shadow border border-white/20">
       {/* Timeline axis */}
       <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-dotted bg-white/30" />
 
@@ -356,10 +356,10 @@ export function ProjectTimeline({ projects }) {
       })}
 
       {/* Optional: Date labels at ends */}
-      <div className="absolute bottom-2 left-0 text-xs text-white/70">
+      <div className="absolute bottom-2 left-2 text-xs text-white/70">
         {minDate.toLocaleDateString()}
       </div>
-      <div className="absolute bottom-2 right-0 text-xs text-white/70">
+      <div className="absolute bottom-2 right-2 text-xs text-white/70">
         {maxDate.toLocaleDateString()}
       </div>
     </div>
@@ -370,7 +370,7 @@ export function StatCard({ title, value, change, icon }) {
   const isPositive = change.startsWith("+");
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-md transform transition-transform duration-200 hover:scale-[1.02] will-change-transform">
+    <div className="bg-[#0B1739] backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-md transform transition-transform duration-200 hover:scale-[1.02] will-change-transform">
       <div className="flex items-center justify-between">
         {/* Text Info */}
         <div>
@@ -386,7 +386,7 @@ export function StatCard({ title, value, change, icon }) {
         </div>
 
         {/* Icon */}
-        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 text-indigo-400 text-xl shadow-sm">
+        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#0B1739] text-indigo-400 text-xl shadow-sm">
           {icon}
         </div>
       </div>
@@ -408,7 +408,7 @@ export function ProjectsTab({ projects, onAddProject }) {
   });
 
   return (
-    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-lg text-white space-y-8">
+    <div className="bg-[#0B1739] backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-lg text-white space-y-8">
       {/* Header & Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -417,11 +417,11 @@ export function ProjectsTab({ projects, onAddProject }) {
             placeholder="Search projects..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+            className="bg-[#0B1739] border-white/20 text-white placeholder:text-white/50"
           />
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="bg-[#0B1739] border-white/20 text-white">
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
             <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
@@ -481,7 +481,7 @@ export function ProjectCard({ project }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="rounded-2xl border border-white/20 bg-white/5 text-white shadow hover:shadow-xl overflow-hidden cursor-pointer"
+      className="rounded-2xl border border-white/20 bg-[#0B1739]/5 text-white shadow hover:shadow-xl overflow-hidden cursor-pointer"
     >
       <div className="p-5 space-y-4">
         {/* Header */}
@@ -502,7 +502,7 @@ export function ProjectCard({ project }) {
             <span>Progress</span>
             <span>{project.progress}%</span>
           </div>
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-[#0B1739] rounded-full overflow-hidden">
             <motion.div
               className={`h-2 rounded-full ${progressColor}`}
               initial={{ width: 0 }}
@@ -534,7 +534,7 @@ export function ProjectCard({ project }) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-white/10 px-5 py-3 bg-white/5 flex justify-end">
+      <div className="border-t border-white/10 px-5 py-3 bg-[#0B1739]/5 flex justify-end">
         <button className="text-sm text-cyan-400 hover:text-cyan-300 font-medium transition">
           View Details →
         </button>
@@ -559,7 +559,7 @@ export function TaskItem({ task, onComplete }) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.015, boxShadow: "0px 8px 24px rgba(0,0,0,0.12)" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="border border-white/20 rounded-lg p-4 bg-white/10 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow"
+      className="border border-white/20 rounded-lg p-4 bg-[#0B1739] backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow"
     >
       <div className="flex items-start justify-between">
         <div className="flex items-start">
@@ -658,12 +658,12 @@ export function TasksTab({ tasks, onCompleteTask }) {
   };
 
   return (
-    <div className="bg-white/5 p-6 rounded-2xl shadow-lg border border-white/20 text-white space-y-6">
+    <div className="p-6 rounded-2xl shadow-lg border border-white/20 text-white space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex gap-3">
           <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="bg-[#0B1739] border-white/20 text-white">
               <SelectValue placeholder="Filter tasks" />
             </SelectTrigger>
             <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
@@ -695,7 +695,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
           <motion.form
             key="add-task-form"
             onSubmit={handleAddTask}
-            className="bg-white/10 border border-white/20 p-4 rounded-xl grid md:grid-cols-4 gap-4"
+            className="bg-[#0B1739] border border-white/20 p-4 rounded-xl grid md:grid-cols-4 gap-4"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -706,10 +706,10 @@ export function TasksTab({ tasks, onCompleteTask }) {
               placeholder="Task description"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-              className="md:col-span-2 bg-white/10 border-white/20 text-white"
+              className="md:col-span-2 bg-[#0B1739] border-white/20 text-white"
             />
             <Select defaultValue="medium">
-              <SelectTrigger className="bg-white/10 border-white/20 text-white">
+              <SelectTrigger className="bg-[#0B1739] border-white/20 text-white">
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
@@ -737,7 +737,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center justify-between bg-white/10 border border-white/20 p-4 rounded-xl hover:bg-white/20 transition"
+                className="flex items-center justify-between bg-[#0B1739] border border-white/20 p-4 rounded-xl hover:bg-[#0B1739]/20 transition"
               >
                 <div className="flex flex-col">
                   <span className="font-medium text-white/90">{task.name}</span>
@@ -748,7 +748,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
                 <div className="flex items-center gap-3">
                   <Badge
                     variant="outline"
-                    className="capitalize bg-white/10 border-white/20 text-white"
+                    className="capitalize bg-[#0B1739] border-white/20 text-white"
                   >
                     {task.priority}
                   </Badge>
@@ -804,7 +804,7 @@ export function TeamTab({ team }) {
   };
 
   return (
-    <div className="bg-white/5 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl text-white space-y-6">
+    <div className="bg-[#0B1739]/5 backdrop-blur-lg p-6 rounded-2xl border border-white/20 shadow-xl text-white space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <Button
@@ -820,7 +820,7 @@ export function TeamTab({ team }) {
       {showInviteForm && (
         <form
           onSubmit={handleInviteSubmit}
-          className="p-5 rounded-xl bg-white/10 border border-white/20 space-y-4"
+          className="p-5 rounded-xl bg-[#0B1739] border border-white/20 space-y-4"
         >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Email Input */}
@@ -832,7 +832,7 @@ export function TeamTab({ team }) {
                 id="email"
                 type="email"
                 placeholder="name@example.com"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                className="bg-[#0B1739] border-white/20 text-white placeholder:text-white/50"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -845,7 +845,7 @@ export function TeamTab({ team }) {
                 Role
               </Label>
               <Select value={role} onValueChange={setRole}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="bg-[#0B1739] border-white/20 text-white">
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-900/80 text-white border-white/20 backdrop-blur-md">
@@ -892,7 +892,7 @@ export function TeamMemberCard({ member }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       whileHover={{ scale: 1.015 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-white/20 bg-white/5 backdrop-blur-lg text-white"
+      className="rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-white/20 bg-[#0B1739] backdrop-blur-lg text-white"
     >
       {/* Header */}
       <div className="flex items-center gap-4 p-5">
@@ -930,7 +930,7 @@ export function TeamMemberCard({ member }) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between px-5 py-3 border-t border-white/10 bg-white/5">
+      <div className="flex items-center justify-between px-5 py-3 border-t border-[#0B1739] bg-white/5">
         <button className="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition font-semibold">
           <Mail size={16} />
           Message
@@ -962,7 +962,7 @@ export function SettingsTab() {
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20 max-w-full mx-auto space-y-8">
+    <div className="bg-[#0B1739] backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20 max-w-full mx-auto space-y-8">
       <h2 className="text-2xl font-bold text-white tracking-tight">
         Account Settings
       </h2>
@@ -1011,7 +1011,7 @@ export function SettingsTab() {
             value={settings.timezone}
             onValueChange={(v) => handleSelectChange("timezone", v)}
           >
-            <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="w-full bg-[#0B1739] border-white/20 text-white">
               <SelectValue placeholder="Select timezone" />
             </SelectTrigger>
             <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
@@ -1030,7 +1030,7 @@ export function SettingsTab() {
             value={settings.language}
             onValueChange={(v) => handleSelectChange("language", v)}
           >
-            <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="w-full bg-[#0B1739] border-white/20 text-white">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
@@ -1055,7 +1055,7 @@ export function SettingsTab() {
 
 export function ActivityItem({ user, action, project, time }) {
   return (
-    <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/10 transition-all">
+    <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-[#0B1739] transition-all">
       {/* Avatar / Icon */}
       <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-lg shadow-inner">
         <User></User>
@@ -1112,7 +1112,7 @@ export function ReportsTab({ projects, tasks }) {
           Reports Overview
         </h2>
         <Select value={reportType} onValueChange={setReportType}>
-          <SelectTrigger className="w-[220px] bg-white/10 border-white/20 text-white">
+          <SelectTrigger className="w-[220px] bg-[#0B1739] border-white/20 text-white">
             <SelectValue placeholder="Select report type" />
           </SelectTrigger>
           <SelectContent className="bg-zinc-900/80 border border-white/20 backdrop-blur-md text-white">
@@ -1124,7 +1124,7 @@ export function ReportsTab({ projects, tasks }) {
       </div>
 
       {/* Chart Area */}
-      <Card className="bg-white/10 border border-white/20 backdrop-blur-md shadow-lg rounded-xl">
+      <Card className="bg-[#0B1739] border border-white/20 backdrop-blur-md shadow-lg rounded-xl">
         <CardHeader className="text-white font-semibold text-lg">
           {reportType
             .split("-")
@@ -1132,7 +1132,7 @@ export function ReportsTab({ projects, tasks }) {
             .join(" ")}
         </CardHeader>
         <CardContent>
-          <div className="h-96 flex items-center justify-center">
+          <div className="h-100vh flex items-center justify-center">
             <ReportVisualization type={reportType} data={reportData} />
           </div>
         </CardContent>
@@ -1214,7 +1214,7 @@ export function ReportVisualization({ type, data = [] }) {
     const chartData = data.length ? data : fallbackProjectData;
 
     return (
-      <div className="space-y-5 w-full">
+      <div className="h-full space-y-5 w-full">
         {chartData.map((project, index) => {
           const color =
             project.progress < 30
@@ -1229,7 +1229,7 @@ export function ReportVisualization({ type, data = [] }) {
                 <span>{project.name}</span>
                 <span>{project.progress}%</span>
               </div>
-              <div className="w-full h-4 bg-white/10 rounded-full overflow-hidden shadow-inner">
+              <div className="w-full h-4 bg-[#0B1739] rounded-full overflow-hidden shadow-inner">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${project.progress}%` }}
@@ -1348,7 +1348,7 @@ export function NotificationBell({ notifications, onDismiss }) {
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="relative p-2 rounded-full bg-white/10 border border-white/20 shadow-sm hover:bg-white/20 transition"
+        className="relative p-2 rounded-full bg-[#0B1739] border border-white/20 shadow-sm hover:bg-white/20 transition"
       >
         <Bell className="w-5 h-5 text-white" />
         {notifications.length > 0 && (
@@ -1357,8 +1357,8 @@ export function NotificationBell({ notifications, onDismiss }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg z-20 overflow-hidden">
-          <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+        <div className="absolute right-0 mt-3 w-80 bg-[#0B1739] backdrop-blur-lg border border-white/20 rounded-xl shadow-lg z-20 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#0B1739] flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white">Notifications</h3>
             {notifications.length > 0 && (
               <button
@@ -1377,7 +1377,7 @@ export function NotificationBell({ notifications, onDismiss }) {
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="px-4 py-3 hover:bg-white/10 transition border-b border-white/10 last:border-b-0"
+                  className="px-4 py-3 hover:bg-[#0B1739] transition border-b border-[#0B1739] last:border-b-0"
                 >
                   <div className="flex justify-between items-start">
                     <div>
