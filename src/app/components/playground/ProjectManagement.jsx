@@ -82,14 +82,15 @@ export default function ProjectDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
+    <div className="flex h-screen bg-[#081028] text-white">
       {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? "w-64" : "w-20"
-        } bg-indigo-900 transition-all duration-300 overflow-hidden border-r border-indigo-800`}
+        } bg-[#081028] transition-all duration-300 overflow-hidden border-r border-gray-700`}
       >
-        <div className="p-4 flex items-center justify-between border-b border-indigo-800">
+      {/* Bg: #0B1739, text-color: #CB3CFF, cardBG: #0B1739 */}
+        <div className="p-4 flex items-center justify-between border-b border-gray-700">
           {sidebarOpen && (
             <h1 className="text-2xl font-extrabold tracking-tight text-white">
               <span className="text-indigo-300">Project</span>
@@ -157,7 +158,7 @@ export default function ProjectDashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Navigation */}
-        <header className="bg-gray-800 border-b border-gray-700">
+        <header className="border-b border-gray-700">
           <div className="px-6 py-4 flex justify-between items-center">
             <h2 className="text-xl font-semibold capitalize text-white">
               {
@@ -182,10 +183,10 @@ export default function ProjectDashboard() {
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-900 to-gray-800 p-6">
+        <main className="flex-1 overflow-y-auto  p-6">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-700" />
             </div>
           ) : (
             <>

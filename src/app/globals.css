@@ -1051,6 +1051,18 @@ footer {
   display: inline-block;
 }
 
+/* Hide scrollbar for all major browsers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+
 /* css for images in blog details page */
 
 @media (max-width: 640px) {
