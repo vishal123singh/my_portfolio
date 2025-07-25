@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, formatDate, generateRecentActivity } from "@/lib/utils.js";
+import { cn, formatDate, formatValue, generateRecentActivity } from "@/lib/utils.js";
 import { useState } from "react";
 import {
   Plus,
@@ -30,7 +30,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
+import CreateProjectModal from "./AddPorjectModal";
 
+  
+  {/* Bg: #0B1739, sidebar text-color: #CB3CFF, content cardBG: #0B1739 */}
 // Updated color palette
 const colors = {
   primary: {
@@ -375,7 +378,12 @@ export function StatCard({ title, value, change, icon }) {
         {/* Text Info */}
         <div>
           <p className="text-sm font-medium text-white/80">{title}</p>
-          <h3 className="text-4xl font-bold text-white mt-1">{value}</h3>
+          <h3 className="text-4xl font-bold text-white mt-1">
+              {/* formatNumber(value) */}
+            {
+             formatValue(value)
+            }
+          </h3>
           <p
             className={`text-sm mt-2 font-semibold flex items-center gap-1 ${
               isPositive ? "text-green-400" : "text-red-400"
@@ -397,6 +405,8 @@ export function StatCard({ title, value, change, icon }) {
 export function ProjectsTab({ projects, onAddProject }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [modalOpen, setModalOpen] = useState(false);
+
 
   const filteredProjects = projects.filter((project) => {
     const matchesSearch = project.name
@@ -409,6 +419,15 @@ export function ProjectsTab({ projects, onAddProject }) {
 
   return (
     <div className="bg-[#0B1739] backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-lg text-white space-y-8">
+    <CreateProjectModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreate={(project) => {
+          onAddProject(project);
+          setModalOpen(false);
+        }}
+      />
+
       {/* Header & Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -434,7 +453,8 @@ export function ProjectsTab({ projects, onAddProject }) {
           </Select>
 
           <Button
-            onClick={onAddProject}
+            // onClick={onAddProject}
+            onClick={() => setModalOpen(true)}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium"
           >
             <Plus size={16} className="mr-2" />
@@ -446,7 +466,7 @@ export function ProjectsTab({ projects, onAddProject }) {
       {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.length > 0 ? (
-          filteredProjects.map((project) => (
+          [...filteredProjects].reverse().map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))
         ) : (
@@ -528,7 +548,7 @@ export function ProjectCard({ project }) {
           </div>
           <div>
             <p className="text-white/60">Tasks</p>
-            <p>{Math.floor(project.budget / 500)}</p>
+            <p>{Math.floor(project?.tasks) || '0'}</p>
           </div>
         </div>
       </div>
@@ -729,7 +749,7 @@ export function TasksTab({ tasks, onCompleteTask }) {
       <div className="space-y-3">
         <AnimatePresence>
           {filteredTasks.length > 0 ? (
-            filteredTasks.map((task) => (
+            [...filteredTasks].reverse().map((task) => (
               <motion.div
                 key={task.id}
                 layout
@@ -872,7 +892,7 @@ export function TeamTab({ team }) {
       {/* Team Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {teamMembers.length > 0 ? (
-          teamMembers.map((member) => (
+          [...teamMembers].reverse().map((member) => (
             <TeamMemberCard key={member.id} member={member} />
           ))
         ) : (

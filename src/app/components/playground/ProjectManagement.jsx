@@ -53,20 +53,22 @@ export default function ProjectDashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleAddProject = () => {
-    const newProject = {
-      id: `project-${projects.length + 1}`,
-      name: `New Project ${projects.length + 1}`,
-      status: "planning",
-      progress: 0,
-      startDate: new Date().toISOString().split("T")[0],
-      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
-      budget: 5000 + Math.floor(Math.random() * 20000),
-      team: [],
-    };
-    setProjects([...projects, newProject]);
+  const handleAddProject = (newProject) => {
+        setProjects((prev) => [...prev, newProject]);
+
+    // const newProject = {
+    //   id: `project-${projects.length + 1}`,
+    //   name: `New Project ${projects.length + 1}`,
+    //   status: "planning",
+    //   progress: 0,
+    //   startDate: new Date().toISOString().split("T")[0],
+    //   endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    //     .toISOString()
+    //     .split("T")[0],
+    //   budget: 5000 + Math.floor(Math.random() * 20000),
+    //   team: [],
+    // };
+    // setProjects([...projects, newProject]);
   };
 
   const handleCompleteTask = (taskId) => {

@@ -187,3 +187,29 @@ export function generateRecentActivity(projects, tasks) {
     ];
 }
 
+export function formatValue(value) {
+  if (typeof value !== "number") return value;
+
+  const strVal = value.toString();
+
+  if (strVal.length <= 10) {
+    return value;
+  }
+
+  // If longer than 10 digits, truncate with scientific notation or shorten
+  // For example, show in Millions or Billions
+  if (value >= 1e9) {
+    return (value / 1e9).toFixed(2) + "B";
+  }
+
+  if (value >= 1e6) {
+    return (value / 1e6).toFixed(2) + "M";
+  }
+
+  if (value >= 1e3) {
+    return (value / 1e3).toFixed(2) + "K";
+  }
+
+  // fallback: truncate digits
+  return strVal.slice(0, 10);
+}
