@@ -25,13 +25,13 @@ export default function AssistantLauncher() {
           <ChatBotIcon />
         </motion.div>
 
-        <span className="mt-2 text-xs bg-gray-800 text-white rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <span className="mt-2 text-xs bg-gray-800 text-white rounded-xl px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           Ask ViVA
         </span>
       </motion.div>
 
       <AnimatePresence>
-        {open && <Assistant onClose={() => setOpen(false)} />}
+        <Assistant open={open} onOpenChange={setOpen} />
       </AnimatePresence>
     </>
   );

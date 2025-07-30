@@ -6,6 +6,8 @@ export const ChatBotIcon = ({ size = 64, color = "#3B82F6" }) => (
       viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="rounded-xl transition-all duration-300 ease-in-out transform hover:scale-108 hover:shadow-lg"
+
     >
       {/* Background */}
       <rect
