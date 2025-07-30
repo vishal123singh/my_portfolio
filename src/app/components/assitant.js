@@ -137,7 +137,6 @@ function ChatMessage({ msg, i }) {
         isUser ? "justify-end space-x-reverse" : "justify-start"
       }`}
     >
-      {/* Avatar */}
       <div className="flex-shrink-0">
         {isUser ? null : <ChatBotIcon size={32} />}
       </div>
