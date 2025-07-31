@@ -18,7 +18,7 @@ function HomeHero() {
   };
 
   return (
-    <section className="hero min-h-[90vh] relative overflow-hidden flex items-center justify-center px-4 md:px-8 text-center bg-gradient-to-br from-[#0f172a] to-[#1e293b]">
+    <section className="hero min-h-[90vh] relative overflow-hidden flex items-center justify-center px-4 md:px-8 text-center bg-gradient-to-br from-[#0f172a] to-[#1e293b] custom-section">
       {/* 💫 Background blobs for visual depth */}
       <motion.div
         className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-cyan-500 rounded-full opacity-30 blur-3xl z-0"
@@ -45,10 +45,10 @@ function HomeHero() {
             ]}
             loop={0}
             cursor
-            cursorStyle="_"
-            typeSpeed={60}
-            deleteSpeed={40}
-            delaySpeed={1500}
+            cursorStyle="|"
+            typeSpeed={70}
+            deleteSpeed={50}
+            delaySpeed={1400}
           />
         </p>
 

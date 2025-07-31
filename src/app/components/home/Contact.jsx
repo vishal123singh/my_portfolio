@@ -7,23 +7,23 @@ export default function Contact() {
   const contactItems = [
     {
       icon: <FaEnvelope size={20} />,
-      text: "bs08081996@gmail.com",
+      text: "Email",
       href: "mailto:bs08081996@gmail.com",
     },
     {
       icon: <FaGithub size={20} />,
-      text: "vishal-singh-jaiinfoway",
-      href: "https://github.com/vishal-singh-jaiinfoway",
+      text: "Github",
+      href: "https://github.com/vishal123singh",
     },
     {
       icon: <FaLinkedin size={20} />,
-      text: "Vishal Singh",
+      text: "Linkedin",
       href: "https://linkedin.com/in/vishal-singh-b57b7b109",
     },
   ];
 
   return (
-    <section className="py-20 px-6 text-white bg-gradient-to-br from-[#0f172a] to-[#1e293b]">
+    <section className="py-20 px-6 text-white bg-gradient-to-br from-[#0f172a] to-[#1e293b] custom-section">
       <div className="max-w-3xl mx-auto text-center">
         <motion.h2
           className="text-3xl md:text-4xl font-bold text-pink-400 mb-4"

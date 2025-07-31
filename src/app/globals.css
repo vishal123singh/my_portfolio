@@ -70,7 +70,7 @@ nav {
   font-weight: 600;
 }
 
-section {
+.custom-section {
   padding: 4rem 1rem;
   max-width: 960px;
   margin: auto;
@@ -111,9 +111,9 @@ section {
 }
 
 .test-theme section {
-  padding: 4rem 1rem;
-  max-width: 960px;
-  margin: auto;
+  /* padding: 4rem 1rem; */
+  /* max-width: 960px; */
+  /* margin: auto; */
 }
 
 /* Chrome, Safari, Edge */

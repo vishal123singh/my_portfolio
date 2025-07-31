@@ -11,8 +11,11 @@ import { useEffect, useRef } from "react";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "Demo", href: "/mockups" },
+  { label: "UI/UX", href: "/mockups" },
   { label: "Blogs", href: "/blogs" },
+  // { label: "AI Agents", href: "/ai-agents" },
+  { label: "Apps", href: "/apps" },
+
   // { label: "Test", href: "/test" },
 ];
 

@@ -20,7 +20,10 @@ export default function Projects() {
   }, [shouldLand]);
 
   return (
-    <section id="project-section" className="relative min-h-screen pt-12">
+    <section
+      id="project-section"
+      className="relative min-h-screen pt-12 custom-section"
+    >
       {/* 🚀 Landing rocket animation */}
       {showLandingRocket && (
         <motion.div

@@ -61,7 +61,10 @@ const uiExperiments = [
 
 function Projects() {
   return (
-    <section id="project-section" className="relative min-h-screen pt-12">
+    <section
+      id="project-section"
+      className="relative min-h-screen pt-12 custom-section"
+    >
       <div className="project-grid mb-6">
         <div className="project-grid">
           {uiExperiments.map((proj, idx) => (
