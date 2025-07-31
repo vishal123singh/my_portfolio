@@ -94,7 +94,7 @@ const skillsByCategory = [
 
 function Skills() {
   return (
-    <section className="relative z-10 py-16 sm:py-24 px-4 sm:px-6 text-white overflow-hidden">
+    <section className="relative z-10 py-16 sm:py-24 px-4 sm:px-6 text-white overflow-hidden custom-section">
       {/* Floating Blobs */}
       <div className="absolute top-[-80px] left-[-80px] w-[250px] h-[250px] bg-pink-400/20 rounded-full blur-[120px] animate-pulse pointer-events-none z-0" />
       <div className="absolute bottom-[-80px] right-[-80px] w-[300px] h-[300px] bg-cyan-400/20 rounded-full blur-[120px] animate-pulse pointer-events-none z-0" />

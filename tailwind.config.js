@@ -7,6 +7,17 @@ module.exports = {
         "bg-dark": "#0f172a",
         "text-light": "#f1f5f9",
         "btn-hover": "#0ea5e9",
+        panel: "#141627",
+        neon: "#00f5ff",
+        buy: "#00ff88",
+        sell: "#ff4d4d",
+      },
+
+      fontFamily: {
+        futuristic: ["Orbitron", "sans-serif"],
+      },
+      boxShadow: {
+        neon: "0 0 20px rgba(0, 245, 255, 0.5)",
       },
 
       animation: {
@@ -20,5 +31,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
 };
