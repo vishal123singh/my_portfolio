@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import LoginModal from "../components/Modals/LoginModal";
-import { Trash, FilePenLineIcon, Send, Share2 } from "lucide-react";
+import { Trash, FilePenLineIcon, Send, Share2, PenLine } from "lucide-react";
 
 const TiptapEditor = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -117,6 +117,7 @@ export default function MyBlogsPage() {
                 }}
                 className="flex items-center gap-2 px-6 py-3 text-sm bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:brightness-110 rounded-full font-medium transition-all shadow-lg hover:shadow-purple-500/30"
               >
+                <PenLine size={16} className="text-white" />
                 <span className="relative z-10">Compose Stellar Entry</span>
               </button>
             </motion.div>
@@ -242,20 +243,23 @@ export default function MyBlogsPage() {
                   </Link>
 
                   {isLoggedIn && (
-                    <div className="absolute top-4 right-4 flex gap-2">
+                    <div className="absolute top-0 right-0 flex gap-2 z-50">
+                      {/* Edit Button */}
                       <button
                         onClick={(e) => {
                           e.preventDefault();
                           setForm({ title: blog.title, content: blog.content });
                           setShowEditor(true);
                         }}
-                        className="p-1.5 rounded-full bg-slate-800/80 hover:bg-purple-500/20 transition-colors"
+                        className="p-1.5 rounded-full bg-white/10 hover:bg-purple-600/20 transition-colors backdrop-blur"
                       >
                         <FilePenLineIcon
                           size={16}
-                          className="text-purple-300/80 hover:text-purple-200"
+                          className="text-purple-300 hover:text-purple-100 drop-shadow-sm"
                         />
                       </button>
+
+                      {/* Delete Button */}
                       <button
                         onClick={async (e) => {
                           e.preventDefault();
@@ -269,11 +273,11 @@ export default function MyBlogsPage() {
                             setBlogs(blogs.filter((b) => b._id !== blog._id));
                           }
                         }}
-                        className="p-1.5 rounded-full bg-slate-800/80 hover:bg-rose-500/20 transition-colors"
+                        className="p-1.5 rounded-full bg-slate-900/80 hover:bg-rose-600/20 transition-colors backdrop-blur"
                       >
                         <Trash
                           size={16}
-                          className="text-rose-400/80 hover:text-rose-300"
+                          className="text-rose-400 hover:text-rose-200 drop-shadow-sm"
                         />
                       </button>
                     </div>
