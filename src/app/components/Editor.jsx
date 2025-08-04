@@ -72,15 +72,15 @@ export default function TiptapEditor({ value, onChange, onClose }) {
   if (!editor) return null;
 
   return (
-    <div className="relative rounded-xl p-4 bg-white/5 backdrop-blur-sm border border-white/10 shadow-md space-y-4">
+    <div className="relative rounded-xl p-3 sm:p-4 bg-white/5 backdrop-blur-sm border border-white/10 shadow-md space-y-4">
       <X
         onClick={onClose}
         size={20}
         className="absolute top-3 right-3 text-white hover:text-red-400 cursor-pointer z-50"
       />
 
-      {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-2 sticky top-0 z-10 bg-white/5 backdrop-blur-sm px-2 rounded-md">
+      {/* Responsive Toolbar */}
+      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-2 sticky top-0 z-10 bg-white/5 backdrop-blur-sm px-2 rounded-md overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
         <EditorButton
           isActive={editor.isActive("bold")}
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -114,23 +114,20 @@ export default function TiptapEditor({ value, onChange, onClose }) {
         <EditorButton
           onClick={() => {
             const url = prompt("Enter image URL");
-            if (url) {
-              editor.chain().focus().setImage({ src: url }).run();
-            }
+            if (url) editor.chain().focus().setImage({ src: url }).run();
           }}
           icon={<ImageIcon size={16} />}
         />
         <EditorButton
           onClick={() => {
             const url = prompt("Enter link URL");
-            if (url) {
+            if (url)
               editor
                 .chain()
                 .focus()
                 .extendMarkRange("link")
                 .setLink({ href: url })
                 .run();
-            }
           }}
           icon={
             <svg
@@ -153,7 +150,6 @@ export default function TiptapEditor({ value, onChange, onClose }) {
             input.onchange = async () => {
               const file = input.files?.[0];
               if (!file) return;
-
               const reader = new FileReader();
               reader.onloadend = () => {
                 editor
@@ -182,9 +178,8 @@ export default function TiptapEditor({ value, onChange, onClose }) {
             const { selection } = state;
             const node = state.doc.nodeAt(selection.from);
             if (node?.type.name === "resizableImage") {
-              const currentDisplay = node.attrs.display;
               const newDisplay =
-                currentDisplay === "block" ? "inline-block" : "block";
+                node.attrs.display === "block" ? "inline-block" : "block";
               editor.commands.updateAttributes("resizableImage", {
                 display: newDisplay,
               });
@@ -198,8 +193,8 @@ export default function TiptapEditor({ value, onChange, onClose }) {
 
       {/* Content Area */}
       <div
-        className="prose dark:prose-invert custom-scrollbar overflow-auto max-w-full h-[50vh]
-        [&_img]:max-w-[300px] [&_img]:max-h-[300px] [&_img]:rounded-lg 
+        className="prose dark:prose-invert custom-scrollbar overflow-auto max-w-full max-h-[60vh] sm:h-[50vh]
+        [&_img]:max-w-full sm:[&_img]:max-w-[300px] [&_img]:max-h-[300px] [&_img]:rounded-lg
         [&_img[style*='inline-block']]:align-middle [&_img[style*='inline-block']]:mr-2
         [&_img[style*='inline-block']]:!inline-block
         [&_pre]:text-slate-100 [&_pre]:p-2 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-2 [&_pre]:leading-[1.3]
