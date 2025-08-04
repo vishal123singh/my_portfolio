@@ -84,7 +84,7 @@ export default function Projects() {
           )}
         </motion.div>
       )}
-      <div className="project-grid">
+      <div className="project-grid max-w-5xl mx-auto">
         {projects.map((proj, idx) => (
           <ProjectCard key={idx} {...proj} />
         ))}

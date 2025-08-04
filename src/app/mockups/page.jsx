@@ -65,7 +65,7 @@ function Projects() {
       id="project-section"
       className="relative min-h-screen pt-12 custom-section"
     >
-      <div className="project-grid mb-6">
+      <div className="project-grid mb-6 max-w-6xl mx-auto">
         <div className="project-grid">
           {uiExperiments.map((proj, idx) => (
             <ProjectCard key={idx} {...proj} target="_self" />

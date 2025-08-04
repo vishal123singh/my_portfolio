@@ -1,275 +1,344 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { FaReact, FaNodeJs, FaPython, FaLock, FaUnlock } from "react-icons/fa";
+import {
+  SiNextdotjs,
+  SiMongodb,
+  SiAngular,
+  SiFirebase,
+  SiTypescript,
+} from "react-icons/si";
 import Image from "next/image";
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { FaReact, FaNodeJs, FaPython, FaUnlockAlt } from "react-icons/fa";
-import { SiNextdotjs, SiMongodb, SiAngular, SiFirebase } from "react-icons/si";
+import CosmicBackground from "../CosmicBackground";
 
-function FlippableProfile() {
+const TechBubble = ({ icon: Icon, color, name, delay }) => {
+  return (
+    <motion.div
+      className="flex flex-col items-center gap-2"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay }}
+      viewport={{ once: true }}
+    >
+      <div
+        className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
+        style={{ backgroundColor: `${color}20` }}
+      >
+        <Icon style={{ color }} />
+      </div>
+      <span className="text-xs text-white/80">{name}</span>
+    </motion.div>
+  );
+};
+
+const ExperienceCard = ({
+  title,
+  company,
+  duration,
+  description,
+  tech,
+  index,
+}) => {
+  return (
+    <motion.div
+      className="relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-6 backdrop-blur-sm"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      viewport={{ once: true }}
+      whileHover={{ y: -5 }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10">
+        <h4 className="text-lg font-semibold">
+          {title}
+          {company && (
+            <>
+              {" "}
+              <span className="text-blue-300">@ {company}</span>
+            </>
+          )}
+        </h4>
+        <p className="text-sm text-white/60 mb-3">{duration}</p>
+        <p className="text-white/80 text-sm mb-3">{description}</p>
+        <div className="flex flex-wrap gap-2 mt-4">
+          {tech.split(" • ").map((item, i) => (
+            <span
+              key={i}
+              className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/80"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const SecretProfile = () => {
   const [code, setCode] = useState("");
-  const [flipped, setFlipped] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [shaking, setShaking] = useState(false);
 
-  const handleFlip = () => {
-    if (code.trim().toLowerCase() === "ballu & soni") {
-      setFlipped((prev) => !prev);
+  const handleUnlock = () => {
+    if (code.toLowerCase() === "ballu & soni") {
+      setUnlocked((prev) => !prev); // toggle instead of just setting true
+      setCode(""); // optional: clear input after toggle
+    } else {
+      setShaking(true);
+      setTimeout(() => setShaking(false), 500);
     }
   };
 
   return (
-    <div className="relative w-40 h-40 perspective mx-auto mb-10 group">
-      {/* Card Inner */}
-      <div className={`flip-card-inner ${flipped ? "flipped" : ""}`}>
-        {/* Front Face */}
-        <div className="flip-card-front border-1 border-slate-700 shadow-lg relative">
+    <div className="relative group">
+      <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden border-2 border-white/20">
+        {/* First Image (Professional) */}
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: unlocked ? 0 : 1 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0"
+        >
           <Image
             src="/personal/image_2.png"
-            alt="Vishal Singh"
-            fill
-            className="object-contain rounded-full"
-          />
-        </div>
-        {/* Back Face */}
-        <div className="flip-card-back">
-          <Image
-            src="/personal/2.jpg"
-            alt="Ballu & Soni"
+            alt="Professional"
             fill
             className="object-cover rounded-full"
           />
-        </div>
-      </div>
-
-      {/* 👇 Input & Button - visible only on hover */}
-      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition duration-300">
-        <div className="flex items-center gap-2 bg-slate-800 px-2 py-1 rounded-md shadow-lg">
-          <input
-            type="text"
-            placeholder="Secret code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="px-2 py-1 rounded-md text-xs text-white bg-slate-700 w-28"
-          />
-          <button
-            onClick={handleFlip}
-            className="text-white bg-pink-500 p-2 rounded-full hover:bg-pink-600"
-          >
-            <FaUnlockAlt size={14} />
-          </button>
-        </div>
-      </div>
-
-      {/* Flip CSS */}
-      <style jsx>{`
-        .perspective {
-          perspective: 1000px;
-        }
-        .flip-card-inner {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          transition: transform 0.8s ease-in-out;
-          transform-style: preserve-3d;
-        }
-        .flipped {
-          transform: rotateY(180deg);
-        }
-        .flip-card-front,
-        .flip-card-back {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          backface-visibility: hidden;
-          border-radius: 9999px;
-          overflow: hidden;
-          top: 0;
-          left: 0;
-        }
-        .flip-card-front {
-          z-index: 2;
-          transform: rotateY(0deg);
-        }
-        .flip-card-back {
-          transform: rotateY(180deg);
-          z-index: 1;
-        }
-      `}</style>
-    </div>
-  );
-}
-
-export default function About() {
-  return (
-    <section className="bg-transparent py-20 px-6 text-white">
-      <div className="max-w-5xl mx-auto text-center">
-        {/* Avatar */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-12"
-        >
-          <FlippableProfile />
         </motion.div>
 
-        {/* Headline */}
-        <motion.h2
-          className="text-3xl font-bold mb-4"
-          initial={{ opacity: 0, y: 30 }}
+        {/* Second Image (Personal) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: unlocked ? 1 : 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/personal/2.jpg"
+            alt="Personal"
+            fill
+            className="object-cover rounded-full"
+          />
+        </motion.div>
+      </div>
+
+      <motion.div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        initial={{ y: 10 }}
+        animate={{ y: 0 }}
+      >
+        <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm px-3 py-2 rounded-full border border-white/10">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="Secret code"
+            className="bg-transparent text-white text-sm w-28 placeholder-white/50 focus:outline-none"
+          />
+          <button
+            onClick={handleUnlock}
+            className="text-white p-1 rounded-full"
+            disabled={unlocked}
+          >
+            {unlocked ? (
+              <FaUnlock className="text-green-400" size={14} />
+            ) : (
+              <FaLock className="text-pink-400" size={14} />
+            )}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+export default function About() {
+  const techStack = [
+    { icon: FaReact, color: "#61DAFB", name: "React" },
+    { icon: SiNextdotjs, color: "#FFFFFF", name: "Next.js" },
+    { icon: FaNodeJs, color: "#339933", name: "Node.js" },
+    { icon: SiTypescript, color: "#3178C6", name: "TypeScript" },
+    { icon: SiMongodb, color: "#47A248", name: "MongoDB" },
+    { icon: SiAngular, color: "#DD0031", name: "Angular" },
+    { icon: SiFirebase, color: "#FFCA28", name: "Firebase" },
+    { icon: FaPython, color: "#3776AB", name: "Python" },
+  ];
+
+  const experiences = [
+    {
+      title: "Software Engineer",
+      company: "Jai Infoway Pvt. Ltd.",
+      duration: "August 2024 – Present",
+      description:
+        "Leading full-stack development for global client projects in a product-service hybrid environment.",
+      tech: "React • Node.js • AWS • Microservices",
+    },
+    {
+      title: "Mobile App Developer",
+      company: "Brightcode Pvt. Ltd.",
+      duration: "March 2024 – August 2024",
+      description:
+        "Developed cross-platform mobile applications with optimized performance and responsive UIs.",
+      tech: "React Native • Node.js • GCP",
+    },
+    {
+      title: "Software Engineer",
+      company: "Jai Infoway Pvt. Ltd.",
+      duration: "February 2023 – February 2024",
+      description:
+        "Built client-facing applications end-to-end in Agile teams, from UI to backend services.",
+      tech: "Angular • Express.js • MongoDB • MySQL",
+    },
+    {
+      title: "Freelance Full-Stack Developer",
+      company: "",
+      duration: "July 2022 – January 2023",
+      description:
+        "Delivered complete web solutions for local businesses, handling all development phases.",
+      tech: "React • Node.js • REST APIs",
+    },
+  ];
+
+  const projects = [
+    {
+      name: "Koodums Chat",
+      description: "Generative AI Agents Builder.",
+      tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
+    },
+    {
+      name: "Earnings Call",
+      description:
+        "AI-powered financial analysis platform with LLM integration and voice assistant.",
+      tech: "Next.js • AWS • AI Agents",
+    },
+    {
+      name: "Kiddie-Kredit",
+      description:
+        "Financial education mobile app for children. Gamified with task & reward systems.",
+      tech: "React Native • Node.js • Socket.io",
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
+      <div className="relative max-w-5xl mx-auto">
+        {/* Profile */}
+        <motion.div
+          className="mb-16"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          About Me
-        </motion.h2>
+          <SecretProfile />
+        </motion.div>
 
-        <p className="text-slate-300 max-w-3xl mx-auto">
-          I’m a{" "}
-          <span className="text-pink-400 font-semibold">
-            full-stack developer
-          </span>{" "}
-          with 3+ years of experience building dynamic apps across mobile and
-          web. My work focuses on performance, usability, and integrating modern
-          tech like LLMs, microservices, and real-time communication.
-        </p>
+        {/* Introduction */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-pink-500 bg-clip-text text-transparent">
+            About Me
+          </h2>
+          <p className="text-white/80 max-w-2xl mx-auto">
+            I'm a{" "}
+            <span className="text-pink-400 font-medium">
+              full-stack developer
+            </span>{" "}
+            with 3+ years of experience building dynamic apps across mobile and
+            web. My work focuses on performance, usability, and integrating
+            modern tech like LLMs, microservices, and real-time communication.
+          </p>
+        </motion.div>
 
-        {/* Tech Icons */}
-        <div className="flex justify-center items-center flex-wrap gap-6 text-4xl mt-4">
-          <span className="icon-metal text-[#61DAFB]">
-            <FaReact />
-          </span>
-          <span className="icon-metal text-white">
-            <SiNextdotjs />
-          </span>
-          <span className="icon-metal text-[#339933]">
-            <FaNodeJs />
-          </span>
-          <span className="icon-metal text-[#47A248]">
-            <SiMongodb />
-          </span>
-          <span className="icon-metal text-[#DD0031]">
-            <SiAngular />
-          </span>
-          <span className="icon-metal text-[#FFCA28]">
-            <SiFirebase />
-          </span>
-          <span className="icon-metal text-[#3776AB]">
-            <FaPython />
-          </span>
-        </div>
-
-        {/* Professional Journey */}
-        <div className="mt-20">
-          <h3 className="text-3xl font-bold text-center text-cyan-400 mb-12">
-            Professional Journey
+        {/* Tech Stack */}
+        <motion.div
+          className="mb-20"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-xl font-semibold text-center text-orange-400 mb-8">
+            Core Technologies
           </h3>
-
-          <div className="space-y-8 max-w-3xl mx-auto">
-            {[
-              {
-                title: "Software Engineer",
-                company: "Jai Infoway Pvt. Ltd.",
-                duration: "August 2024 – Present",
-                description:
-                  "Leading full-stack development for global client projects in a product-service hybrid environment.",
-                tech: "React, Node.js, AWS, Microservices",
-              },
-              {
-                title: "Mobile App Developer",
-                company: "Brightcode Pvt. Ltd.",
-                duration: "March 2024 – August 2024",
-                description:
-                  "Developed cross-platform mobile applications with optimized performance and responsive UIs.",
-                tech: "React Native, Node.js, GCP",
-              },
-              {
-                title: "Software Engineer",
-                company: "Jai Infoway Pvt. Ltd.",
-                duration: "February 2023 – February 2024",
-                description:
-                  "Built client-facing applications end-to-end in Agile teams, from UI to backend services.",
-                tech: "Angular, Express.js, MongoDB, MySQL",
-              },
-              {
-                title: "Freelance Full-Stack Developer",
-                company: "",
-                duration: "July 2022 – January 2023",
-                description:
-                  "Delivered complete web solutions for local businesses, handling all development phases.",
-                tech: "React, Node.js, REST APIs",
-              },
-            ].map((job, index) => (
-              <div
-                key={index}
-                className="bg-slate-800 text-white rounded-xl p-6 shadow-lg hover:shadow-cyan-400/30 transition-all"
-              >
-                <h4 className="text-lg font-semibold">
-                  {job.title}
-                  {job.company && (
-                    <>
-                      {" "}
-                      —{" "}
-                      <span className="text-cyan-300 font-medium">
-                        {job.company}
-                      </span>
-                    </>
-                  )}
-                </h4>
-                <p className="text-sm text-slate-400 mb-2">{job.duration}</p>
-                <p className="text-sm text-slate-300">{job.description}</p>
-                <p className="text-sm text-slate-400 mt-3">
-                  <strong className="text-white">Tech:</strong> {job.tech}
-                </p>
-              </div>
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-6">
+            {techStack.map((tech, i) => (
+              <TechBubble
+                key={i}
+                icon={tech.icon}
+                color={tech.color}
+                name={tech.name}
+                delay={i * 0.05}
+              />
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Notable Projects */}
-        <div className="mt-16 text-left">
-          <h3 className="text-xl font-bold text-pink-400 mb-4">
+        {/* Experience */}
+        <motion.div
+          className="mb-20"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-2xl font-bold text-center text-white mb-12">
+            Professional Journey
+          </h3>
+          <div className="space-y-6">
+            {experiences.map((exp, i) => (
+              <ExperienceCard key={i} index={i} {...exp} />
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Projects */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-2xl font-bold text-center text-white mb-8">
             Notable Projects
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-[#1e293b] p-4 rounded-lg shadow-md border border-[#334155] hover:shadow-cyan-500/10 transition">
-              <h5 className="text-lg font-semibold text-white">AutoFlow</h5>
-              <p className="text-sm text-slate-300 mt-1">
-                Sales automation platform with multi-source data extraction and
-                marketing workflows.
-              </p>
-              <span className="text-xs text-cyan-400 mt-2 block">
-                Next.js • Apollo • TypeScript
-              </span>
-            </div>
-
-            <div className="bg-[#1e293b] p-4 rounded-lg shadow-md border border-[#334155] hover:shadow-cyan-500/10 transition">
-              <h5 className="text-lg font-semibold text-white">
-                Earnings Call
-              </h5>
-              <p className="text-sm text-slate-300 mt-1">
-                AI-powered financial analysis platform with LLM integration and
-                voice assistant.
-              </p>
-              <span className="text-xs text-cyan-400 mt-2 block">
-                Next.js • AWS • AI Agents
-              </span>
-            </div>
-
-            <div className="bg-[#1e293b] p-4 rounded-lg shadow-md border border-[#334155] hover:shadow-cyan-500/10 transition">
-              <h5 className="text-lg font-semibold text-white">
-                OFLEP Connect
-              </h5>
-              <p className="text-sm text-slate-300 mt-1">
-                WebRTC video conferencing with screen sharing and real-time host
-                controls.
-              </p>
-              <span className="text-xs text-cyan-400 mt-2 block">
-                React Native • WebRTC • Socket.io
-              </span>
-            </div>
+            {projects.map((project, i) => (
+              <motion.div
+                key={i}
+                className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all"
+                whileHover={{ y: -5 }}
+              >
+                <h4 className="text-lg font-semibold text-white mb-2">
+                  {project.name}
+                </h4>
+                <p className="text-sm text-white/70 mb-4">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.split(" • ").map((tech, j) => (
+                    <span
+                      key={j}
+                      className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/80"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

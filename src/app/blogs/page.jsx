@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import LoginModal from "../components/Modals/LoginModal";
-import { Trash, FilePenLineIcon, Send, Share2 } from "lucide-react"; // replace FiLinkedin with Lucide icons
+import { Trash, FilePenLineIcon, Send, Share2 } from "lucide-react";
 
 const TiptapEditor = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -39,7 +39,6 @@ export default function MyBlogsPage() {
 
   const handlePost = async () => {
     try {
-      // Find by title, but use _id for update
       const existing = blogs.find((b) => b.title === form.title);
       const isEdit = !!existing;
       const method = isEdit ? "PUT" : "POST";
@@ -70,178 +69,221 @@ export default function MyBlogsPage() {
   };
 
   return (
-    <div className="min-h-screen text-white py-16 px-6">
-      {showLogin && (
-        <LoginModal
-          onClose={() => setShowLogin(false)}
-          onSuccess={() => {
-            setIsLoggedIn(true);
-            setShowLogin(false);
-            setShowEditor(true);
-          }}
-        />
-      )}
-      <div className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-emerald-500 bg-clip-text text-transparent">
-          My Blogs
-        </h1>
-        <p className="text-base text-slate-400">
-          Thoughts, tutorials, and technical deep dives from my journey.
-        </p>
-        {!showEditor && (
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={() => {
-                if (!isLoggedIn) {
-                  setShowLogin(true);
-                } else {
-                  setShowEditor(!showEditor);
-                }
-              }}
-              className="flex items-center gap-2 text-sm bg-cyan-600 hover:bg-cyan-500 px-5 py-2 rounded-full font-medium transition shadow"
-            >
-              <img
-                src="/images/writing.png"
-                alt="Write Icon"
-                width={20}
-                height={20}
-                loading="lazy"
-                className="w-5 h-5 filter brightness-0 invert"
-              />
-              "Write a blog"
-            </button>
-          </div>
-        )}
-      </div>
-      {showEditor && (
-        <motion.div
-          className="bg-slate-800 p-6 rounded-xl max-w-4xl mx-auto mb-10"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <input
-            placeholder="Blog Title"
-            className="w-full mb-4 p-2 bg-slate-700 text-white rounded"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
+    <div className="min-h-screen text-white py-16 px-6 relative overflow-hidden">
+      <div className="relative z-10">
+        {showLogin && (
+          <LoginModal
+            onClose={() => setShowLogin(false)}
+            onSuccess={() => {
+              setIsLoggedIn(true);
+              setShowLogin(false);
+              setShowEditor(true);
+            }}
           />
+        )}
 
-          <div className="h-[60vh] mb-6">
-            <TiptapEditor
-              immediatelyRender={false}
-              value={form.content}
-              onChange={(val) => setForm({ ...form, content: val })}
-              onClose={() => setShowEditor(false)}
-            ></TiptapEditor>
-          </div>
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent"
+          >
+            My Cosmic Journal
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-purple-100/80"
+          >
+            Thoughts, tutorials, and technical deep dives from across the
+            universe
+          </motion.p>
 
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              onClick={() => {
-                const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                  `https://yourdomain.com/blogs/${form.title
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`
-                )}`;
-                window.open(url, "_blank");
-              }}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-100 bg-blue-600 hover:bg-blue-500 transition rounded-full shadow-md"
+          {!showEditor && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-6 flex justify-center"
             >
-              <Share2 size={16} /> Share
-            </button>
-
-            <button
-              onClick={handlePost}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-emerald-500 hover:bg-emerald-400 transition rounded-full shadow-md"
-            >
-              <Send size={16} /> Publish
-            </button>
-          </div>
-        </motion.div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : (
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-          {blogs.map((blog) => {
-            const imgMatch = blog.content.match(/<img[^>]+src="([^">]+)"/);
-            const imageUrl = imgMatch?.[1];
-
-            return (
-              <div
-                key={blog._id}
-                className="relative bg-white/5 border border-white/10 rounded-xl p-6 hover:border-cyan-400 transition duration-300 shadow-md backdrop-blur-sm group"
+              <button
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    setShowLogin(true);
+                  } else {
+                    setShowEditor(!showEditor);
+                  }
+                }}
+                className="flex items-center gap-2 px-6 py-3 text-sm bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:brightness-110 rounded-full font-medium transition-all shadow-lg hover:shadow-purple-500/30"
               >
-                <Link href={`/blogs/${blog._id}`}>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={blog.title}
-                      className="w-full h-30 object-cover rounded-md mb-4 mt-1"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                        const fallback = document.createElement("div");
-                        fallback.textContent = "No preview available";
-                        fallback.className =
-                          "text-sm text-slate-400 italic mb-4 mt-1";
-                        e.target.parentNode.insertBefore(
-                          fallback,
-                          e.target.nextSibling
-                        );
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-30 object-cover text-sm text-slate-400 italic mb-4 mt-1">
-                      No preview available
+                <span className="relative z-10">Compose Stellar Entry</span>
+              </button>
+            </motion.div>
+          )}
+        </div>
+
+        {showEditor && (
+          <motion.div
+            className="bg-slate-900/70 border border-purple-500/20 p-6 rounded-xl max-w-4xl mx-auto mb-10 backdrop-blur-md"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 100 }}
+          >
+            <input
+              placeholder="Cosmic Title..."
+              className="w-full mb-4 p-3 bg-slate-800/70 border border-purple-500/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+            />
+
+            <div className="h-[60vh] mb-6">
+              <TiptapEditor
+                immediatelyRender={false}
+                value={form.content}
+                onChange={(val) => setForm({ ...form, content: val })}
+                onClose={() => setShowEditor(false)}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-12">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                    `https://yourdomain.com/blogs/${form.title
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`
+                  )}`;
+                  window.open(url, "_blank");
+                }}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-indigo-700/90 hover:bg-indigo-600 transition-all rounded-full shadow-md border border-indigo-500/30"
+              >
+                <Share2 size={16} /> Broadcast
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePost}
+                className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-400 hover:to-blue-500 transition-all rounded-full shadow-md"
+              >
+                <Send size={16} /> Launch Into Orbit
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="w-10 h-10 border-4 border-purple-500/70 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {blogs.map((blog) => {
+              const imgMatch = blog.content.match(/<img[^>]+src=\"([^">]+)\"/);
+              const imageUrl = imgMatch?.[1];
+
+              return (
+                <motion.div
+                  key={blog._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -5 }}
+                  className="relative  border border-purple-500/20 rounded-xl p-6 hover:border-violet-400/50 transition-all duration-300 shadow-lg backdrop-blur-sm group overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/10 to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                  <Link href={`/blogs/${blog._id}`} className="relative z-10">
+                    {imageUrl ? (
+                      <div className="w-full h-40 overflow-hidden rounded-lg mb-4">
+                        <img
+                          src={imageUrl}
+                          alt={blog.title}
+                          className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-40 flex items-center justify-center bg-slate-800/50 rounded-lg mb-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="48"
+                          height="48"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-galaxy text-purple-500/50"
+                        >
+                          <path d="M12 2a10 10 0 0 1 8 16" />
+                          <path d="M12 2a10 10 0 0 0-8 16" />
+                          <path d="M8 8a10 10 0 0 1 8 8" />
+                          <path d="M8 8a10 10 0 0 0 8 8" />
+                        </svg>
+                      </div>
+                    )}
+
+                    <h2 className="text-xl font-semibold mb-2 group-hover:text-purple-300 transition-colors">
+                      {blog.title}
+                    </h2>
+                    <p className="text-sm text-purple-200/70 mb-3">
+                      {blog.date}
+                    </p>
+                    <p className="text-sm text-purple-100/80 line-clamp-2">
+                      {blog.summary}
+                    </p>
+                  </Link>
+
+                  {isLoggedIn && (
+                    <div className="absolute top-4 right-4 flex gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setForm({ title: blog.title, content: blog.content });
+                          setShowEditor(true);
+                        }}
+                        className="p-1.5 rounded-full bg-slate-800/80 hover:bg-purple-500/20 transition-colors"
+                      >
+                        <FilePenLineIcon
+                          size={16}
+                          className="text-purple-300/80 hover:text-purple-200"
+                        />
+                      </button>
+                      <button
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          const confirmed = confirm(
+                            "Are you sure you want to delete this cosmic entry?"
+                          );
+                          if (confirmed) {
+                            await fetch(`/api/blogs/${blog._id}`, {
+                              method: "DELETE",
+                            });
+                            setBlogs(blogs.filter((b) => b._id !== blog._id));
+                          }
+                        }}
+                        className="p-1.5 rounded-full bg-slate-800/80 hover:bg-rose-500/20 transition-colors"
+                      >
+                        <Trash
+                          size={16}
+                          className="text-rose-400/80 hover:text-rose-300"
+                        />
+                      </button>
                     </div>
                   )}
-
-                  <h2 className="text-lg font-semibold mb-2 group-hover:text-cyan-400 transition">
-                    {blog.title}
-                  </h2>
-                  <p className="text-sm text-slate-400 mb-1">{blog.date}</p>
-                  <p className="text-sm text-slate-300 line-clamp-2">
-                    {blog.summary}
-                  </p>
-                </Link>
-
-                {isLoggedIn && (
-                  <div className="absolute top-2 right-2 flex gap-2">
-                    <FilePenLineIcon
-                      title="Edit Blog"
-                      size={16}
-                      onClick={() => {
-                        setForm({ title: blog.title, content: blog.content });
-                        setShowEditor(true);
-                      }}
-                      className="text-sm text-white-400 hover:text-blue-300"
-                    ></FilePenLineIcon>
-                    <Trash
-                      title="Delete Blog"
-                      size={16}
-                      onClick={async () => {
-                        const confirmed = confirm(
-                          "Are you sure you want to delete this blog?"
-                        );
-                        if (confirmed) {
-                          await fetch(`/api/blogs/${blog._id}`, {
-                            method: "DELETE",
-                          });
-                          setBlogs(blogs.filter((b) => b._id !== blog._id));
-                        }
-                      }}
-                      className="text-sm text-red-400 hover:text-red-300"
-                    ></Trash>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }

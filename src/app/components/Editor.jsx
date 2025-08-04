@@ -28,10 +28,9 @@ import {
 } from "lucide-react";
 
 import { useEffect } from "react";
-import "highlight.js/styles/github-dark.css"; // highlight theme
-import { ResizableImage } from "./ResizableImage"; // ← import here
+import "highlight.js/styles/github-dark.css";
+import { ResizableImage } from "./ResizableImage";
 
-// create lowlight instance and register languages
 const lowlight = createLowlight();
 lowlight.register("js", js);
 lowlight.register("ts", ts);
@@ -44,7 +43,7 @@ export default function TiptapEditor({ value, onChange, onClose }) {
     extensions: [
       StarterKit.configure({ codeBlock: false }),
       CodeBlockLowlight.configure({ lowlight }),
-      ResizableImage, // ← add ResizableImage extension
+      ResizableImage,
       Link.configure({ openOnClick: false }),
       Table.configure({ resizable: true }),
       TableRow,
@@ -55,7 +54,7 @@ export default function TiptapEditor({ value, onChange, onClose }) {
     editorProps: {
       attributes: {
         class:
-          "min-h-[300px] focus:outline-none prose dark:prose-invert text-white max-w-full",
+          "focus:outline-none prose dark:prose-invert text-white max-w-full min-h-[300px]",
       },
     },
     onUpdate: ({ editor }) => {
@@ -73,14 +72,15 @@ export default function TiptapEditor({ value, onChange, onClose }) {
   if (!editor) return null;
 
   return (
-    <div className="relative bg-slate-800 border border-white/10 rounded-xl shadow-inner px-4 py-3 space-y-4">
+    <div className="relative rounded-xl p-4 bg-white/5 backdrop-blur-sm border border-white/10 shadow-md space-y-4">
       <X
         onClick={onClose}
         size={20}
         className="absolute top-3 right-3 text-white hover:text-red-400 cursor-pointer z-50"
       />
+
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-2 sticky top-0 z-10 bg-slate-800">
+      <div className="flex flex-wrap gap-2 border-b border-white/10 pb-2 sticky top-0 z-10 bg-white/5 backdrop-blur-sm px-2 rounded-md">
         <EditorButton
           isActive={editor.isActive("bold")}
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -196,15 +196,15 @@ export default function TiptapEditor({ value, onChange, onClose }) {
         />
       </div>
 
-      {/* Editor Content */}
+      {/* Content Area */}
       <div
         className="prose dark:prose-invert custom-scrollbar overflow-auto max-w-full h-[50vh]
-    [&_img]:max-w-[300px] [&_img]:max-h-[300px] [&_img]:rounded-lg 
-    [&_img[style*='inline-block']]:align-middle [&_img[style*='inline-block']]:mr-2
-    [&_img[style*='inline-block']]:!inline-block
-    [&_pre]:text-slate-100 [&_pre]:p-2 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-2 [&_pre]:leading-[1.3]
-    [&_pre_code]:whitespace-pre-wrap [&_pre_code]:break-words [&_pre_code]:p-0 [&_pre_code]:m-0 [&_pre_code]:leading-[1.3]
-    [&_pre_code]:bg-transparent [&_pre_code]:font-mono [&_pre_code]:text-sm"
+        [&_img]:max-w-[300px] [&_img]:max-h-[300px] [&_img]:rounded-lg 
+        [&_img[style*='inline-block']]:align-middle [&_img[style*='inline-block']]:mr-2
+        [&_img[style*='inline-block']]:!inline-block
+        [&_pre]:text-slate-100 [&_pre]:p-2 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-2 [&_pre]:leading-[1.3]
+        [&_pre_code]:whitespace-pre-wrap [&_pre_code]:break-words [&_pre_code]:p-0 [&_pre_code]:m-0 [&_pre_code]:leading-[1.3]
+        [&_pre_code]:bg-transparent [&_pre_code]:font-mono [&_pre_code]:text-sm"
       >
         <EditorContent editor={editor} />
       </div>
@@ -217,7 +217,7 @@ function EditorButton({ isActive, onClick, icon }) {
     <button
       type="button"
       onClick={onClick}
-      className={`p-1.5 rounded-md hover:bg-white/10 transition ${
+      className={`p-1.5 rounded-md transition hover:bg-white/10 ${
         isActive ? "bg-white/10 text-cyan-400" : "text-slate-300"
       }`}
     >

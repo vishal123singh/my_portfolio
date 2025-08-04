@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { FiSearch, FiArrowRight, FiStar, FiExternalLink } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import CosmicBackground from "../components/CosmicBackground";
 
 export default function AppsShowcase() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const [isHovering, setIsHovering] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading data
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const apps = [
     {
@@ -23,8 +32,7 @@ export default function AppsShowcase() {
     {
       id: 2,
       name: "Video Calling",
-      description:
-        "4K video conferencing with virtual backgrounds and noise cancellation",
+      description: "4K video conferencing",
       category: "Communication",
       url: "/apps/video-calling",
       image: "/images/video-call.jpg",
@@ -40,8 +48,23 @@ export default function AppsShowcase() {
       app.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-6 text-white relative overflow-hidden">
       <Head>
         <title>Craftmind | App Showcase</title>
         <meta
@@ -50,160 +73,241 @@ export default function AppsShowcase() {
         />
       </Head>
 
-      <header className="max-w-7xl mx-auto text-center mb-16">
-        <p className="text-xl text-[#94a3b8] max-w-3xl mx-auto">
-          Explore next-generation applications
-        </p>
-      </header>
+      <CosmicBackground />
 
-      <div className="max-w-4xl mx-auto relative mb-16">
+      <motion.header
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="max-w-7xl mx-auto text-center mb-16 relative z-10"
+      >
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="text-xl text-white/60 max-w-3xl mx-auto"
+        >
+          Explore next-generation applications
+        </motion.p>
+      </motion.header>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="max-w-4xl mx-auto relative mb-16 z-10"
+      >
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <FiSearch className="text-[#64748b] text-xl" />
+          <FiSearch className="text-gray-500 text-xl" />
         </div>
         <input
           type="text"
           placeholder="Search applications..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-6 py-4 rounded-xl bg-[#1a2236] border border-[#2a3447] focus:outline-none focus:ring-2 focus:ring-cyan-400/50 text-white placeholder-[#64748b] text-lg"
+          className="w-full pl-12 pr-6 py-4 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-white placeholder-gray-500 text-lg bg-black/30 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/30"
         />
-      </div>
+      </motion.div>
 
-      {filteredApps.some((app) => app.featured) && (
-        <section className="max-w-7xl mx-auto mb-20">
-          <h2 className="flex items-center text-3xl font-medium mb-8">
-            <FiStar className="text-cyan-400 mr-3" /> Featured Projects
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {filteredApps
-              .filter((app) => app.featured)
-              .map((app) => (
-                <div
-                  key={app.id}
-                  className="relative group overflow-hidden rounded-2xl border border-[#2a3447] bg-[#1a2236] hover:border-cyan-400/30 transition-all duration-500"
-                  onMouseEnter={() => setHoveredCard(app.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      {isLoading ? (
+        <div className="max-w-7xl mx-auto flex justify-center items-center h-64">
+          <div className="spinner"></div>
+        </div>
+      ) : (
+        <>
+          {filteredApps.some((app) => app.featured) && (
+            <section className="max-w-7xl mx-auto mb-20 relative z-10">
+              <motion.h2
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="flex items-center text-3xl font-semibold mb-8 text-white"
+              >
+                <FiStar className="text-orange-400 mr-3 animate-pulse" />
+                Featured Projects
+              </motion.h2>
 
-                  <div className="p-8 relative z-10">
-                    <div className="flex justify-between items-start mb-6">
-                      <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-                        {app.name}
-                      </h3>
-                      <span className="text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-400/10 text-cyan-400">
-                        {app.category}
-                      </span>
-                    </div>
-
-                    <p className="text-[#b3bdd3] mb-6">{app.description}</p>
-
-                    <div className="flex flex-wrap gap-2 mb-8">
-                      {app.tech.map((tech) => (
-                        <span
-                          key={tech}
-                          className="text-xs px-2 py-1 rounded bg-[#2a3447] text-[#94a3b8]"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    <a
-                      href={app.url}
-                      className="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300"
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+              >
+                {filteredApps
+                  .filter((app) => app.featured)
+                  .map((app) => (
+                    <motion.div
+                      key={app.id}
+                      variants={itemVariants}
+                      whileHover={{ y: -5 }}
+                      onMouseEnter={() => setIsHovering(app.id)}
+                      onMouseLeave={() => setIsHovering(null)}
+                      className="relative group overflow-hidden rounded-2xl border border-white/10 hover:border-purple-500/40 transition-all duration-500 bg-gradient-to-br from-black/30 to-gray-900/50 backdrop-blur-sm"
                     >
-                      Launch Interface <FiArrowRight className="ml-2" />
-                    </a>
-                  </div>
+                      <div className="absolute inset-0 overflow-hidden">
+                        <div className="shine-strip"></div>
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                            isHovering === app.id ? "opacity-100" : ""
+                          }`}
+                        ></div>
+                      </div>
 
-                  {/* Animated border effect */}
-                  <div
-                    className={`absolute inset-0 pointer-events-none ${
-                      hoveredCard === app.id ? "opacity-100" : "opacity-0"
-                    } transition-opacity duration-500`}
+                      <div className="p-8 relative z-10">
+                        <div className="flex justify-between items-start mb-6">
+                          <h3 className="text-2xl font-bold relative z-10">
+                            {app.name}
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 group-hover:w-full transition-all duration-500"></span>
+                          </h3>
+                          <span className="text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 group-hover:bg-purple-500/20 transition-colors">
+                            {app.category}
+                          </span>
+                        </div>
+
+                        <p className="text-white/60 mb-6 group-hover:text-white/80 transition-colors">
+                          {app.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 mb-8">
+                          {app.tech.map((tech) => (
+                            <span
+                              key={tech}
+                              className="text-xs px-2 py-1 rounded bg-white/10 text-white/70 group-hover:bg-white/20 group-hover:text-white transition-colors"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+
+                        <motion.a
+                          href={app.url}
+                          whileTap={{ scale: 0.95 }}
+                          className="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 relative overflow-hidden group"
+                        >
+                          <span className="relative z-10">
+                            Launch Interface
+                          </span>
+                          <FiArrowRight className="ml-2 relative z-10 transition-transform group-hover:translate-x-1" />
+                          <span className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        </motion.a>
+                      </div>
+                    </motion.div>
+                  ))}
+              </motion.div>
+            </section>
+          )}
+
+          <section className="max-w-7xl mx-auto relative z-10">
+            <motion.h2
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-3xl font-medium mb-8 text-white"
+            >
+              All Applications
+            </motion.h2>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence>
+                {filteredApps.map((app) => (
+                  <motion.div
+                    key={app.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -5 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    layout
+                    className="relative group overflow-hidden rounded-xl border border-white/10 hover:border-orange-400/40 transition-all duration-500 bg-gradient-to-b from-black/20 to-gray-900/30 backdrop-blur-sm"
                   >
-                    <div
-                      className="absolute inset-0 border-2 border-transparent border-t-cyan-400 animate-spin-slow"
-                      style={{ animationDuration: "8s" }}
-                    ></div>
-                    <div
-                      className="absolute inset-0 border-2 border-transparent border-r-cyan-400 animate-spin-slow-reverse"
-                      style={{ animationDuration: "12s" }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </section>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-xl font-semibold text-white">
+                          {app.name}
+                          <span className="block w-0 h-0.5 bg-blue-400 mt-1 group-hover:w-full transition-all duration-300"></span>
+                        </h3>
+                        <span className="text-xs uppercase tracking-wider px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+                          {app.category}
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-white/60 mb-6 group-hover:text-white/80 transition-colors">
+                        {app.description}
+                      </p>
+
+                      <motion.a
+                        href={app.url}
+                        whileTap={{ scale: 0.95 }}
+                        className="inline-flex items-center text-sm px-4 py-2 rounded-lg bg-[#2a2a2e] text-blue-400 hover:bg-[#3a3a3e] transition-colors duration-300 group"
+                      >
+                        <span>Access</span>
+                        <FiExternalLink className="ml-2 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                      </motion.a>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </section>
+        </>
       )}
 
-      <section className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-medium mb-8">All Applications</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredApps.map((app) => (
-            <div
-              key={app.id}
-              className="relative group overflow-hidden rounded-xl border border-[#2a3447] bg-[#1a2236] hover:border-cyan-400/30 transition-all duration-500"
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-medium">{app.name}</h3>
-                  <span className="text-xs uppercase tracking-wider px-2 py-1 rounded-full bg-blue-500/10 text-blue-400">
-                    {app.category}
-                  </span>
-                </div>
-
-                <p className="text-sm text-[#b3bdd3] mb-6">{app.description}</p>
-
-                <a
-                  href={app.url}
-                  className="inline-flex items-center text-sm px-4 py-2 rounded-lg bg-[#2a3447] text-cyan-400 hover:bg-[#3a4457] transition-colors duration-300"
-                >
-                  Access <FiExternalLink className="ml-2" />
-                </a>
-              </div>
-
-              {/* Hover effect */}
-              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-400/10 rounded-bl-full transform translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-16 h-16 bg-blue-500/10 rounded-tr-full transform -translate-x-1/2 translate-y-1/2"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {filteredApps.length === 0 && (
-        <div className="max-w-7xl mx-auto text-center py-20">
+      {filteredApps.length === 0 && !isLoading && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-7xl mx-auto text-center py-20 relative z-10"
+        >
           <div className="text-6xl mb-6">👾</div>
-          <h3 className="text-2xl font-medium mb-2">No applications found</h3>
-          <p className="text-[#94a3b8]">Try adjusting your search parameters</p>
-        </div>
+          <h3 className="text-2xl font-medium mb-2 text-white">
+            No applications found
+          </h3>
+          <p className="text-white/60">Try adjusting your search parameters</p>
+        </motion.div>
       )}
 
       <style jsx global>{`
-        @keyframes spin-slow {
+        .shine-strip {
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 200%;
+          height: 100%;
+          background: linear-gradient(
+            120deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 70%
+          );
+          animation: shine 3s linear infinite;
+          pointer-events: none;
+        }
+
+        @keyframes shine {
           0% {
-            transform: rotate(0deg);
+            transform: translateX(-100%);
           }
           100% {
+            transform: translateX(100%);
+          }
+        }
+
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 3px solid rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          border-top-color: #6366f1;
+          animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+          to {
             transform: rotate(360deg);
           }
-        }
-        @keyframes spin-slow-reverse {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(-360deg);
-          }
-        }
-        .animate-spin-slow {
-          animation: spin-slow linear infinite;
-        }
-        .animate-spin-slow-reverse {
-          animation: spin-slow-reverse linear infinite;
         }
       `}</style>
     </div>
