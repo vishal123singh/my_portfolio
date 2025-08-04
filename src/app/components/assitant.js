@@ -5,13 +5,23 @@ import { motion } from "framer-motion";
 import { FaPaperPlane } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { ChatBotIcon } from "./ChatIcon";
-import { UserIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 
-export default function Assistant({ onClose }) {
+export default function AssistantModal({ onClose }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    setMessages([
+      { role: "assistant", text: "Hi, I am ViVA. How can I help you today?" },
+    ]);
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const handleAsk = async () => {
     if (!input.trim()) return;
@@ -34,7 +44,6 @@ export default function Assistant({ onClose }) {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value);
         result += chunk;
 
@@ -47,7 +56,7 @@ export default function Assistant({ onClose }) {
           }
         });
       }
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         { role: "assistant", text: "Something went wrong. Try again!" },
@@ -66,102 +75,100 @@ export default function Assistant({ onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
-      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur"
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[transparent] bg-opacity-50 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        transition={{ duration: 0.4 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-slate-800 border border-slate-600 rounded-xl p-6 w-full max-w-2xl max-h-[75vh] flex flex-col"
+        className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/90 border border-slate-700 shadow-xl rounded-2xl w-full max-w-xl mx-4 h-[70vh] flex flex-col overflow-hidden"
       >
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-cyan-400 text-lg font-semibold">
-            Chat with ViVA
-          </h3>
-
-          <X
+        <div className="flex justify-between items-center p-4 border-b border-slate-700">
+          <h2 className="text-slate-200 font-semibold">Chat with ViVA</h2>
+          <button
             onClick={onClose}
-            className="text-slate-100 text-lg hover:text-cyan-400 cursor-pointer"
-          />
+            className="text-slate-400 hover:text-slate-200 transition-colors"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-3 mb-4 model-content">
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 custom-scroll">
           {messages.map((msg, i) => (
-            <ChatMessage key={i} msg={msg} i={i} />
+            <ChatMessage key={i} msg={msg} />
           ))}
           {loading && (
-            <motion.p
-              className="text-slate-400 italic"
+            <motion.div
+              className="flex items-center gap-2 text-slate-400 italic"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ repeat: Infinity, duration: 1.2 }}
             >
-              ViVA is typing...
-            </motion.p>
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 rounded-full bg-slate-500 animate-bounce"></div>
+                <div className="w-2 h-2 rounded-full bg-slate-500 animate-bounce delay-75"></div>
+                <div className="w-2 h-2 rounded-full bg-slate-500 animate-bounce delay-150"></div>
+              </div>
+              <span>ViVA is typing...</span>
+            </motion.div>
           )}
           <div ref={chatEndRef} />
         </div>
 
-        <div className="flex items-center bg-slate-900 rounded-full px-3 py-2 gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAsk()}
-            placeholder="Ask something..."
-            className="flex-1 bg-transparent text-white text-sm outline-none"
-          />
-          <button
-            onClick={handleAsk}
-            className="bg-cyan-400 text-slate-900 px-3 py-1 rounded-full shadow"
-          >
-            <FaPaperPlane />
-          </button>
+        <div className="p-4 border-t border-slate-700 bg-slate-900/60 backdrop-blur-md">
+          <div className="flex items-center rounded-xl bg-slate-800/60 px-4 py-2 ring-1 ring-slate-700 focus-within:ring-2 focus-within:ring-purple-500 transition">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleAsk()}
+              placeholder="Ask something..."
+              className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-slate-500"
+              disabled={loading}
+            />
+            <button
+              onClick={handleAsk}
+              disabled={loading || !input.trim()}
+              className={`p-2 rounded-md transition-all ${
+                loading || !input.trim()
+                  ? "text-slate-500"
+                  : "text-purple-300 hover:text-white"
+              }`}
+            >
+              <FaPaperPlane className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </motion.div>
     </motion.div>
   );
 }
 
-function ChatMessage({ msg, i }) {
+function ChatMessage({ msg }) {
   const isUser = msg.role === "user";
 
   return (
-    <div
-      key={i}
-      className={`flex items-start space-x-2 ${
-        isUser ? "justify-end space-x-reverse" : "justify-start"
-      }`}
-    >
-      {/* Avatar */}
-      <div className="flex-shrink-0">
-        {isUser ? null : <ChatBotIcon size={32} />}
-      </div>
-
-      {/* Bubble */}
+    <div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
+      {!isUser && (
+        <div className="pt-1">
+          <ChatBotIcon size={24} />
+        </div>
+      )}
       <div
-        className={`
-          relative
-          max-w-[75%]
-          px-4 py-3
-          text-sm leading-snug
-          rounded-2xl
-          ${isUser ? "bg-indigo-600 text-white" : "bg-gray-800 text-gray-100"}
-        `}
+        className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm shadow-md ${
+          isUser
+            ? "bg-indigo-600 text-white rounded-br-none"
+            : "bg-slate-700 text-white rounded-bl-none"
+        }`}
       >
-        {/* Content */}
         {isUser ? (
-          <span>{msg.text}</span>
+          <p>{msg.text}</p>
         ) : (
-          <div className="flex items-start space-x-2">
-            {/* Wrap markdown in a styled div instead */}
-            <div className="prose prose-sm prose-invert">
-              <ReactMarkdown>{msg.text}</ReactMarkdown>
-            </div>
+          <div className="prose prose-sm prose-invert max-w-none">
+            <ReactMarkdown>{msg.text}</ReactMarkdown>
           </div>
         )}
       </div>

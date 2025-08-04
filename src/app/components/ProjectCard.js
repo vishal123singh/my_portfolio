@@ -36,7 +36,7 @@ export default function ProjectCard({
   return (
     <Link href={`/projects/${slug}`}>
       <motion.div
-        className="group bg-slate-800 rounded-xl overflow-hidden shadow-md transition hover:shadow-lg hover:bg-slate-700 cursor-pointer flex flex-col h-full"
+        className="group rounded-xl overflow-hidden shadow-md cursor-pointer flex flex-col h-full"
         whileHover={{ scale: 1.02 }}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export default function ProjectCard({
       >
         {/* Top Preview */}
         <div className="relative w-full aspect-[4/3] bg-slate-900 flex items-center justify-center rounded-t-xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 z-0" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/80 via-slate-900/80 to-slate-800/80 z-0" />
           {liveComponent ? (
             <div className="w-full h-full relative z-10">{liveComponent}</div>
           ) : (
@@ -61,12 +61,12 @@ export default function ProjectCard({
           )}
         </div>
 
-        {/* Card Body */}
-        <div className="flex flex-col flex-1 px-4 py-5">
+        {/* Card Body with Frosted Glass Effect */}
+        <div className="flex flex-col flex-1 px-4 py-5 bg-white/5 backdrop-blur-sm border-t border-white/10">
           <h3 className="text-white text-lg font-semibold mb-1 leading-tight line-clamp-1">
             {title}
           </h3>
-          <p className="text-slate-400 text-sm mb-3 line-clamp-3">
+          <p className="text-slate-300 text-sm mb-3 line-clamp-3">
             {description}
           </p>
 
@@ -74,15 +74,15 @@ export default function ProjectCard({
             {tags.map((tag, i) => (
               <span
                 key={i}
-                className="bg-slate-700 text-white text-xs px-3 py-1 rounded-full"
+                className="bg-white/10 text-white/90 text-xs px-3 py-1 rounded-full backdrop-blur-sm"
               >
                 {tag}
               </span>
             ))}
           </div>
 
-          <div className="mt-4 text-pink-400 flex items-center gap-1 text-sm font-medium group-hover:underline">
-            View Project <ExternalLink size={14} />
+          <div className="mt-4 text-indigo-300 flex items-center gap-1 text-sm font-medium group-hover:text-indigo-200 transition-colors">
+            View Project <ExternalLink size={14} className="opacity-80" />
           </div>
         </div>
       </motion.div>

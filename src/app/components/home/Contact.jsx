@@ -1,82 +1,150 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa";
+import { useRef, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { FaPaperPlane } from "react-icons/fa";
 
 export default function Contact() {
-  const contactItems = [
-    {
-      icon: <FaEnvelope size={20} />,
-      text: "Email",
-      href: "mailto:bs08081996@gmail.com",
-    },
-    {
-      icon: <FaGithub size={20} />,
-      text: "Github",
-      href: "https://github.com/vishal123singh",
-    },
-    {
-      icon: <FaLinkedin size={20} />,
-      text: "Linkedin",
-      href: "https://linkedin.com/in/vishal-singh-b57b7b109",
-    },
-  ];
+  const formRef = useRef(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setSubmitSuccess(false), 3000);
+      } else {
+        alert("Failed to send message. Try again later.");
+      }
+    } catch (err) {
+      alert("Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <section className="py-20 px-6 text-white bg-gradient-to-br from-[#0f172a] to-[#1e293b] custom-section">
-      <div className="max-w-3xl mx-auto text-center">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-pink-400 mb-4"
-          initial={{ opacity: 0, y: -20 }}
+    <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          Contact Me
-        </motion.h2>
-
-        <motion.p
-          className="text-slate-400 text-base md:text-lg mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          Let’s connect — I’m open to freelance, full-time roles, or
-          collaborations!
-        </motion.p>
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-transparent mb-4">
+            Get In Touch
+          </h2>
+          <p className="text-lg text-gray-300">
+            Have a project in mind or want to collaborate? Let’s talk!
+          </p>
+        </motion.div>
 
         <motion.div
-          className="grid sm:grid-cols-3 gap-6 justify-center"
-          initial="hidden"
-          whileInView="visible"
+          className="rounded-xl"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
           viewport={{ once: true }}
-          variants={{
-            visible: {
-              transition: {
-                staggerChildren: 0.2,
-              },
-            },
-          }}
         >
-          {contactItems.map((item, idx) => (
-            <motion.a
-              key={idx}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center flex-col bg-white/5 border border-white/10 backdrop-blur-md p-5 rounded-xl shadow hover:shadow-pink-500/30 hover:scale-105 transition-all duration-300 gap-2 text-slate-300 hover:text-white"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-            >
-              <div className="text-pink-400">{item.icon}</div>
-              <span className="text-sm break-words text-center">
-                {item.text}
-              </span>
-            </motion.a>
-          ))}
+          <Card className="bg-black/40 backdrop-blur-xl shadow-lg">
+            <CardContent className="p-8">
+              <h3 className="text-xl font-semibold text-white mb-6">
+                Send me a message
+              </h3>
+
+              {submitSuccess && (
+                <motion.div
+                  className="mb-6 p-3 rounded-lg text-green-500 bg-green-200/10"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  Message sent successfully!
+                </motion.div>
+              )}
+
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="bg-black/30 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 border-none"
+                  />
+                </div>
+
+                <div>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="bg-black/30 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 border-none"
+                  />
+                </div>
+
+                <div>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    placeholder="What would you like to discuss?"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    className="bg-black/30 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 border-none"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full text-white bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:brightness-110 transition-all"
+                >
+                  {isSubmitting ? (
+                    "Sending..."
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <FaPaperPlane /> Send Message
+                    </span>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     </section>

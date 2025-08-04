@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
@@ -16,7 +17,7 @@ export default function BlogDetailPage() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processedContent, setProcessedContent] = useState(null);
-  const [replyingTo, setReplyingTo] = useState(null); // comment id being replied to
+  const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState("");
   const [replyName, setReplyName] = useState("");
   const [replyEmail, setReplyEmail] = useState("");
@@ -71,9 +72,7 @@ export default function BlogDetailPage() {
     try {
       const response = await fetch(`/api/blogs/${slug}/comments`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, content: newComment }),
       });
       if (response.ok) {
@@ -103,9 +102,7 @@ export default function BlogDetailPage() {
     try {
       const response = await fetch(`/api/blogs/${slug}/comments`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: replyName,
           email: replyEmail,
@@ -119,9 +116,6 @@ export default function BlogDetailPage() {
           prev.map((c) => (c._id === updated._id ? updated : c))
         );
         setReplyingTo(null);
-        setReplyContent("");
-        setReplyName("");
-        setReplyEmail("");
       }
     } catch (error) {
       console.error("Error submitting reply:", error);
@@ -133,7 +127,7 @@ export default function BlogDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -142,10 +136,13 @@ export default function BlogDetailPage() {
 
   if (!blog) {
     return (
-      <div className="text-center py-20 text-slate-300">
-        Blog not found.
-        <br />
-        <Link href="/blogs" className="text-cyan-400 underline">
+      <div className="flex flex-col items-center justify-center h-screen text-center text-white">
+        <h1 className="text-4xl font-bold mb-2">404 — Not Found</h1>
+        <p className="text-slate-400 mb-4">We couldn't find that blog.</p>
+        <Link
+          href="/blogs"
+          className="px-4 py-2 bg-pink-600 rounded hover:bg-pink-500"
+        >
           ← Back to Blogs
         </Link>
       </div>
@@ -153,34 +150,36 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-10 max-w-6xl mx-auto text-white">
-      <div className="mt-10">
-        <Link href="/blogs" className="text-cyan-400 underline">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen px-4 py-10 max-w-4xl mx-auto text-white"
+    >
+      <div className="mb-10">
+        <Link href="/blogs" className="text-indigo-400 hover:underline text-sm">
           ← Back to Blogs
         </Link>
       </div>
-      <h1 className="text-4xl font-bold mb-2">{blog.title}</h1>
-      <p className="text-sm text-slate-400 mb-6">{blog.date}</p>
 
-      <div className="bg-white text-black rounded-xl p-4 pt-1 shadow-md mb-8">
+      <h1 className="text-5xl font-extrabold text-gradient mb-2">
+        {blog.title}
+      </h1>
+      <p className="text-sm text-slate-400 italic border-l-4 border-indigo-500 pl-3 mb-6">
+        Published on {blog.date}
+      </p>
+
+      <div className="bg-white text-black rounded-xl p-6 shadow-lg mb-10">
         <article
-          className="prose max-w-none
-            prose-pre:p-1 prose-pre:bg-slate-900 prose-pre:rounded prose-pre:my-1
-            prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap
-            prose-code:before:content-none prose-code:after:content-none
-            prose-code:text-sm prose-code:font-mono prose-code:leading-tight
-            prose-a:text-blue-600 
-            prose-table:border prose-table:border-collapse prose-table:w-full
-            prose-th:border prose-th:px-4 prose-th:py-2 prose-th:bg-gray-100
-            prose-td:border prose-td:px-4 prose-td:py-2
-            [&_p]:mb-3 [&_pre_code]:whitespace-pre-wrap [&_pre_code]:break-all"
+          className="prose max-w-none prose-pre:bg-slate-900 prose-pre:text-white prose-pre:rounded-lg prose-pre:p-4 prose-pre:shadow
+          prose-code:text-sm prose-a:text-blue-600 break-words"
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />
       </div>
 
-      {/* Comments Section */}
-      <div className="bg-slate-800 text-gray-100 rounded-xl p-8 shadow-md mb-8">
-        <h2 className="text-2xl font-bold mb-6">
+      {/* Comments */}
+      <div className="bg-slate-800 rounded-xl p-6 shadow-lg mb-10">
+        <h2 className="text-2xl font-bold mb-6 text-white">
           Comments ({comments.length})
         </h2>
         {comments.length > 0 ? (
@@ -188,50 +187,48 @@ export default function BlogDetailPage() {
             {comments.map((comment) => (
               <div
                 key={comment._id}
-                className="border-b border-gray-300 pb-6 last:border-0"
+                className="bg-slate-700/60 rounded-xl p-4 border border-slate-600"
               >
-                <div className="flex items-center mb-2">
-                  <h3 className="font-semibold text-base text-gray-300 text-sm">
-                    {comment.name}
-                  </h3>
-                  <span className="text-gray-300 text-sm ml-3 text-xs">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-sm">{comment.name}</h3>
+                  <span className="text-xs text-gray-400">
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <p className="text-gray-300 leading-relaxed text-sm">
-                  {comment.content}
-                </p>
+                <p className="text-sm text-gray-200">{comment.content}</p>
                 <button
-                  className="text-cyan-400 text-xs mt-2 hover:underline"
+                  className="mt-2 text-xs text-purple-400 hover:underline"
                   onClick={() => handleReply(comment._id)}
                 >
                   Reply
                 </button>
+
                 {/* Replies */}
-                {comment.replies && comment.replies.length > 0 && (
-                  <div className="ml-6 mt-4 space-y-4">
-                    {comment.replies.map((reply, idx) => (
+                {comment.replies?.length > 0 && (
+                  <div className="ml-4 mt-4 pl-4 border-l border-indigo-500 space-y-3">
+                    {comment.replies.map((reply) => (
                       <div
-                        key={reply._id || idx}
-                        className="bg-slate-700 rounded-lg p-3"
+                        key={reply._id}
+                        className="bg-slate-800 p-3 rounded-lg"
                       >
-                        <div className="flex items-center mb-1">
+                        <div className="flex justify-between items-center mb-1">
                           <span className="font-semibold text-sm text-gray-200">
                             {reply.name}
                           </span>
-                          <span className="text-gray-400 text-xs ml-2">
+                          <span className="text-xs text-gray-500">
                             {new Date(reply.createdAt).toLocaleDateString()}
                           </span>
                         </div>
-                        <p className="text-gray-200 text-sm">{reply.content}</p>
+                        <p className="text-sm text-gray-300">{reply.content}</p>
                       </div>
                     ))}
                   </div>
                 )}
+
                 {/* Reply Form */}
                 {replyingTo === comment._id && (
                   <form
-                    className="mt-4 ml-6 bg-slate-700 rounded-lg p-4 space-y-2"
+                    className="mt-4 ml-4 bg-slate-800 p-4 rounded-xl space-y-2 border border-slate-600"
                     onSubmit={(e) => handleSubmitReply(e, comment._id)}
                   >
                     <div className="flex gap-2">
@@ -239,7 +236,7 @@ export default function BlogDetailPage() {
                         type="text"
                         required
                         placeholder="Your name"
-                        className="px-2 py-1 rounded bg-slate-800 text-white border border-slate-600 text-sm"
+                        className="px-2 py-1 rounded bg-slate-900 text-white border border-slate-600 text-sm w-full"
                         value={replyName}
                         onChange={(e) => setReplyName(e.target.value)}
                       />
@@ -247,7 +244,7 @@ export default function BlogDetailPage() {
                         type="email"
                         required
                         placeholder="your@email.com"
-                        className="px-2 py-1 rounded bg-slate-800 text-white border border-slate-600 text-sm"
+                        className="px-2 py-1 rounded bg-slate-900 text-white border border-slate-600 text-sm w-full"
                         value={replyEmail}
                         onChange={(e) => setReplyEmail(e.target.value)}
                       />
@@ -256,7 +253,7 @@ export default function BlogDetailPage() {
                       required
                       rows="2"
                       placeholder="Your reply..."
-                      className="w-full px-2 py-1 rounded bg-slate-800 text-white border border-slate-600 text-sm"
+                      className="w-full px-2 py-1 rounded bg-slate-900 text-white border border-slate-600 text-sm"
                       value={replyContent}
                       onChange={(e) => setReplyContent(e.target.value)}
                     />
@@ -264,7 +261,7 @@ export default function BlogDetailPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-cyan-400 text-slate-900 px-3 py-1 rounded font-bold text-sm hover:bg-cyan-300 disabled:opacity-60"
+                        className="bg-purple-400 text-slate-900 px-3 py-1 rounded font-bold text-sm hover:bg-purple-300 disabled:opacity-60"
                       >
                         {isSubmitting ? "Replying..." : "Post Reply"}
                       </button>
@@ -282,120 +279,53 @@ export default function BlogDetailPage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-100 italic">
+          <p className="text-slate-400 italic">
             No comments yet. Be the first to comment!
           </p>
         )}
       </div>
 
-      {/* Comment Form */}
-      <div className="bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-700">
-        <h2 className="text-2xl font-bold mb-6 text-[var(--accent)]">
+      {/* New Comment Form */}
+      <div className="bg-slate-900 rounded-xl p-6 shadow-lg border border-slate-700">
+        <h2 className="text-2xl font-bold mb-4 text-[var(--accent)]">
           Join the Discussion
         </h2>
         <form onSubmit={handleSubmitComment} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-slate-300 mb-1"
-              >
-                Name*
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-900 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent placeholder-slate-500"
-                required
-                placeholder="Your name"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-slate-300 mb-1"
-              >
-                Email* (private)
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-900 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent placeholder-slate-500"
-                required
-                placeholder="your@email.com"
-              />
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="comment"
-              className="block text-sm font-medium text-slate-300 mb-1"
-            >
-              Your Thoughts*
-            </label>
-            <textarea
-              id="comment"
-              rows="4"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="w-full px-4 py-2 bg-slate-900 text-slate-100 border border-slate-700 rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent placeholder-slate-500"
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Share your insights..."
-            ></textarea>
+              placeholder="Your name"
+              className="px-4 py-2 bg-slate-800 text-white border border-slate-700 rounded-lg w-full"
+            />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="your@email.com"
+              className="px-4 py-2 bg-slate-800 text-white border border-slate-700 rounded-lg w-full"
+            />
           </div>
+          <textarea
+            rows="4"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            required
+            placeholder="Share your thoughts..."
+            className="w-full px-4 py-2 bg-slate-800 text-white border border-slate-700 rounded-lg"
+          />
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-[var(--accent)] text-slate-900 font-bold rounded-lg hover:bg-[var(--btn-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent)] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="px-6 py-3 bg-[var(--accent)] text-slate-900 font-bold rounded-lg hover:bg-[var(--btn-hover)] disabled:opacity-70 transition-colors duration-200"
           >
-            {isSubmitting ? (
-              <>
-                <svg
-                  className="animate-spin h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Launching...
-              </>
-            ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Post Comment
-              </>
-            )}
+            {isSubmitting ? "Posting..." : "Post Comment"}
           </button>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

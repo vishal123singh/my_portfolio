@@ -1,148 +1,239 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 import {
-  SiJavascript,
-  SiTypescript,
-  SiPython,
   SiReact,
   SiNextdotjs,
   SiAngular,
-  SiNodedotjs,
-  SiGraphql,
   SiElectron,
-  SiTailwindcss,
-  SiHtml5,
-  SiCss3,
+  SiJavascript,
+  SiTypescript,
+  SiNodedotjs,
+  SiExpress,
+  SiNestjs,
+  SiGraphql,
+  SiWebrtc,
+  SiPython,
+  SiFastapi,
   SiAmazon,
   SiGooglecloud,
+  SiDocker,
   SiMongodb,
   SiMysql,
   SiPostgresql,
   SiFirebase,
-  SiGit,
-  SiJest,
-  SiDocker,
-  SiGithubactions,
-  SiCypress,
+  SiRedis,
+  SiElastic,
+  SiOpenai,
+  SiLangchain,
 } from "react-icons/si";
-import { motion } from "framer-motion";
-import { BrainCogIcon, Sparkles } from "lucide-react";
 
-const skillsByCategory = [
-  {
-    title: "Frontend",
-    items: [
-      { icon: <SiReact color="#61dafb" />, label: "React / Native" },
-      { icon: <SiNextdotjs color="white" />, label: "Next.js" },
-      { icon: <SiAngular color="#dd0031" />, label: "Angular" },
-      { icon: <SiElectron color="#47848f" />, label: "Electron.js" },
-      { icon: <SiTailwindcss color="#38bdf8" />, label: "Tailwind CSS" },
-      { icon: <SiHtml5 color="#e34f26" />, label: "HTML" },
-      { icon: <SiCss3 color="#1572b6" />, label: "CSS" },
-    ],
-  },
-  {
-    title: "Backend",
-    items: [
-      { icon: <SiNodedotjs color="#339933" />, label: "Node.js" },
-      { icon: <SiGraphql color="#e535ab" />, label: "GraphQL" },
-    ],
-  },
-  {
-    title: "AI / ML",
-    items: [
-      {
-        icon: <Sparkles size={20} color="#a78bfa" />,
-        label: "LLMs (OpenAI, Claude)",
-      },
-      {
-        icon: <Sparkles size={20} color="#f472b6" />,
-        label: "Langchain / Agents",
-      },
-    ],
-  },
-  {
-    title: "DevOps & Infra",
-    items: [
-      { icon: <SiAmazon color="#ff9900" />, label: "AWS" },
-      { icon: <SiGooglecloud color="#4285f4" />, label: "GCP" },
-      { icon: <SiDocker color="#0db7ed" />, label: "Docker" },
-      { icon: <SiGithubactions color="#2088ff" />, label: "GitHub Actions" },
-      { icon: <SiCypress color="#58c4c4" />, label: "CI/CD / Cypress" },
-    ],
-  },
-  {
-    title: "Databases & Tools",
-    items: [
-      { icon: <SiMongodb color="#47a248" />, label: "MongoDB" },
-      { icon: <SiMysql color="#00758f" />, label: "MySQL" },
-      { icon: <SiPostgresql color="#336791" />, label: "PostgreSQL" },
-      { icon: <SiFirebase color="#ffca28" />, label: "Firebase" },
-      { icon: <SiGit color="#f05032" />, label: "Git / GitHub" },
-      { icon: <SiJest color="#c21325" />, label: "Jest / Postman" },
-    ],
-  },
-  {
-    title: "Languages",
-    items: [
-      { icon: <SiJavascript color="#f7df1e" />, label: "JavaScript" },
-      { icon: <SiTypescript color="#3178c6" />, label: "TypeScript" },
-      { icon: <SiPython color="#3776ab" />, label: "Python" },
-    ],
-  },
-];
+import {
+  Code,
+  Server,
+  BrainCircuit,
+  Cpu,
+  Database,
+  Languages,
+  Sparkles,
+} from "lucide-react";
 
-function Skills() {
+import { useEffect, useState } from "react";
+import CosmicBackground from "../CosmicBackground";
+
+const SkillCategory = ({ title, icon: Icon, skills, color, delay }) => {
   return (
-    <section className="relative z-10 py-16 sm:py-24 px-4 sm:px-6 text-white overflow-hidden custom-section">
-      {/* Floating Blobs */}
-      <div className="absolute top-[-80px] left-[-80px] w-[250px] h-[250px] bg-pink-400/20 rounded-full blur-[120px] animate-pulse pointer-events-none z-0" />
-      <div className="absolute bottom-[-80px] right-[-80px] w-[300px] h-[300px] bg-cyan-400/20 rounded-full blur-[120px] animate-pulse pointer-events-none z-0" />
-
-      <motion.h2
-        className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-14 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 z-10 relative"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        viewport={{ once: true }}
-      >
-        <BrainCogIcon size={32} color="#f472b6" />
-        <span>My Technical Stack</span>
-      </motion.h2>
-
-      {/* Skills Grid */}
-      <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 relative z-10">
-        {skillsByCategory.map((category, i) => (
-          <motion.div
-            key={category.title}
-            className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl hover:shadow-[0_0_30px_#ec4899]/20 transition duration-300"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1, duration: 0.6 }}
+    <motion.div
+      className="relative overflow-hidden rounded-xl border border-white/10 p-6 backdrop-blur-sm bg-white/5"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ delay, duration: 0.6 }}
+      whileHover={{ y: -5 }}
+    >
+      <div className="relative z-10">
+        <div className="mb-5 flex items-center gap-3">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-lg"
+            style={{ backgroundColor: `${color}20` }}
           >
-            <h3 className="text-lg font-semibold text-pink-400 mb-4 text-center">
-              {category.title}
-            </h3>
-            <div className="flex flex-wrap gap-4 align-center justify-center">
-              {category.items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="group flex flex-col items-center text-sm text-slate-300 hover:text-white transition duration-200"
-                  title={item.label}
-                >
-                  <div className="text-3xl group-hover:scale-110 transition-transform glow-icon">
-                    {item.icon}
-                  </div>
-                  <span className="mt-1 text-xs text-center">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        ))}
+            <Icon className="h-5 w-5" style={{ color }} />
+          </div>
+          <h3 className="text-lg font-medium" style={{ color }}>
+            {title}
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {skills.map((skill, i) => (
+            <motion.div
+              key={i}
+              className="flex flex-col items-center gap-2 text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <div className="text-3xl">{skill.icon}</div>
+              <span className="text-xs text-white/80">{skill.name}</span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default function TechStack() {
+  const [bubbles, setBubbles] = useState([]);
+
+  useEffect(() => {
+    const icons = [Code, Server, Cpu, Database, Languages];
+    const newBubbles = Array.from({ length: 12 }).map((_, i) => ({
+      icon: icons[Math.floor(Math.random() * icons.length)],
+      x: Math.random() * 80 + 10,
+      y: Math.random() * 80 + 10,
+      delay: Math.random() * 0.5,
+    }));
+    setBubbles(newBubbles);
+  }, []);
+
+  const categories = [
+    {
+      title: "Frontend",
+      icon: Code,
+      color: "#38bdf8",
+      skills: [
+        { icon: <SiReact className="text-[#61dafb]" />, name: "React" },
+        { icon: <SiNextdotjs className="text-white" />, name: "Next.js" },
+        { icon: <SiAngular className="text-[#dd1b16]" />, name: "Angular" },
+        {
+          icon: <SiElectron className="text-[#47848F]" />,
+          name: "Electron.js",
+        },
+        {
+          icon: <SiJavascript className="text-[#f7df1e]" />,
+          name: "JavaScript",
+        },
+        {
+          icon: <SiTypescript className="text-[#3178c6]" />,
+          name: "TypeScript",
+        },
+      ],
+    },
+    {
+      title: "Backend",
+      icon: Server,
+      color: "#4ade80",
+      skills: [
+        { icon: <SiNodedotjs className="text-[#339933]" />, name: "Node.js" },
+        { icon: <SiGraphql className="text-[#e10098]" />, name: "GraphQL" },
+        { icon: <SiExpress className="text-white" />, name: "Express.js" },
+        { icon: <SiNestjs className="text-[#e0234e]" />, name: "Nest.js" },
+        { icon: <SiWebrtc className="text-[#333]" />, name: "WebRTC" },
+        { icon: <SiFastapi className="text-[#009688]" />, name: "FastAPI" },
+      ],
+    },
+    {
+      title: "AI/ML",
+      icon: BrainCircuit,
+      color: "#c084fc",
+      skills: [
+        { icon: <Sparkles className="text-[#a78bfa]" />, name: "LLMs" },
+        { icon: <SiLangchain className="text-[#5c2d91]" />, name: "LangChain" },
+        { icon: <SiOpenai className="text-[#10a37f]" />, name: "OpenAI" },
+      ],
+    },
+    {
+      title: "Cloud/DevOps",
+      icon: Cpu,
+      color: "#f59e0b",
+      skills: [
+        { icon: <SiAmazon className="text-[#ff9900]" />, name: "AWS" },
+        { icon: <SiGooglecloud className="text-[#4285f4]" />, name: "GCP" },
+        {
+          icon: <SiAmazon className="text-[#0078d7]" />,
+          name: "Azure",
+        },
+        { icon: <SiDocker className="text-[#0db7ed]" />, name: "Docker" },
+      ],
+    },
+    {
+      title: "Databases",
+      icon: Database,
+      color: "#f472b6",
+      skills: [
+        { icon: <SiMongodb className="text-[#47a248]" />, name: "MongoDB" },
+        { icon: <SiMysql className="text-[#00758f]" />, name: "MySQL" },
+        {
+          icon: <SiPostgresql className="text-[#336791]" />,
+          name: "PostgreSQL",
+        },
+        { icon: <SiFirebase className="text-[#ffca28]" />, name: "Firebase" },
+        { icon: <SiRedis className="text-[#005571]" />, name: "Redis" },
+        { icon: <SiElastic className="text-[#003b57]" />, name: "Elastic" },
+      ],
+    },
+    {
+      title: "Languages",
+      icon: Languages,
+      color: "#ec4899",
+      skills: [
+        {
+          icon: <SiTypescript className="text-[#3178c6]" />,
+          name: "TypeScript",
+        },
+        {
+          icon: <SiJavascript className="text-[#f7df1e]" />,
+          name: "JavaScript",
+        },
+        { icon: <SiPython className="text-[#3776ab]" />, name: "Python" },
+      ],
+    },
+  ];
+
+  return (
+    <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
+      {/* <CosmicBackground></CosmicBackground> */}
+      <div className="relative max-w-7xl w-full mx-auto z-10">
+        <motion.h2
+          className="text-3xl sm:text-4xl font-bold text-center mb-16 flex items-center justify-center gap-3"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          {/* <BrainCircuit className="text-pink-500" size={32} /> */}
+          <span className="bg-gradient-to-r from-orange-400 to-purple-800 bg-clip-text text-transparent">
+            Technical Toolbox
+          </span>
+        </motion.h2>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category, i) => (
+            <SkillCategory
+              key={category.title}
+              title={category.title}
+              icon={category.icon}
+              skills={category.skills}
+              color={category.color}
+              delay={i * 0.1}
+            />
+          ))}
+        </div>
+
+        <motion.div
+          className="mt-16 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-white/70 max-w-2xl mx-auto">
+            Continuously expanding my toolkit with modern technologies and best
+            practices to build scalable, performant applications.
+          </p>
+        </motion.div>
       </div>
     </section>
   );
 }
-
-export default Skills;

@@ -2,123 +2,113 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useEffect, useRef } from "react";
 
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
   { label: "UI/UX", href: "/mockups" },
   { label: "Blogs", href: "/blogs" },
-  // { label: "AI Agents", href: "/ai-agents" },
   { label: "Apps", href: "/apps" },
-
-  // { label: "Test", href: "/test" },
 ];
 
 export default function Navbar() {
   const { theme, toggle } = useContext(ThemeContext);
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Inside Navbar component
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        // Scrolling down
-        setVisible(false);
-      } else {
-        // Scrolling up
-        setVisible(true);
-      }
-
+      setVisible(currentScrollY < lastScrollY.current || currentScrollY < 10);
       lastScrollY.current = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#0f172a]/70 backdrop-blur-md border-b border-white/10 transition-transform duration-300 ${
-          visible ? "translate-y-0" : "-translate-y-full"
-        }`}
+      <motion.nav
+        initial={false}
+        animate={{ y: visible ? 0 : -100 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[color:var(--bg-dark)]/80 backdrop-blur-lg border-b border-white/10 shadow-md"
       >
-        {/* Logo or Name */}
-        {/* <Link href="/" className="text-cyan-400 font-bold text-lg">
-          Vishal
-        </Link> */}
-
-        {/* Mobile Menu Button */}
-        <button
-          className="sm:hidden text-white absolute left-6 top-4"
-          onClick={() => setMenuOpen(true)}
-        >
-          <Menu size={24} />
-        </button>
-
-        {/* Desktop Links */}
-        <div className="hidden sm:flex space-x-6 text-sm sm:text-base">
+        {/* Desktop Nav */}
+        <div className="hidden sm:flex space-x-6">
           {navLinks.map(({ label, href }) => {
             const isActive = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`transition duration-300 px-2 py-1 rounded-md ${
+                className={`relative transition-all duration-300 text-sm px-1 py-0.5 group ${
                   isActive
-                    ? "text-cyan-400 border-b-2 border-cyan-400 font-semibold"
-                    : "text-slate-300 hover:text-white"
+                    ? "text-[color:var(--accent)] font-semibold"
+                    : "text-[color:var(--text-light)]/70 hover:text-[color:var(--text-light)]"
                 }`}
               >
                 {label}
+                <span
+                  className={`absolute left-0 -bottom-1 h-[2px] w-full bg-gradient-to-r from-transparent via-[color:var(--accent)] to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left ${
+                    isActive ? "scale-x-100" : ""
+                  }`}
+                />
               </Link>
             );
           })}
         </div>
-      </nav>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="sm:hidden text-[color:var(--text-light)]"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open Menu"
+        >
+          <Menu size={24} />
+        </button>
+      </motion.nav>
 
       {/* Mobile Drawer */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="fixed inset-0 z-[52]"
+            className="fixed inset-0 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* Overlay */}
+            {/* Backdrop */}
             <div
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setMenuOpen(false)}
             />
 
-            {/* Drawer sliding from LEFT */}
+            {/* Drawer */}
             <motion.div
-              className="absolute top-0 left-0 w-1/2 h-screen bg-slate-900 text-white px-6 py-6 flex flex-col space-y-6 z-1000"
+              className="absolute top-0 left-0 h-full w-[70vw] max-w-xs bg-[color:var(--bg-dark)] text-[color:var(--text-light)] px-6 py-6 flex flex-col space-y-6 shadow-2xl rounded-tr-xl rounded-br-xl"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
             >
-              {/* Close Button */}
-              <div className="flex justify-end mb-4">
-                <button onClick={() => setMenuOpen(false)}>
-                  <X size={24} className="text-white" />
+              {/* Close */}
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="Close Menu"
+                >
+                  <X size={24} />
                 </button>
               </div>
 
-              {/* Nav Links */}
+              {/* Links */}
               {navLinks.map(({ label, href }) => {
                 const isActive = pathname === href;
                 return (
@@ -126,10 +116,10 @@ export default function Navbar() {
                     key={href}
                     href={href}
                     onClick={() => setMenuOpen(false)}
-                    className={`text-base font-medium ${
+                    className={`text-base font-medium tracking-wide ${
                       isActive
-                        ? "text-cyan-400"
-                        : "text-white hover:text-cyan-300"
+                        ? "text-[color:var(--accent)]"
+                        : "text-[color:var(--text-light)] hover:text-[color:var(--accent)]"
                     }`}
                   >
                     {label}
