@@ -38,10 +38,10 @@ const InteractiveCodeLine = ({ children, delay = 0 }) => {
   }, []);
 
   return (
-    <div className="font-mono text-white/80">
+    <div className="font-mono text-white/80 text-sm sm:text-base">
       <motion.span>{displayText}</motion.span>
       <motion.span
-        className="inline-block w-2 h-6 bg-white ml-1"
+        className="inline-block w-2 h-5 bg-white ml-1"
         animate={{ opacity: [0, 1, 0] }}
         transition={{ repeat: Infinity, duration: 1 }}
       />
@@ -55,13 +55,8 @@ function HomeHero() {
   const [activeTech, setActiveTech] = useState(null);
   const [isHovering, setIsHovering] = useState(false);
 
-  const handleTechHover = (tech) => {
-    setActiveTech(tech);
-  };
-
-  const handleLaunch = () => {
-    router.push("/projects");
-  };
+  const handleTechHover = (tech) => setActiveTech(tech);
+  const handleLaunch = () => router.push("/projects");
 
   return (
     <section
@@ -71,18 +66,18 @@ function HomeHero() {
       <CosmicBackground />
 
       <div className="max-w-7xl w-full z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left Column - Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center">
+          {/* Left Column */}
           <div className="relative">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              {/* Main Heading */}
-              <div className="mb-8">
+              {/* Heading */}
+              <div className="mb-6 sm:mb-8">
                 <motion.h1
-                  className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight"
+                  className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -92,7 +87,7 @@ function HomeHero() {
                   </span>
                   <br />
                   <motion.span
-                    className="text-3xl sm:text-4xl text-white/90 font-medium"
+                    className="text-xl sm:text-3xl text-white/90 font-medium"
                     initial={{ x: -20 }}
                     animate={{ x: 0 }}
                     transition={{ delay: 0.4 }}
@@ -105,7 +100,7 @@ function HomeHero() {
 
               {/* Subheading */}
               <motion.p
-                className="text-xl text-white/80 mb-10 max-w-lg leading-relaxed"
+                className="text-base sm:text-xl text-white/80 mb-8 sm:mb-10 max-w-lg leading-relaxed"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
@@ -114,9 +109,9 @@ function HomeHero() {
                 to detail and user experience.
               </motion.p>
 
-              {/* Interactive Terminal */}
+              {/* Terminal Output */}
               <motion.div
-                className="space-y-3 mb-10"
+                className="space-y-3 mb-8 sm:mb-10"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
@@ -136,7 +131,7 @@ function HomeHero() {
                 </InteractiveCodeLine>
               </motion.div>
 
-              {/* CTA Button */}
+              {/* CTA */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -146,9 +141,9 @@ function HomeHero() {
                   onClick={handleLaunch}
                   onMouseEnter={() => setIsHovering(true)}
                   onMouseLeave={() => setIsHovering(false)}
-                  className="relative px-8 py-4 bg-gradient-to-r from-blue-600/30 to-purple-600/30 backdrop-blur-lg rounded-xl border border-white/20 hover:border-white/40 transition-all group overflow-hidden"
+                  className="relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600/30 to-purple-600/30 backdrop-blur-lg rounded-xl border border-white/20 hover:border-white/40 transition-all group overflow-hidden w-full sm:w-auto"
                 >
-                  <span className="relative z-10 flex items-center gap-3 text-white font-medium text-lg">
+                  <span className="relative z-10 flex items-center justify-center gap-3 text-white font-medium text-base sm:text-lg">
                     <Terminal className="w-5 h-5" />
                     Explore My Work
                     <motion.span
@@ -164,20 +159,22 @@ function HomeHero() {
             </motion.div>
           </div>
 
-          {/* Right Column - Code Panel */}
-          <div className="relative h-[400px] lg:h-[500px]">
+          {/* Right Column */}
+          <div className="relative h-auto lg:h-[500px]">
             <motion.div
-              className="absolute inset-0 bg-black/20 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden p-8 shadow-2xl"
+              className="bg-black/20 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden p-6 sm:p-8 shadow-2xl"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 }}
             >
+              {/* Window Controls */}
               <div className="flex gap-2 mb-6">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
                 <div className="w-3 h-3 rounded-full bg-green-500" />
               </div>
 
+              {/* Fake Code */}
               <div className="font-mono text-sm space-y-4">
                 <div className="text-white/70">
                   <span className="text-purple-400">const</span> developer ={" "}
@@ -205,12 +202,10 @@ function HomeHero() {
                 </div>
               </div>
 
+              {/* Glow Circle */}
               <motion.div
                 className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 10, 0],
-                }}
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 10, 0] }}
                 transition={{
                   duration: 12,
                   repeat: Infinity,
@@ -223,7 +218,7 @@ function HomeHero() {
 
         {/* Tech Stack */}
         <motion.div
-          className="mt-20 flex flex-wrap justify-center gap-4"
+          className="mt-16 sm:mt-20 flex flex-wrap justify-center gap-4 sm:gap-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
@@ -257,7 +252,7 @@ function HomeHero() {
           ].map((tech) => (
             <motion.div
               key={tech.name}
-              className={`px-5 py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all ${
+              className={`w-64 px-4 py-2 sm:px-5 sm:py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all ${
                 activeTech === tech.name
                   ? "bg-white/10 border border-white/20 shadow-lg"
                   : "bg-white/5 border border-white/10"
@@ -270,7 +265,9 @@ function HomeHero() {
               <div className={`bg-gradient-to-r ${tech.color} p-2 rounded-lg`}>
                 <tech.icon className="w-5 h-5 text-white" />
               </div>
-              <span className="text-white/90 font-medium">{tech.name}</span>
+              <span className="text-white/90 text-sm sm:text-base font-medium">
+                {tech.name}
+              </span>
             </motion.div>
           ))}
         </motion.div>
