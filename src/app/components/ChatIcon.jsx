@@ -1,4 +1,7 @@
-export const ChatBotIcon = ({ size = 64, color = "#3B82F6" }) => (
+export const ChatBotIcon = ({
+  size = 64,
+  color = "#f472b6" /* pink-400 */,
+}) => (
   <div className="group rounded-xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20">
     <svg
       width={size}
@@ -24,13 +27,11 @@ export const ChatBotIcon = ({ size = 64, color = "#3B82F6" }) => (
         rx="12"
         stroke="url(#borderGradient)"
         strokeWidth="2"
-        className="transition-all group-hover:stroke-cyan-400 group-hover:drop-shadow-[0_0_6px_cyan]"
+        className="transition-all group-hover:stroke-pink-400 group-hover:drop-shadow-[0_0_6px_#f472b6]"
       />
 
-      {/* Robot head - positioned lower to make room for speech bubble */}
+      {/* Robot head */}
       <g transform="translate(12, 14)">
-        {/* Changed from 16 to 20 */}
-        {/* Head with 3D effect */}
         <path d="M8 8H32V32H24L20 36V32H8V8Z" fill="white" />
         <rect
           x="8"
@@ -65,18 +66,9 @@ export const ChatBotIcon = ({ size = 64, color = "#3B82F6" }) => (
           strokeWidth="2"
           fill="none"
           strokeLinecap="round"
-        >
-          {/* <animate
-          attributeName="d"
-          values="M16 26 Q20 30 24 26; M16 26 Q20 22 24 26; M16 26 Q20 30 24 26"
-          dur="4s"
-          repeatCount="indefinite"
-        /> */}
-        </path>
-        {/* Antenna - now fully visible */}
+        />
+        {/* Antenna */}
         <circle cx="20" cy="4" r="2" fill={color}>
-          {" "}
-          {/* Adjusted position */}
           <animate
             attributeName="opacity"
             values="1;0.5;1"
@@ -93,15 +85,13 @@ export const ChatBotIcon = ({ size = 64, color = "#3B82F6" }) => (
           strokeWidth="2"
           strokeLinecap="round"
         />
-        {/* Adjusted position */}
       </g>
 
-      {/* Speech bubble - moved up and to the right */}
+      {/* Speech bubble */}
       <g transform="translate(38, 6)">
-        {/* Changed from 36,8 */}
         <path
           d="M16 6H4C1.79086 6 0 7.79086 0 10V16C0 18.2091 1.79086 20 4 20H12L16 24V20H20C22.2091 20 24 18.2091 24 16V10C24 7.79086 22.2091 6 20 6H16Z"
-          fill="#C2185B"
+          fill="#f472b6"
         >
           <animateTransform
             attributeName="transform"
@@ -124,16 +114,16 @@ export const ChatBotIcon = ({ size = 64, color = "#3B82F6" }) => (
         </text>
       </g>
 
-      {/* Gradient definitions */}
+      {/* Gradients */}
       <defs>
         <linearGradient id="bgGradient" x1="0" y1="0" x2="0" y2="64">
-          <stop offset="0%" stopColor={color} stopOpacity="0.08" />
-          <stop offset="100%" stopColor={color} stopOpacity="0.2" />
+          <stop offset="0%" stopColor="#ec4899" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.2" />
         </linearGradient>
 
         <linearGradient id="borderGradient" x1="0" y1="0" x2="0" y2="64">
-          <stop offset="0%" stopColor={color} stopOpacity="0.4" />
-          <stop offset="100%" stopColor={color} stopOpacity="0.8" />
+          <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.8" />
         </linearGradient>
 
         <linearGradient id="headGradient" x1="0" y1="0" x2="0" y2="32">

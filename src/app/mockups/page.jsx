@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense } from "react";
-import ProjectCard from "@/app/components/ProjectCard"; // adjust if needed
 import dynamic from "next/dynamic";
+import ProjectCard from "@/app/components/ProjectCard";
 import ProjectDashboard from "../components/playground/ProjectManagement";
 
 const CubeSceneMini = dynamic(
@@ -30,7 +30,7 @@ export default function ProjectsPage() {
 
 const uiExperiments = [
   {
-    title: "Project Mangement Dashboard",
+    title: "Project Management Dashboard",
     slug: "playground/project-dashboard",
     description: "Project management dashboard",
     image: "/images/3d-viewer-demo.gif",
@@ -38,7 +38,6 @@ const uiExperiments = [
     tags: ["React", "Next.js", "Tailwind CSS", "Project Management"],
     liveComponent: <ProjectDashboard />,
   },
-
   {
     title: "Scroll Storytelling",
     slug: "playground/scroll-storytelling",
@@ -55,7 +54,7 @@ const uiExperiments = [
     image: "/images/3d-viewer-demo.gif",
     link: "/playground/3d-viewer",
     tags: ["Three.js", "React Three Fiber", "WebGL"],
-    liveComponent: <CubeSceneMini />, // 👈 interactive preview
+    liveComponent: <CubeSceneMini />,
   },
 ];
 
@@ -63,10 +62,10 @@ function Projects() {
   return (
     <section
       id="project-section"
-      className="relative min-h-screen pt-12 custom-section"
+      className="relative min-h-screen pt-12 px-4 sm:px-6 lg:px-8"
     >
-      <div className="project-grid mb-6 max-w-6xl mx-auto">
-        <div className="project-grid">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {uiExperiments.map((proj, idx) => (
             <ProjectCard key={idx} {...proj} target="_self" />
           ))}

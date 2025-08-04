@@ -7,6 +7,11 @@ import Link from "next/link";
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
 
+// ShadCN UI components
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+
 export default function BlogDetailPage() {
   const { slug } = useParams();
   const [blog, setBlog] = useState(null);
@@ -49,19 +54,15 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     if (!blog?.content) return;
-
     const parser = new DOMParser();
     const doc = parser.parseFromString(blog.content, "text/html");
-
     doc.querySelectorAll("img").forEach((img) => {
       if (img.parentElement?.classList.contains("img-container")) return;
-
       const wrapper = document.createElement("div");
       wrapper.className = "img-container-blog";
       img.replaceWith(wrapper);
       wrapper.appendChild(img);
     });
-
     setProcessedContent(doc.body.innerHTML);
     hljs.highlightAll();
   }, [blog?.content]);
@@ -136,8 +137,8 @@ export default function BlogDetailPage() {
 
   if (!blog) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen text-center text-white">
-        <h1 className="text-4xl font-bold mb-2">404 — Not Found</h1>
+      <div className="flex flex-col items-center justify-center h-screen text-center text-white px-4">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">404 — Not Found</h1>
         <p className="text-slate-400 mb-4">We couldn't find that blog.</p>
         <Link
           href="/blogs"
@@ -162,24 +163,34 @@ export default function BlogDetailPage() {
         </Link>
       </div>
 
-      <h1 className="text-5xl font-extrabold text-gradient mb-2">
+      <h1 className="text-2xl sm:text-4xl font-extrabold text-gradient mb-2 break-words">
         {blog.title}
       </h1>
+
       <p className="text-sm text-slate-400 italic border-l-4 border-indigo-500 pl-3 mb-6">
         Published on {blog.date}
       </p>
 
-      <div className="bg-white text-black rounded-xl p-6 shadow-lg mb-10">
+      <div className="bg-white text-black rounded-xl p-4 sm:p-6 shadow-lg mb-10">
         <article
-          className="prose max-w-none prose-pre:bg-slate-900 prose-pre:text-white prose-pre:rounded-lg prose-pre:p-4 prose-pre:shadow
-          prose-code:text-sm prose-a:text-blue-600 break-words"
+          className="prose max-w-none 
+      prose-pre:overflow-x-auto 
+      prose-pre:whitespace-pre 
+      prose-pre:bg-slate-900 
+      prose-pre:text-white 
+      prose-pre:rounded-lg 
+      prose-pre:p-4 
+      prose-pre:shadow 
+      prose-code:text-sm 
+      prose-a:text-blue-600 
+      break-words"
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />
       </div>
 
       {/* Comments */}
-      <div className="bg-slate-800 rounded-xl p-6 shadow-lg mb-10">
-        <h2 className="text-2xl font-bold mb-6 text-white">
+      <div className="bg-slate-800 rounded-xl p-4 sm:p-6 shadow-lg mb-10">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6 text-white">
           Comments ({comments.length})
         </h2>
         {comments.length > 0 ? (
@@ -189,7 +200,7 @@ export default function BlogDetailPage() {
                 key={comment._id}
                 className="bg-slate-700/60 rounded-xl p-4 border border-slate-600"
               >
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
                   <h3 className="font-semibold text-sm">{comment.name}</h3>
                   <span className="text-xs text-gray-400">
                     {new Date(comment.createdAt).toLocaleDateString()}
@@ -203,15 +214,14 @@ export default function BlogDetailPage() {
                   Reply
                 </button>
 
-                {/* Replies */}
                 {comment.replies?.length > 0 && (
-                  <div className="ml-4 mt-4 pl-4 border-l border-indigo-500 space-y-3">
+                  <div className="ml-2 sm:ml-4 mt-4 pl-2 sm:pl-4 border-l border-indigo-500 space-y-3">
                     {comment.replies.map((reply) => (
                       <div
                         key={reply._id}
                         className="bg-slate-800 p-3 rounded-lg"
                       >
-                        <div className="flex justify-between items-center mb-1">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1 gap-1">
                           <span className="font-semibold text-sm text-gray-200">
                             {reply.name}
                           </span>
@@ -225,53 +235,44 @@ export default function BlogDetailPage() {
                   </div>
                 )}
 
-                {/* Reply Form */}
                 {replyingTo === comment._id && (
                   <form
-                    className="mt-4 ml-4 bg-slate-800 p-4 rounded-xl space-y-2 border border-slate-600"
+                    className="mt-4 ml-2 sm:ml-4 bg-slate-800 p-4 rounded-xl space-y-2 border border-slate-600"
                     onSubmit={(e) => handleSubmitReply(e, comment._id)}
                   >
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Input
                         required
                         placeholder="Your name"
-                        className="px-2 py-1 rounded bg-slate-900 text-white border border-slate-600 text-sm w-full"
                         value={replyName}
                         onChange={(e) => setReplyName(e.target.value)}
                       />
-                      <input
+                      <Input
                         type="email"
                         required
                         placeholder="your@email.com"
-                        className="px-2 py-1 rounded bg-slate-900 text-white border border-slate-600 text-sm w-full"
                         value={replyEmail}
                         onChange={(e) => setReplyEmail(e.target.value)}
                       />
                     </div>
-                    <textarea
+                    <Textarea
                       required
-                      rows="2"
+                      rows={2}
                       placeholder="Your reply..."
-                      className="w-full px-2 py-1 rounded bg-slate-900 text-white border border-slate-600 text-sm"
                       value={replyContent}
                       onChange={(e) => setReplyContent(e.target.value)}
                     />
-                    <div className="flex gap-2">
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="bg-purple-400 text-slate-900 px-3 py-1 rounded font-bold text-sm hover:bg-purple-300 disabled:opacity-60"
-                      >
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "Replying..." : "Post Reply"}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="ghost"
                         type="button"
-                        className="text-gray-300 text-sm"
                         onClick={() => setReplyingTo(null)}
                       >
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </form>
                 )}
@@ -286,44 +287,40 @@ export default function BlogDetailPage() {
       </div>
 
       {/* New Comment Form */}
-      <div className="bg-slate-900 rounded-xl p-6 shadow-lg border border-slate-700">
-        <h2 className="text-2xl font-bold mb-4 text-[var(--accent)]">
+      <div className="bg-slate-900 rounded-xl p-4 sm:p-6 shadow-lg border border-slate-700">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 text-[var(--accent)]">
           Join the Discussion
         </h2>
         <form onSubmit={handleSubmitComment} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Your name"
-              className="px-4 py-2 bg-slate-800 text-white border border-slate-700 rounded-lg w-full"
             />
-            <input
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="your@email.com"
-              className="px-4 py-2 bg-slate-800 text-white border border-slate-700 rounded-lg w-full"
             />
           </div>
-          <textarea
-            rows="4"
+          <Textarea
+            rows={4}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             required
             placeholder="Share your thoughts..."
-            className="w-full px-4 py-2 bg-slate-800 text-white border border-slate-700 rounded-lg"
           />
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-[var(--accent)] text-slate-900 font-bold rounded-lg hover:bg-[var(--btn-hover)] disabled:opacity-70 transition-colors duration-200"
+            className={"bg-gray-500 hover:bg-gray-600"}
           >
             {isSubmitting ? "Posting..." : "Post Comment"}
-          </button>
+          </Button>
         </form>
       </div>
     </motion.div>

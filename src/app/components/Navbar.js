@@ -92,7 +92,7 @@ export default function Navbar() {
 
             {/* Drawer */}
             <motion.div
-              className="absolute top-0 left-0 h-full w-[70vw] max-w-xs bg-[color:var(--bg-dark)] text-[color:var(--text-light)] px-6 py-6 flex flex-col space-y-6 shadow-2xl rounded-tr-xl rounded-br-xl"
+              className="absolute top-0 left-0 h-full w-[70vw] max-w-xs bg-[color:var(--bg-dark)] text-[color:var(--text-light)] px-6 py-6 flex flex-col space-y-6 shadow-2xl rounded-tr-xl rounded-br-xl z-50"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
