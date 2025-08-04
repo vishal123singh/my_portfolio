@@ -1,4 +1,3 @@
-// components/ProjectDetailClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -15,22 +14,21 @@ import {
 import Link from "next/link";
 import ProjectGalleryClient from "./ProjectGalleryClient";
 
-// 🧠 Map tags to icons (you can extend this as needed)
+// Tag Icons
 const tagIcons = {
-  React: <Layout size={16} className="text-sky-400" />,
+  React: <Layout size={16} className="text-indigo-400" />,
   Nextjs: <Globe size={16} className="text-white" />,
-  Nodejs: <Cpu size={16} className="text-green-400" />,
+  Nodejs: <Cpu size={16} className="text-orange-400" />,
   Express: <Cpu size={16} className="text-gray-300" />,
   MongoDB: <Database size={16} className="text-green-500" />,
   Firebase: <Sparkles size={16} className="text-yellow-400" />,
-  TypeScript: <Code2 size={16} className="text-blue-400" />,
+  TypeScript: <Code2 size={16} className="text-purple-400" />,
   JavaScript: <Code2 size={16} className="text-yellow-300" />,
 };
 
 export default function ProjectDetailClient({ project }) {
   return (
     <main className="max-w-5xl mx-auto px-4 py-8 sm:py-12 text-white space-y-10">
-      {/* Back Link */}
       <Link
         href="/projects"
         className="text-sm text-slate-400 hover:underline transition"
@@ -38,7 +36,6 @@ export default function ProjectDetailClient({ project }) {
         ← Back to all projects
       </Link>
 
-      {/* Title */}
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -48,7 +45,6 @@ export default function ProjectDetailClient({ project }) {
         {project.title}
       </motion.h1>
 
-      {/* Description */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -58,7 +54,6 @@ export default function ProjectDetailClient({ project }) {
         {project.description}
       </motion.p>
 
-      {/* Live Link */}
       {project.link && (
         <motion.a
           initial={{ opacity: 0 }}
@@ -67,14 +62,13 @@ export default function ProjectDetailClient({ project }) {
           href={project.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-cyan-600 hover:bg-cyan-500 transition text-white text-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 transition text-white text-sm font-medium"
         >
           <ExternalLink size={16} />
           View Live Project
         </motion.a>
       )}
 
-      {/* Image Gallery */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -84,7 +78,6 @@ export default function ProjectDetailClient({ project }) {
         <ProjectGalleryClient images={project.images} />
       </motion.div>
 
-      {/* Key Features */}
       {project.features?.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 10 }}
@@ -107,7 +100,6 @@ export default function ProjectDetailClient({ project }) {
         </motion.section>
       )}
 
-      {/* Contributions */}
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -125,7 +117,6 @@ export default function ProjectDetailClient({ project }) {
         </ul>
       </motion.section>
 
-      {/* Tech Stack with Icons */}
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
