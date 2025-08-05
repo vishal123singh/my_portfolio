@@ -81,7 +81,7 @@ export default function ProjectCard({
             ))}
           </div>
 
-          <div className="mt-4 text-indigo-300 flex items-center gap-1 text-sm font-medium group-hover:text-indigo-200 transition-colors">
+          <div className="mt-4 text-pink-400 flex items-center gap-1 text-sm font-medium group-hover:text-pink-300 transition-colors">
             View Project <ExternalLink size={14} className="opacity-80" />
           </div>
         </div>

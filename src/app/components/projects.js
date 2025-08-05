@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Rocket, RocketIcon } from "lucide-react";
 import ProjectCard from "@/app/components/ProjectCard"; // adjust if needed
 import { projects } from "../../../data";
+import CosmicBackground from "./CosmicBackground";
 
 export default function Projects() {
   const searchParams = useSearchParams();
@@ -24,6 +25,9 @@ export default function Projects() {
       id="project-section"
       className="relative min-h-screen pt-12 custom-section"
     >
+      <div className="relative w-full h-full overflow-hidden">
+        <CosmicBackground />
+      </div>
       {/* 🚀 Landing rocket animation */}
       {showLandingRocket && (
         <motion.div

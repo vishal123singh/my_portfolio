@@ -65,7 +65,7 @@ function Projects() {
       className="relative min-h-screen pt-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
           {uiExperiments.map((proj, idx) => (
             <ProjectCard key={idx} {...proj} target="_self" />
           ))}

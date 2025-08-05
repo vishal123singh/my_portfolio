@@ -2,7 +2,7 @@ export const ChatBotIcon = ({
   size = 64,
   color = "#f472b6" /* pink-400 */,
 }) => (
-  <div className="group rounded-xl bg-white/10 backdrop-blur-md shadow-lg border border-white/20">
+  <div className="group w-fit">
     <svg
       width={size}
       height={size}
@@ -10,26 +10,6 @@ export const ChatBotIcon = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Background */}
-      <rect
-        x="2"
-        y="2"
-        width="60"
-        height="60"
-        rx="12"
-        fill="url(#bgGradient)"
-      />
-      <rect
-        x="2"
-        y="2"
-        width="60"
-        height="60"
-        rx="12"
-        stroke="url(#borderGradient)"
-        strokeWidth="2"
-        className="transition-all group-hover:stroke-pink-400 group-hover:drop-shadow-[0_0_6px_#f472b6]"
-      />
-
       {/* Robot head */}
       <g transform="translate(12, 14)">
         <path d="M8 8H32V32H24L20 36V32H8V8Z" fill="white" />
@@ -40,6 +20,7 @@ export const ChatBotIcon = ({
           height="24"
           rx="8"
           fill="url(#headGradient)"
+          className="transition-all group-hover:drop-shadow-[0_0_12px_#f472b6]"
         />
         {/* Eyes */}
         <rect
@@ -122,8 +103,8 @@ export const ChatBotIcon = ({
         </linearGradient>
 
         <linearGradient id="borderGradient" x1="0" y1="0" x2="0" y2="64">
-          <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.8" />
+          <stop offset="0%" stopColor="#f472b6" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#ec4899" stopOpacity="1" />
         </linearGradient>
 
         <linearGradient id="headGradient" x1="0" y1="0" x2="0" y2="32">

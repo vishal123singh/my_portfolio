@@ -22,10 +22,10 @@ export default function AssistantLauncher() {
           whileTap={{ scale: 0.95 }}
           className="cursor-pointer"
         >
-          <ChatBotIcon />
+          <ChatBotIcon size={128} />
         </motion.div>
 
-        <span className="mt-2 text-xs bg-gray-800 text-white rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <span className="mt-2 text-xs font-semibold text-pink-200 bg-indigo-900 rounded-full px-3 py-1 shadow-md group-hover:opacity-100 opacity-0 group-hover:translate-y-[-4px] transition-all duration-300">
           Ask ViVA
         </span>
       </motion.div>

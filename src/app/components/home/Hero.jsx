@@ -64,7 +64,6 @@ function HomeHero() {
       ref={containerRef}
     >
       <CosmicBackground />
-
       <div className="max-w-7xl w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center">
           {/* Left Column */}
