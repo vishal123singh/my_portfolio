@@ -1,28 +1,26 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function ScrollStoryMini() {
   const [hoverKey, setHoverKey] = useState(0);
 
   return (
     <motion.div
-      onMouseEnter={() => setHoverKey(prev => prev + 1)}
+      onMouseEnter={() => setHoverKey((prev) => prev + 1)}
       whileHover={{ scale: 1.015 }}
-      className="relative w-full h-full rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-700 to-pink-600 p-6 overflow-hidden text-white shadow-2xl border border-white/10 cursor-pointer group transition-all duration-300"
+      className="relative w-full h-full rounded-t-2xl bg-gradient-to-br from-indigo-500 via-purple-700 to-pink-600 p-6 overflow-hidden text-white shadow-2xl border border-white/10 cursor-pointer group transition-all duration-300"
     >
       {/* Glow outline on hover */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-pink-400/50 pointer-events-none transition-all duration-300"
-      />
+      <motion.div className="absolute inset-0 rounded-t-2xl border-2 border-transparent group-hover:border-pink-400/50 pointer-events-none transition-all duration-300" />
 
       {/* Shimmer sweep */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-lg animate-[shimmer_2.5s_linear_infinite]"
         style={{
-          backgroundSize: '200% 100%',
-          backgroundPosition: '200% 0%',
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0%",
         }}
       />
 
@@ -40,7 +38,7 @@ function AnimatedContent() {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: 'easeOut' }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
       className="relative z-10 flex flex-col justify-center items-center text-center h-full"
     >
       <motion.h2

@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import Link from "next/link";
-import CosmicBackground from "./CosmicBackground";
 
 export default function Footer() {
   const socialLinks = [
@@ -38,8 +37,6 @@ export default function Footer() {
       className="relative border-t border-white/10"
       style={{ paddingBottom: 0 }}
     >
-      {/* <CosmicBackground /> */}
-
       <div className="relative max-w-7xl mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           {/* Logo/Branding */}

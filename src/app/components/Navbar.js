@@ -6,6 +6,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import CosmicBackground from "./CosmicBackground";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -38,8 +39,9 @@ export default function Navbar() {
         initial={false}
         animate={{ y: visible ? 0 : -100 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[color:var(--bg-dark)]/80 backdrop-blur-lg border-b border-white/10 shadow-md"
+        className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[color:var(--bg-dark)]/80 backdrop-blur-lg border-b border-white/10 shadow-md overflow-hidden"
       >
+        <CosmicBackground></CosmicBackground>
         {/* Desktop Nav */}
         <div className="hidden sm:flex space-x-6">
           {navLinks.map(({ label, href }) => {
@@ -67,7 +69,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button
-          className="sm:hidden text-[color:var(--text-light)]"
+          className="sm:hidden ml-4 text-[color:var(--text-light)] z-50"
           onClick={() => setMenuOpen(true)}
           aria-label="Open Menu"
         >
@@ -92,7 +94,7 @@ export default function Navbar() {
 
             {/* Drawer */}
             <motion.div
-              className="absolute top-0 left-0 h-full w-[70vw] max-w-xs bg-[color:var(--bg-dark)] text-[color:var(--text-light)] px-6 py-6 flex flex-col space-y-6 shadow-2xl rounded-tr-xl rounded-br-xl z-50"
+              className="absolute top-0 left-0 h-full w-[70vw] max-w-xs bg-white/10 text-[color:var(--text-light)] px-6 py-6 flex flex-col space-y-6 shadow-2xl rounded-tr-xl rounded-br-xl z-50"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}

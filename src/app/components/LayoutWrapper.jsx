@@ -7,7 +7,6 @@ import ResumeButton from "./ResumeButton";
 import AssistantWrapper from "./AssistantWrapper";
 import BackButton from "./common/BackButton";
 import { Toaster } from "@/components/ui/sonner";
-import CosmicBackground from "./CosmicBackground";
 import { motion } from "framer-motion";
 
 export default function LayoutWrapper({ children }) {
@@ -47,7 +46,7 @@ export default function LayoutWrapper({ children }) {
       {!isFullScreen && <Navbar />}
       {!isFullScreen && <BackButton label="Back" />}
       {!isFullScreen && <AssistantWrapper />}
-      {!isFullScreen && <ResumeButton />}
+      {/* {!isFullScreen && <ResumeButton />} */}
 
       <main
         className={

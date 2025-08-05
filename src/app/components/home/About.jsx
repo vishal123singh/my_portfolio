@@ -1,17 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { FaReact, FaNodeJs, FaPython, FaLock, FaUnlock } from "react-icons/fa";
-import {
-  SiNextdotjs,
-  SiMongodb,
-  SiAngular,
-  SiFirebase,
-  SiTypescript,
-} from "react-icons/si";
+import { FaLock, FaUnlock } from "react-icons/fa";
 import Image from "next/image";
 import { useState } from "react";
-import CosmicBackground from "../CosmicBackground";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { keyProjects, techStack, experiences } from "../../../../data.js";
 
 const TechBubble = ({ icon: Icon, color, name, delay }) => {
   return (
@@ -41,36 +35,92 @@ const ExperienceCard = ({
   tech,
   index,
 }) => {
+  // Color variations for different cards
+  const cardColors = [
+    "from-blue-500/10 to-purple-600/10",
+    "from-emerald-500/10 to-cyan-600/10",
+    "from-amber-500/10 to-orange-600/10",
+    "from-fuchsia-500/10 to-pink-600/10",
+  ];
+
+  const colorIndex = index % cardColors.length;
+
   return (
     <motion.div
-      className="relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-6 backdrop-blur-sm"
+      className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 backdrop-blur-sm"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      viewport={{ once: true }}
-      whileHover={{ y: -5 }}
+      transition={{
+        delay: index * 0.1,
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      }}
+      viewport={{ once: true, margin: "-50px" }}
+      whileHover={{
+        y: -5,
+        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
+      }}
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+      {/* Animated gradient border */}
+      <div
+        className={`absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-r ${cardColors[colorIndex]} opacity-0 hover:opacity-100 transition-opacity duration-500`}
+      />
+
+      {/* Glow effect */}
+      <div
+        className={`absolute -inset-1 bg-gradient-to-r ${cardColors[colorIndex]} blur-lg opacity-0 hover:opacity-20 transition-opacity duration-500`}
+      />
+
       <div className="relative z-10">
-        <h4 className="text-lg font-semibold">
-          {title}
-          {company && (
-            <>
-              {" "}
-              <span className="text-blue-300">@ {company}</span>
-            </>
-          )}
-        </h4>
-        <p className="text-sm text-white/60 mb-3">{duration}</p>
-        <p className="text-white/80 text-sm mb-3">{description}</p>
+        {/* Timeline indicator */}
+        <div className="absolute -left-10 top-6 h-3 w-3 rounded-full bg-white/20">
+          <motion.div
+            className="h-full w-full rounded-full bg-gradient-to-r from-blue-400 to-purple-500"
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            transition={{ delay: index * 0.1 + 0.2 }}
+            viewport={{ once: true }}
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <h4 className="text-lg font-semibold tracking-tight">
+            {title}
+            {company && (
+              <>
+                {" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300">
+                  @ {company}
+                </span>
+              </>
+            )}
+          </h4>
+          <span className="text-xs px-3 py-1 rounded-full bg-white/10 text-white/80 font-medium">
+            {duration}
+          </span>
+        </div>
+
+        <p className="text-white/80 text-sm mb-4 leading-relaxed">
+          {description}
+        </p>
+
         <div className="flex flex-wrap gap-2 mt-4">
           {tech.split(" • ").map((item, i) => (
-            <span
+            <motion.span
               key={i}
-              className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/80"
+              className="text-xs px-3 py-1 rounded-full bg-white/10 text-white/80 backdrop-blur-sm"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: index * 0.1 + i * 0.05,
+                type: "spring",
+                stiffness: 200,
+              }}
+              viewport={{ once: true }}
             >
               {item}
-            </span>
+            </motion.span>
           ))}
         </div>
       </div>
@@ -158,72 +208,6 @@ const SecretProfile = () => {
 };
 
 export default function About() {
-  const techStack = [
-    { icon: FaReact, color: "#61DAFB", name: "React" },
-    { icon: SiNextdotjs, color: "#FFFFFF", name: "Next.js" },
-    { icon: FaNodeJs, color: "#339933", name: "Node.js" },
-    { icon: SiTypescript, color: "#3178C6", name: "TypeScript" },
-    { icon: SiMongodb, color: "#47A248", name: "MongoDB" },
-    { icon: SiAngular, color: "#DD0031", name: "Angular" },
-    { icon: SiFirebase, color: "#FFCA28", name: "Firebase" },
-    { icon: FaPython, color: "#3776AB", name: "Python" },
-  ];
-
-  const experiences = [
-    {
-      title: "Software Engineer",
-      company: "Jai Infoway Pvt. Ltd.",
-      duration: "August 2024 – Present",
-      description:
-        "Leading full-stack development for global client projects in a product-service hybrid environment.",
-      tech: "React • Node.js • AWS • Microservices",
-    },
-    {
-      title: "Mobile App Developer",
-      company: "Brightcode Pvt. Ltd.",
-      duration: "March 2024 – August 2024",
-      description:
-        "Developed cross-platform mobile applications with optimized performance and responsive UIs.",
-      tech: "React Native • Node.js • GCP",
-    },
-    {
-      title: "Software Engineer",
-      company: "Jai Infoway Pvt. Ltd.",
-      duration: "February 2023 – February 2024",
-      description:
-        "Built client-facing applications end-to-end in Agile teams, from UI to backend services.",
-      tech: "Angular • Express.js • MongoDB • MySQL",
-    },
-    {
-      title: "Freelance Full-Stack Developer",
-      company: "",
-      duration: "July 2022 – January 2023",
-      description:
-        "Delivered complete web solutions for local businesses, handling all development phases.",
-      tech: "React • Node.js • REST APIs",
-    },
-  ];
-
-  const projects = [
-    {
-      name: "Koodums Chat",
-      description: "Generative AI Agents Builder.",
-      tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
-    },
-    {
-      name: "Earnings Call",
-      description:
-        "AI-powered financial analysis platform with LLM integration and voice assistant.",
-      tech: "Next.js • AWS • AI Agents",
-    },
-    {
-      name: "Kiddie-Kredit",
-      description:
-        "Financial education mobile app for children. Gamified with task & reward systems.",
-      tech: "React Native • Node.js • Socket.io",
-    },
-  ];
-
   return (
     <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
       <div className="relative max-w-5xl mx-auto">
@@ -284,24 +268,28 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Experience */}
         <motion.div
-          className="mb-20"
+          className="mb-20 relative"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           viewport={{ once: true }}
         >
-          <h3 className="text-2xl font-bold text-center text-white mb-12">
-            Professional Journey
+          <h3 className="text-3xl font-bold text-center text-white mb-12">
+            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Professional Journey
+            </span>
           </h3>
-          <div className="space-y-6">
+
+          {/* Timeline line */}
+          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent hidden sm:block" />
+
+          <div className="space-y-8 sm:pl-16">
             {experiences.map((exp, i) => (
               <ExperienceCard key={i} index={i} {...exp} />
             ))}
           </div>
         </motion.div>
-
         {/* Projects */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -313,7 +301,7 @@ export default function About() {
             Notable Projects
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            {projects.map((project, i) => (
+            {keyProjects.map((project, i) => (
               <motion.div
                 key={i}
                 className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all"

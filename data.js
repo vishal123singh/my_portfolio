@@ -1,3 +1,41 @@
+import { FaReact, FaNodeJs, FaPython } from "react-icons/fa";
+
+import {
+  SiReact,
+  SiNextdotjs,
+  SiAngular,
+  SiElectron,
+  SiJavascript,
+  SiTypescript,
+  SiNodedotjs,
+  SiExpress,
+  SiNestjs,
+  SiGraphql,
+  SiWebrtc,
+  SiPython,
+  SiFastapi,
+  SiAmazon,
+  SiGooglecloud,
+  SiDocker,
+  SiMongodb,
+  SiMysql,
+  SiPostgresql,
+  SiFirebase,
+  SiRedis,
+  SiElastic,
+  SiOpenai,
+  SiLangchain,
+} from "react-icons/si";
+import {
+  Code,
+  Server,
+  Cpu,
+  Database,
+  Languages,
+  BrainCircuit,
+  Sparkles,
+} from "lucide-react";
+
 const projects = [
   {
     title: "Earnings Call",
@@ -312,4 +350,164 @@ const projects = [
   // },
 ];
 
-module.exports = { projects };
+const techStack = [
+  { icon: FaReact, color: "#61DAFB", name: "React" },
+  { icon: SiNextdotjs, color: "#FFFFFF", name: "Next.js" },
+  { icon: FaNodeJs, color: "#339933", name: "Node.js" },
+  { icon: SiTypescript, color: "#3178C6", name: "TypeScript" },
+  { icon: SiMongodb, color: "#47A248", name: "MongoDB" },
+  { icon: SiAngular, color: "#DD0031", name: "Angular" },
+  { icon: SiFirebase, color: "#FFCA28", name: "Firebase" },
+  { icon: FaPython, color: "#3776AB", name: "Python" },
+];
+
+const experiences = [
+  {
+    title: "Software Engineer",
+    company: "Jai Infoway Pvt. Ltd.",
+    duration: "August 2024 – July 2025",
+    description:
+      "Leading full-stack development for global client projects in a product-service hybrid environment.",
+    tech: "React • Node.js • AWS • Microservices",
+  },
+  {
+    title: "Mobile App Developer",
+    company: "Brightcode Pvt. Ltd.",
+    duration: "March 2024 – August 2024",
+    description:
+      "Developed cross-platform mobile applications with optimized performance and responsive UIs.",
+    tech: "React Native • Node.js • GCP",
+  },
+  {
+    title: "Software Engineer",
+    company: "Jai Infoway Pvt. Ltd.",
+    duration: "February 2023 – February 2024",
+    description:
+      "Built client-facing applications end-to-end in Agile teams, from UI to backend services.",
+    tech: "Angular • Express.js • MongoDB • MySQL",
+  },
+  {
+    title: "Freelance Full-Stack Developer",
+    company: "",
+    duration: "July 2022 – January 2023",
+    description:
+      "Delivered complete web solutions for local businesses, handling all development phases.",
+    tech: "React • Node.js • REST APIs",
+  },
+];
+
+const keyProjects = [
+  {
+    name: "Koodums Chat",
+    description: "Generative AI Agents Builder.",
+    tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
+  },
+  {
+    name: "Earnings Call",
+    description:
+      "AI-powered financial analysis platform with LLM integration and voice assistant.",
+    tech: "Next.js • AWS • AI Agents",
+  },
+  {
+    name: "Kiddie-Kredit",
+    description:
+      "Financial education mobile app for children. Gamified with task & reward systems.",
+    tech: "React Native • Node.js • Socket.io",
+  },
+];
+
+const categories = [
+  {
+    title: "Frontend",
+    icon: Code,
+    color: "#38bdf8",
+    skills: [
+      { icon: <SiReact className="text-[#61dafb]" />, name: "React" },
+      { icon: <SiNextdotjs className="text-white" />, name: "Next.js" },
+      { icon: <SiAngular className="text-[#dd1b16]" />, name: "Angular" },
+      {
+        icon: <SiElectron className="text-[#47848F]" />,
+        name: "Electron.js",
+      },
+      {
+        icon: <SiJavascript className="text-[#f7df1e]" />,
+        name: "JavaScript",
+      },
+      {
+        icon: <SiTypescript className="text-[#3178c6]" />,
+        name: "TypeScript",
+      },
+    ],
+  },
+  {
+    title: "Backend",
+    icon: Server,
+    color: "#4ade80",
+    skills: [
+      { icon: <SiNodedotjs className="text-[#339933]" />, name: "Node.js" },
+      { icon: <SiGraphql className="text-[#e10098]" />, name: "GraphQL" },
+      { icon: <SiExpress className="text-white" />, name: "Express.js" },
+      { icon: <SiNestjs className="text-[#e0234e]" />, name: "Nest.js" },
+      { icon: <SiWebrtc className="text-[#333]" />, name: "WebRTC" },
+      { icon: <SiFastapi className="text-[#009688]" />, name: "FastAPI" },
+    ],
+  },
+  {
+    title: "AI/ML",
+    icon: BrainCircuit,
+    color: "#c084fc",
+    skills: [
+      { icon: <Sparkles className="text-[#a78bfa]" />, name: "LLMs" },
+      { icon: <SiLangchain className="text-[#5c2d91]" />, name: "LangChain" },
+      { icon: <SiOpenai className="text-[#10a37f]" />, name: "OpenAI" },
+    ],
+  },
+  {
+    title: "Cloud/DevOps",
+    icon: Cpu,
+    color: "#f59e0b",
+    skills: [
+      { icon: <SiAmazon className="text-[#ff9900]" />, name: "AWS" },
+      { icon: <SiGooglecloud className="text-[#4285f4]" />, name: "GCP" },
+      {
+        icon: <SiAmazon className="text-[#0078d7]" />,
+        name: "Azure",
+      },
+      { icon: <SiDocker className="text-[#0db7ed]" />, name: "Docker" },
+    ],
+  },
+  {
+    title: "Databases",
+    icon: Database,
+    color: "#f472b6",
+    skills: [
+      { icon: <SiMongodb className="text-[#47a248]" />, name: "MongoDB" },
+      { icon: <SiMysql className="text-[#00758f]" />, name: "MySQL" },
+      {
+        icon: <SiPostgresql className="text-[#336791]" />,
+        name: "PostgreSQL",
+      },
+      { icon: <SiFirebase className="text-[#ffca28]" />, name: "Firebase" },
+      { icon: <SiRedis className="text-[#005571]" />, name: "Redis" },
+      { icon: <SiElastic className="text-[#003b57]" />, name: "Elastic" },
+    ],
+  },
+  {
+    title: "Languages",
+    icon: Languages,
+    color: "#ec4899",
+    skills: [
+      {
+        icon: <SiTypescript className="text-[#3178c6]" />,
+        name: "TypeScript",
+      },
+      {
+        icon: <SiJavascript className="text-[#f7df1e]" />,
+        name: "JavaScript",
+      },
+      { icon: <SiPython className="text-[#3776ab]" />, name: "Python" },
+    ],
+  },
+];
+
+export { projects, techStack, keyProjects, experiences, categories };
