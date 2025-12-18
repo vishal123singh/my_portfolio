@@ -75,14 +75,55 @@ nav {
 }
 
 section {
-  padding: 4rem 4rem;
-  /* max-width: 960px;
-  margin: auto; */
+  padding: 2rem 2rem; /* Mobile first */
+}
+
+/* Tablets (≥ 640px) */
+@media (min-width: 640px) {
+  section {
+    padding: 3rem 2rem;
+  }
+}
+
+/* Laptops (≥ 1024px) */
+@media (min-width: 1024px) {
+  section {
+    padding: 4rem 4rem;
+  }
+}
+
+/* Large screens (≥ 1280px) */
+@media (min-width: 1280px) {
+  section {
+    padding: 5rem 6rem;
+  }
 }
 
 .custom-section {
-  padding: 4rem 4rem;
+  padding: 2rem 2rem; /* Mobile first */
 }
+
+/* Tablets (≥ 640px) */
+@media (min-width: 640px) {
+  .custom-section {
+    padding: 3rem 2rem;
+  }
+}
+
+/* Laptops / Desktop (≥ 1024px) */
+@media (min-width: 1024px) {
+  .custom-section {
+    padding: 4rem 4rem; /* your original padding */
+  }
+}
+
+/* Large screens (≥ 1280px) */
+@media (min-width: 1280px) {
+  .custom-section {
+    padding: 5rem 6rem;
+  }
+}
+
 
 .test-theme {
   --bg-dark: white;

@@ -64,7 +64,7 @@ function HomeHero() {
       ref={containerRef}
     >
       <CosmicBackground />
-      <div className="max-w-7xl w-full z-10">
+      <div className="w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center">
           {/* Left Column */}
           <div className="relative">
@@ -217,7 +217,7 @@ function HomeHero() {
 
         {/* Tech Stack */}
         <motion.div
-          className="mt-16 sm:mt-20 flex flex-wrap justify-center gap-4 sm:gap-5"
+          className="mt-16 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 justify-items-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
@@ -251,7 +251,7 @@ function HomeHero() {
           ].map((tech) => (
             <motion.div
               key={tech.name}
-              className={`w-64 px-4 py-2 sm:px-5 sm:py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all ${
+              className={`w-full sm:w-64 px-4 py-2 sm:px-5 sm:py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all ${
                 activeTech === tech.name
                   ? "bg-white/10 border border-white/20 shadow-lg"
                   : "bg-white/5 border border-white/10"
@@ -262,7 +262,7 @@ function HomeHero() {
               onHoverEnd={() => handleTechHover(null)}
             >
               <div className={`bg-gradient-to-r ${tech.color} p-2 rounded-lg`}>
-                <tech.icon className="w-5 h-5 text-white" />
+                <tech.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <span className="text-white/90 text-sm sm:text-base font-medium">
                 {tech.name}

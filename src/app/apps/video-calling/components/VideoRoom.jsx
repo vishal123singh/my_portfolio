@@ -16,8 +16,6 @@ import {
   FiVideoOff,
   FiPhoneOff,
   FiMonitor,
-  FiMessageCircle,
-  FiX,
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import ChatDrawer from "./ChatDrawer";

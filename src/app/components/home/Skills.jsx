@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { categories } from "../../../../data";
 
@@ -70,7 +69,7 @@ const SkillCategory = ({ title, icon: Icon, skills, color, delay }) => {
 
 export default function TechStack() {
   return (
-    <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
+    <section className="relative py-24 max-sm:px-4 md:px-6 overflow-hidden">
       <div className="relative max-w-7xl w-full mx-auto z-10">
         <motion.div
           className="text-center mb-16"

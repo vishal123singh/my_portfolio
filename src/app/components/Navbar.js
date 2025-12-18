@@ -14,6 +14,7 @@ const navLinks = [
   { label: "UI/UX", href: "/mockups" },
   { label: "Blogs", href: "/blogs" },
   { label: "Apps", href: "/apps" },
+  { label: "AI Agents Builder", href: "/ai-agents" },
 ];
 
 export default function Navbar() {
@@ -66,15 +67,16 @@ export default function Navbar() {
             );
           })}
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="sm:hidden ml-4 text-[color:var(--text-light)] z-50"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Open Menu"
-        >
-          <Menu size={24} />
-        </button>
+        <div className="sm:hidden w-full z-50 ">
+          {/* Mobile Menu Button */}
+          <button
+            className="ml-4 text-[color:var(--text-light)]"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open Menu"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
       </motion.nav>
 
       {/* Mobile Drawer */}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { db, auth } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { signOut } from "firebase/auth";
-import { FiLogOut, FiCopy, FiVideo, FiKey } from "react-icons/fi";
+import { FiLogOut, FiVideo, FiKey } from "react-icons/fi";
 import { toast } from "sonner";
 
 export default function RoomLobby({ user }) {
@@ -22,19 +22,47 @@ export default function RoomLobby({ user }) {
     }
   };
 
+  const requestMediaPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+
+      // Stop tracks immediately (we just needed permission)
+      stream.getTracks().forEach((track) => track.stop());
+
+      return true;
+    } catch (error) {
+      console.error("Media permission denied:", error);
+      toast.error(
+        "Camera & microphone permission is required to join the meeting"
+      );
+      return false;
+    }
+  };
+
   const createRoom = async () => {
+    const hasPermission = await requestMediaPermission();
+    if (!hasPermission) return;
+
     setIsCreatingRoom(true);
     try {
+      console.log("User UID:", user?.uid);
+
       const docRef = await addDoc(collection(db, "rooms"), {
         host: user.uid,
         hostName: user.displayName,
         createdAt: serverTimestamp(),
         participants: [user.uid],
       });
+
       toast.success("Meeting started successfully");
+
       const roomLink = `${window.location.origin}/apps/video-calling/${docRef.id}`;
       await navigator.clipboard.writeText(roomLink);
       toast.success("Meeting link copied to clipboard!");
+
       window.location.href = roomLink;
     } catch (error) {
       console.error("Error creating meeting:", error);
@@ -129,7 +157,7 @@ export default function RoomLobby({ user }) {
               placeholder="Enter Meeting ID"
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
               onKeyPress={(e) => e.key === "Enter" && joinRoom()}
             />
             <button
