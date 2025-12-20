@@ -1,3 +1,4 @@
+// React Icons
 import { FaReact, FaNodeJs, FaPython } from "react-icons/fa";
 
 import {
@@ -26,6 +27,8 @@ import {
   SiOpenai,
   SiLangchain,
 } from "react-icons/si";
+
+// Lucide Icons
 import {
   Code,
   Server,
@@ -34,6 +37,42 @@ import {
   Languages,
   BrainCircuit,
   Sparkles,
+  Link2,
+  Handshake,
+  FileText,
+  CreditCard,
+  Upload,
+  LayoutDashboard,
+  Search,
+  User,
+  ShieldCheck,
+  ClipboardList,
+  Bell,
+  Cloud,
+  Plug,
+  Smartphone,
+  Settings,
+  ShoppingCart,
+  Package,
+  BadgeCheck,
+  Phone,
+  Navigation,
+  Bot,
+  Layers,
+  Gauge,
+  BarChart2,
+  TrendingUp,
+  GitPullRequest,
+  Speaker,
+  MessageSquare,
+  Users,
+  Hand,
+  Monitor,
+  Video,
+  ServerCog,
+  Mail,
+  Activity,
+  Repeat,
 } from "lucide-react";
 
 const projects = [
@@ -52,62 +91,176 @@ const projects = [
       "MongoDB",
     ],
     images: [
-      "/projects/screenshots/velotransact/1.png",
-      "/projects/screenshots/velotransact/2.png",
-      "/projects/screenshots/velotransact/3.png",
-      "/projects/screenshots/velotransact/4.png",
-      "/projects/screenshots/velotransact/5.png",
-      "/projects/screenshots/velotransact/6.png",
-      "/projects/screenshots/velotransact/7.png",
-      "/projects/screenshots/velotransact/8.png",
-      "/projects/screenshots/velotransact/9.png",
+      "/projects/screenshots/velotransact/11.png",
+      "/projects/screenshots/velotransact/12.png",
+      "/projects/screenshots/velotransact/13.png",
+      "/projects/screenshots/velotransact/14.png",
+      "/projects/screenshots/velotransact/15.png",
+      "/projects/screenshots/velotransact/16.png",
+      "/projects/screenshots/velotransact/17.png",
+      "/projects/screenshots/velotransact/18.png",
+      "/projects/screenshots/velotransact/19.png",
     ],
     features: [
-      `Manage Inventory Via Integrations (vauto, Homenet, Etc.)
-Approve Broker Transactions, Trade-ins, Loyalty Discounts
-Coordinate Delivery + Track Payments`,
-      `Submit Purchases / Trade-ins
-Track Commissions & Payments
-Upload Required Documents & Manage Equity`,
-      `Document Upload & Approval Flow`,
-      `Vehicle Inventory Management`,
-      `Broker Transaction Management`,
-      `Payment Tracking & Commission Management`,
-      `Customer Purchase & Trade-in Portal`,
-      `Integration with vAuto & HomeNet`,
-      `Dealer & Broker Dashboards`,
-      `Advanced Search & Filtering`,
-      `Responsive Design for Mobile & Desktop`,
-      `Secure Authentication & Role-based Access`,
-      `Audit Logs & Activity Tracking`,
-      `Integration with Third-party APIs`,
-      `Cloud-hosted with GCP & Firebase`,
-      `Automated Email Notifications`,
-      `Admin Controls & Compliance Oversight`,
-      `Real-time Notifications & Updates`,
+      {
+        title: "Inventory & Dealer Integrations",
+        icon: <Link2 size={20} />,
+        description:
+          "Manage vehicle inventory through integrations with vAuto, HomeNet, and other dealer systems, ensuring real-time sync and accuracy.",
+      },
+      {
+        title: "Broker Transaction Management",
+        icon: <Handshake size={20} />,
+        description:
+          "Approve broker transactions, manage trade-ins, loyalty discounts, and coordinate delivery workflows with full transparency.",
+      },
+      {
+        title: "Purchase & Trade-in Submissions",
+        icon: <FileText size={20} />,
+        description:
+          "Submit vehicle purchases and trade-ins, upload required documents, track equity, and manage approvals in one streamlined flow.",
+      },
+      {
+        title: "Payment & Commission Tracking",
+        icon: <CreditCard size={20} />,
+        description:
+          "Track payments, commissions, and broker payouts with detailed status updates and historical records.",
+      },
+      {
+        title: "Document Upload & Approval Flow",
+        icon: <Upload size={20} />,
+        description:
+          "Secure document uploads with approval workflows, ensuring compliance and audit-ready records.",
+      },
+      {
+        title: "Dealer & Broker Dashboards",
+        icon: <LayoutDashboard size={20} />,
+        description:
+          "Dedicated dashboards for dealers and brokers, providing real-time visibility into inventory, transactions, and payments.",
+      },
+      {
+        title: "Advanced Search & Filtering",
+        icon: <Search size={20} />,
+        description:
+          "Powerful search and filtering tools to quickly find vehicles, transactions, customers, and documents.",
+      },
+      {
+        title: "Customer Purchase Portal",
+        icon: <User size={20} />,
+        description:
+          "Customer-facing portal to manage purchases, trade-ins, document submissions, and transaction status.",
+      },
+      {
+        title: "Secure Authentication & Roles",
+        icon: <ShieldCheck size={20} />,
+        description:
+          "Role-based access control with secure authentication to protect sensitive dealer, broker, and customer data.",
+      },
+      {
+        title: "Audit Logs & Activity Tracking",
+        icon: <ClipboardList size={20} />,
+        description:
+          "Complete audit logs and activity tracking for compliance, transparency, and operational accountability.",
+      },
+      {
+        title: "Automated Notifications",
+        icon: <Bell size={20} />,
+        description:
+          "Automated email and real-time notifications for approvals, payments, document updates, and status changes.",
+      },
+      {
+        title: "Cloud Infrastructure",
+        icon: <Cloud size={20} />,
+        description:
+          "Cloud-hosted architecture using GCP and Firebase, ensuring scalability, reliability, and performance.",
+      },
+      {
+        title: "Third-party API Integrations",
+        icon: <Plug size={20} />,
+        description:
+          "Seamless integration with third-party APIs to extend platform capabilities and automate workflows.",
+      },
+      {
+        title: "Responsive Cross-device Design",
+        icon: <Smartphone size={20} />,
+        description:
+          "Fully responsive design optimized for both mobile and desktop usage across dealer and broker teams.",
+      },
+      {
+        title: "Admin Controls & Compliance Oversight",
+        icon: <Settings size={20} />,
+        description:
+          "Admin-level controls for managing users, enforcing policies, and maintaining regulatory compliance.",
+      },
     ],
-    contributions: [""],
-    displayImage: "/projects/screenshots/velotransact/3.png",
+
+    contributions: [],
+    displayImage: "/projects/screenshots/velotransact/13.png",
   },
 
   {
     title: "Aadvico",
     slug: "aadvico",
-    description: "E-Commerce Platform for Makhana Products.",
+    description:
+      "Aadvico’s website is an e-commerce platform for buying healthy roasted makhana snacks, with product browsing, shopping cart, account login, order management, health benefit details, and support contact info.",
     link: "https://www.aadvico.com/",
     tags: ["GCP", "Web", "Next.js", "Firebase"],
     images: [
+      "/projects/screenshots/aadvico/11.png",
+      "/projects/screenshots/aadvico/12.png",
+      "/projects/screenshots/aadvico/13.png",
+      "/projects/screenshots/aadvico/14.png",
+      "/projects/screenshots/aadvico/15.png",
       "/projects/screenshots/aadvico/1.png",
       "/projects/screenshots/aadvico/2.png",
       "/projects/screenshots/aadvico/3.png",
-      "/projects/screenshots/aadvico/4.png",
-      "/projects/screenshots/aadvico/5.png",
-      "/projects/screenshots/aadvico/6.png",
-      "/projects/screenshots/aadvico/7.png",
-      "/projects/screenshots/aadvico/8.png",
-      "/projects/screenshots/aadvico/9.png",
     ],
-    features: ["E-Commerce platform for buying premium Makhana products"],
+
+    features: [
+      {
+        title: "Online Shopping Platform",
+        icon: <ShoppingCart size={20} />,
+        description:
+          "Browse and buy healthy roasted makhana directly from the website. Products are listed with prices and Add to Cart functionality.",
+      },
+      {
+        title: "Product Catalog",
+        icon: <Package size={20} />,
+        description:
+          "Multiple makhana flavors including Pudina (Mint), Prasad (fasting/rituals), and Salt & Pepper. Each product highlights gluten-free, plant-based, non-GMO, and calcium-rich benefits.",
+      },
+      {
+        title: "Shopping Cart & Checkout",
+        icon: <CreditCard size={20} />,
+        description:
+          "Users can add products to the cart and complete checkout when ready to purchase.",
+      },
+      {
+        title: "Account Login & Order Management",
+        icon: <User size={20} />,
+        description:
+          "Login and sign-up functionality for users to manage accounts and view past orders.",
+      },
+      {
+        title: "Product Benefits Information",
+        icon: <BadgeCheck size={20} />,
+        description:
+          "Clearly highlights health benefits such as gluten-free, non-GMO, plant-based, and calcium-rich ingredients.",
+      },
+      {
+        title: "Contact & Support",
+        icon: <Phone size={20} />,
+        description:
+          "Dedicated contact page with company address, phone number, and email for customer support.",
+      },
+      {
+        title: "Simple Navigation",
+        icon: <Navigation size={20} />,
+        description:
+          "Easy-to-use navigation menu including Home, Products, Orders, Cart, Contact, and Login/Sign-up.",
+      },
+    ],
+
     contributions: [
       "Developed the application end-to-end, integrating GCP services and Firebase for backend functionalities.",
       "Implemented responsive UI/UX for seamless shopping experience across devices.",
@@ -116,7 +269,7 @@ Upload Required Documents & Manage Equity`,
       "Built admin dashboard for inventory and sales tracking.",
       "Implemented user authentication and profile management features.",
     ],
-    displayImage: "/projects/screenshots/aadvico/1.png",
+    displayImage: "/projects/screenshots/aadvico/16.png",
   },
 
   {
@@ -131,12 +284,38 @@ Upload Required Documents & Manage Equity`,
       "/projects/screenshots/koodums-chat/3.png",
     ],
     tags: ["AI Agents", "Node JS", "Typescript", "Python", "GCP", "MCP"],
+
     features: [
-      "AI-driven travel assistance and room services via conversational UI",
-      "MCP-based external tool integration (Google Maps, YouTube)",
-      "Intelligent prompt refinement for incomplete queries",
-      "Dynamic context management for LLM conversation history",
-      "Scalable architecture for high-performance chatbot operation",
+      {
+        title: "AI-Driven Travel Assistance",
+        icon: <Bot size={20} />,
+        description:
+          "Conversational AI interface providing travel assistance and hotel room services through natural language interactions.",
+      },
+      {
+        title: "External Tool Integrations (MCP)",
+        icon: <Plug size={20} />,
+        description:
+          "MCP-based integration with external tools such as Google Maps and YouTube to enhance responses with real-time data and rich content.",
+      },
+      {
+        title: "Intelligent Prompt Refinement",
+        icon: <Sparkles size={20} />,
+        description:
+          "Automatically refines incomplete or ambiguous user queries to generate accurate and context-aware responses.",
+      },
+      {
+        title: "Dynamic Context Management",
+        icon: <Layers size={20} />,
+        description:
+          "Maintains and manages conversation history dynamically to ensure coherent, multi-turn LLM interactions.",
+      },
+      {
+        title: "Scalable High-Performance Architecture",
+        icon: <Gauge size={20} />,
+        description:
+          "Designed for scalability and performance, enabling efficient handling of concurrent chatbot conversations.",
+      },
     ],
 
     contributions: [
@@ -220,14 +399,46 @@ Upload Required Documents & Manage Equity`,
       "/projects/screenshots/earnings-call/11.png",
       "/projects/screenshots/earnings-call/12.png",
     ],
+
     features: [
-      "AI-powered earnings call analysis",
-      "Sentiment analysis & real-time graphs",
-      "Earnings call transcripts & uploads",
-      "Company comparisons & financial reports",
-      "SEC filings integration",
-      "Voice assistant for conversational queries",
+      {
+        title: "AI-Powered Earnings Call Analysis",
+        icon: <BarChart2 size={20} />,
+        description:
+          "Leverages AI to automatically analyze earnings calls, extracting key insights and trends for investors and analysts.",
+      },
+      {
+        title: "Sentiment Analysis & Real-Time Graphs",
+        icon: <TrendingUp size={20} />,
+        description:
+          "Provides sentiment scoring and real-time visualizations to quickly assess market reactions and investor sentiment.",
+      },
+      {
+        title: "Earnings Call Transcripts & Uploads",
+        icon: <FileText size={20} />,
+        description:
+          "Allows users to upload and access detailed transcripts of earnings calls for review and reference.",
+      },
+      {
+        title: "Company Comparisons & Financial Reports",
+        icon: <Layers size={20} />,
+        description:
+          "Compare multiple companies side-by-side with comprehensive financial reports and performance metrics.",
+      },
+      {
+        title: "SEC Filings Integration",
+        icon: <GitPullRequest size={20} />,
+        description:
+          "Integrates directly with SEC filings to provide accurate, up-to-date financial documentation.",
+      },
+      {
+        title: "Voice Assistant for Conversational Queries",
+        icon: <Speaker size={20} />,
+        description:
+          "Interact with the platform using voice commands for instant answers to complex financial queries.",
+      },
     ],
+
     contributions: [
       "Developed the application end-to-end, integrating AI-powered data processing and visualization.",
       "Implemented real-time sentiment analysis, Q&A functionality, and transcript generation from earnings calls.",
@@ -307,13 +518,40 @@ Upload Required Documents & Manage Equity`,
       "Socket.io",
       "TypeScript",
     ],
+
     features: [
-      "Real-time chat & reactions during calls",
-      "Multi-participant grid layout for up to 10 participants",
-      "Raise-hand feature for organized communication",
-      "Screen sharing, host moderation, and secure access control",
-      "Cross-platform video calls (Web & Mobile)",
+      {
+        title: "Real-Time Chat & Reactions",
+        icon: <MessageSquare size={20} />,
+        description:
+          "Participants can chat, send emojis, and react in real time during calls for better engagement and communication.",
+      },
+      {
+        title: "Multi-Participant Grid Layout",
+        icon: <Users size={20} />,
+        description:
+          "Supports up to 10 participants in a responsive grid layout, ensuring everyone is visible and can interact seamlessly.",
+      },
+      {
+        title: "Raise-Hand Feature",
+        icon: <Hand size={20} />,
+        description:
+          "Organize discussions with a raise-hand feature, allowing participants to signal questions or comments without interrupting the flow.",
+      },
+      {
+        title: "Screen Sharing & Host Moderation",
+        icon: <Monitor size={20} />,
+        description:
+          "Hosts can moderate sessions, manage participants, and share screens securely for presentations or demonstrations.",
+      },
+      {
+        title: "Cross-Platform Video Calls",
+        icon: <Video size={20} />,
+        description:
+          "Supports Web and Mobile platforms, enabling seamless video calls across devices with high-quality performance.",
+      },
     ],
+
     contributions: [
       "Designed and developed high-quality multi-party video calling functionality using WebRTC.",
       "Built core features such as screen sharing, chat, reactions, and meeting scheduling with recording support.",
@@ -367,13 +605,40 @@ Upload Required Documents & Manage Equity`,
       "/projects/screenshots/autoflow/16.png",
     ],
     tags: ["Automation", "Web", "Next.js", "Node.js", "Express.js"],
+
     features: [
-      "Multi-platform data extraction (Nasdaq, YCombinator, Google Sheets, LinkedIn, Clutch)",
-      "Automated data enrichment via Apollo.io (emails, LinkedIn URLs, phone numbers)",
-      "Outbound marketing: email campaigns and voice drops",
-      "Campaign performance monitoring and lead management",
-      "End-to-end automation from lead discovery to outreach",
+      {
+        title: "Multi-Platform Data Extraction",
+        icon: <ServerCog size={20} />,
+        description:
+          "Collect leads and company data from multiple sources including Nasdaq, YCombinator, Google Sheets, LinkedIn, and Clutch efficiently.",
+      },
+      {
+        title: "Automated Data Enrichment",
+        icon: <Database size={20} />,
+        description:
+          "Enhance lead data automatically using Apollo.io, retrieving emails, LinkedIn URLs, phone numbers, and other contact information.",
+      },
+      {
+        title: "Outbound Marketing Campaigns",
+        icon: <Mail size={20} />,
+        description:
+          "Run email campaigns and voice drops to reach potential leads effectively, directly from the platform.",
+      },
+      {
+        title: "Campaign Performance Monitoring",
+        icon: <Activity size={20} />,
+        description:
+          "Track and analyze the performance of campaigns, manage leads, and optimize outreach strategies based on real-time insights.",
+      },
+      {
+        title: "End-to-End Automation",
+        icon: <Repeat size={20} />,
+        description:
+          "Streamline the entire lead generation process, from discovery to outreach, reducing manual work and increasing efficiency.",
+      },
     ],
+
     contributions: [
       "Developed the full application from scratch, handling complete frontend, backend, and integrations.",
       "Implemented multi-source data extraction pipelines from platforms like Nasdaq, Google Sheets, Y Combinator, Clutch, and LinkedIn.",

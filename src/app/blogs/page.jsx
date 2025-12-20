@@ -21,9 +21,9 @@ export default function MyBlogsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    if (loggedIn) setIsLoggedIn(true);
-    else setShowLogin(true);
+    // const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    // if (loggedIn) setIsLoggedIn(true);
+    // else setShowLogin(true);
 
     fetch("/api/blogs")
       .then((res) => res.json())

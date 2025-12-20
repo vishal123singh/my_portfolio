@@ -1,4 +1,5 @@
-// components/SwiperGallery.jsx
+"use client";
+
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -7,37 +8,55 @@ import "swiper/css/pagination";
 
 export default function SwiperGallery({ images }) {
   return (
-    <div className="w-full mx-auto bg-slate-800 rounded-xl overflow-hidden p-4">
+    <div className="relative w-full overflow-hidden rounded-2xl bg-slate-900">
       <Swiper
         modules={[Autoplay, Pagination]}
-        autoplay={{ delay: 6500, disableOnInteraction: true }}
+        autoplay={{ delay: 6000, disableOnInteraction: false }}
         loop
         pagination={{ clickable: true }}
-        className="rounded-lg"
+        className="w-full"
       >
         {images.map((src, i) => {
           const isMobileImage = /kk|deligo|logik|oflep/i.test(src);
 
           return (
-            <SwiperSlide
-              key={i}
-              className="flex justify-center items-center bg-slate-800"
-            >
-              <div
-                className={`relative w-full ${
-                  isMobileImage
-                    ? "h-[400px] sm:h-[400px]" // Mobile image
-                    : "h-[400px] sm:h-[450px]" // Web image
-                } rounded-md overflow-hidden`}
-              >
+            <SwiperSlide key={i}>
+              <div className="relative aspect-[16/9] w-full">
+                {/* Background */}
                 <Image
                   src={src}
-                  alt={`Slide ${i + 1}`}
+                  alt=""
                   fill
-                  sizes="100%"
-                  className="object-contain"
-                  style={{ backgroundColor: "#1e293b", objectFit: "contain" }}
+                  className="object-cover blur-xl scale-110 opacity-30"
+                  priority={i === 0}
                 />
+
+                {/* Foreground */}
+                {isMobileImage ? (
+                  /* 📱 Mobile Presentation */
+                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                    <div className="relative h-[85%] aspect-[9/19] rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-black">
+                      <Image
+                        src={src}
+                        alt={`Mobile screenshot ${i + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  /* 🖥 Web Presentation */
+                  <Image
+                    src={src}
+                    alt={`Web screenshot ${i + 1}`}
+                    fill
+                    sizes="100vw"
+                    className="relative z-10 object-cover"
+                  />
+                )}
+
+                {/* Overlay */}
+                <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>
             </SwiperSlide>
           );

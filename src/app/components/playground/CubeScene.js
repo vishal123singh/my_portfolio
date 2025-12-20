@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment } from '@react-three/drei';
-import { useEffect, useRef, useState, memo } from 'react';
-import * as THREE from 'three';
-import gsap from 'gsap';
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Environment } from "@react-three/drei";
+import { useEffect, useRef, useState, memo } from "react";
+import * as THREE from "three";
+import gsap from "gsap";
 
 function InteractiveCube({ position, color }) {
   const meshRef = useRef(null);
@@ -21,7 +21,7 @@ function InteractiveCube({ position, color }) {
         y: 1,
         z: 1,
         duration: 1,
-        ease: 'elastic.out(1, 0.5)',
+        ease: "elastic.out(1, 0.5)",
         delay: Math.random() * 0.5,
       }
     );
@@ -34,7 +34,7 @@ function InteractiveCube({ position, color }) {
       y: hovered ? 1.2 : 1,
       z: hovered ? 1.2 : 1,
       duration: 0.3,
-      ease: 'power2.out',
+      ease: "power2.out",
     });
   }, [hovered]);
 
@@ -44,7 +44,7 @@ function InteractiveCube({ position, color }) {
       gsap.to(meshRef.current.rotation, {
         y: meshRef.current.rotation.y + Math.PI * 2,
         duration: 1.2,
-        ease: 'power2.inOut',
+        ease: "power2.inOut",
         onComplete: () => setClicked(false),
       });
     }
@@ -67,7 +67,11 @@ function InteractiveCube({ position, color }) {
       onClick={() => setClicked(true)}
     >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={color} emissive={hovered ? color : 'black'} emissiveIntensity={0.6} />
+      <meshStandardMaterial
+        color={color}
+        emissive={hovered ? color : "black"}
+        emissiveIntensity={0.6}
+      />
     </mesh>
   );
 }
@@ -75,7 +79,7 @@ function InteractiveCube({ position, color }) {
 const Cube = memo(InteractiveCube);
 
 export default function CubeScene() {
-  const colors = ['#4ADE80', '#60A5FA', '#F472B6', '#FACC15', '#A78BFA'];
+  const colors = ["#4ADE80", "#60A5FA", "#F472B6", "#FACC15", "#A78BFA"];
   const positions = [-3, -1.5, 0, 1.5, 3];
 
   return (
@@ -89,7 +93,11 @@ export default function CubeScene() {
         {/* Grid of Cubes */}
         {positions.map((x, i) =>
           positions.map((z, j) => (
-            <Cube key={`${i}-${j}`} position={[x, 0, z]} color={colors[(i + j) % colors.length]} />
+            <Cube
+              key={`${i}-${j}`}
+              position={[x, 0, z]}
+              color={colors[(i + j) % colors.length]}
+            />
           ))
         )}
 

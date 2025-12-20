@@ -50,19 +50,46 @@ function CustomLoader() {
   );
 }
 
-function ProductViewer({ color = "#3b82f6", highlight }) {
+function ProductViewer({ color = "#3b82f6", highlight, mouse }) {
   const meshRef = useRef();
-  const edgesRef = useRef();
   const [hovered, setHovered] = useState(false);
 
   useFrame(({ clock }) => {
-    meshRef.current.rotation.y += 0.005;
-    meshRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.5) * 0.05;
+    if (!meshRef.current) return;
+    const t = clock.getElapsedTime();
+
+    // Smooth rotation towards cursor
+    meshRef.current.rotation.y = THREE.MathUtils.lerp(
+      meshRef.current.rotation.y,
+      mouse.x * Math.PI * 0.7,
+      0.05
+    );
+    meshRef.current.rotation.x = THREE.MathUtils.lerp(
+      meshRef.current.rotation.x,
+      mouse.y * Math.PI * 0.3,
+      0.05
+    );
+
+    // Position parallax and floating
+    meshRef.current.position.x = THREE.MathUtils.lerp(
+      meshRef.current.position.x,
+      mouse.x * 0.5,
+      0.05
+    );
+    meshRef.current.position.y = THREE.MathUtils.lerp(
+      meshRef.current.position.y,
+      Math.sin(t * 2) * 0.1 + mouse.y * 0.5,
+      0.05
+    );
+    meshRef.current.position.z = Math.sin(t * 1.5) * 0.1;
+
+    // Pulsating scale
+    const scale = 1 + Math.sin(t * 2) * 0.05;
+    meshRef.current.scale.set(scale, scale, scale);
   });
 
   return (
     <group>
-      {/* Main cube with enhanced material */}
       <mesh
         ref={meshRef}
         castShadow
@@ -73,29 +100,24 @@ function ProductViewer({ color = "#3b82f6", highlight }) {
         <boxGeometry args={[1.5, 1.5, 1.5]} />
         <meshPhysicalMaterial
           color={color}
-          metalness={0.8}
-          roughness={0.2}
+          metalness={0.9}
+          roughness={0.1}
           clearcoat={1}
-          clearcoatRoughness={0.1}
-          transmission={0.1}
+          clearcoatRoughness={0.05}
+          transmission={0.2}
           thickness={1}
-          ior={1.5}
-          envMapIntensity={1}
-          emissive="#111111"
-          emissiveIntensity={hovered ? 0.5 : 0.2}
+          ior={1.45}
+          envMapIntensity={1.2}
+          emissive={hovered ? "#00fff0" : "#111111"}
+          emissiveIntensity={hovered ? 0.7 : 0.2}
         />
       </mesh>
 
-      {/* Edge highlights */}
-      <lineSegments ref={edgesRef}>
+      {/* Optional: Edge highlights */}
+      {/* <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(1.51, 1.51, 1.51)]} />
-        <lineBasicMaterial
-          color="#ffffff"
-          transparent
-          opacity={0.8}
-          linewidth={2}
-        />
-      </lineSegments>
+        <lineBasicMaterial color="#00fff0" transparent opacity={0.8} />
+      </lineSegments> */}
     </group>
   );
 }
@@ -103,9 +125,11 @@ function ProductViewer({ color = "#3b82f6", highlight }) {
 export default function ProductDemoPage() {
   const [activeColor, setActiveColor] = useState("#3b82f6");
   const [activeFeature, setActiveFeature] = useState(null);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const canvasRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Detect mobile
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -113,21 +137,44 @@ export default function ProductDemoPage() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Track cursor movement
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
+      const y = -(e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+      setMouse({ x, y });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   const handleColorChange = (color) => {
     setActiveColor(color);
-    if (isMobile && window.navigator.vibrate) {
-      window.navigator.vibrate(10);
-    }
+    if (isMobile && window.navigator.vibrate) window.navigator.vibrate(10);
   };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden">
+      {/* Background lights */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-400/10 rounded-full blur-[120px] opacity-30" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyan-400/10 rounded-full blur-[120px] opacity-30" />
+        <motion.div
+          className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-400/10 rounded-full blur-[120px] opacity-30"
+          style={{
+            x: mouse.x * 50,
+            y: mouse.y * 50,
+          }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyan-400/10 rounded-full blur-[120px] opacity-30"
+          style={{
+            x: mouse.x * 50,
+            y: mouse.y * 50,
+          }}
+        />
       </div>
 
       <div className="container mx-auto px-4 py-8 h-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
+        {/* 3D Viewer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -135,14 +182,11 @@ export default function ProductDemoPage() {
           className="relative h-[60vh] w-full lg:h-[80vh] lg:w-1/2 rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-gray-900/20 to-black/30 pointer-events-none z-10" />
-
           <Canvas
             ref={canvasRef}
-            shadows
-            gl={{
-              antialias: true,
-              alpha: true,
-            }}
+            shadows={!isMobile}
+            gl={{ antialias: true, alpha: true }}
+            dpr={[1, 2]}
             className="absolute inset-0"
           >
             <RendererSetup />
@@ -160,19 +204,19 @@ export default function ProductDemoPage() {
             <OrbitControls
               enableZoom={!isMobile}
               enablePan={false}
-              minPolarAngle={Math.PI / 6}
-              maxPolarAngle={Math.PI / 1.8}
-              autoRotate
-              autoRotateSpeed={0.8}
-              enableDamping
-              dampingFactor={0.05}
+              enableRotate={false} // cursor controls rotation
             />
             <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-              <ProductViewer color={activeColor} highlight={activeFeature} />
+              <ProductViewer
+                color={activeColor}
+                highlight={activeFeature}
+                mouse={mouse}
+              />
             </Float>
           </Canvas>
           <CustomLoader />
 
+          {/* Info badge */}
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-400/20 text-xs flex items-center gap-2 z-20"
@@ -184,6 +228,7 @@ export default function ProductDemoPage() {
           </motion.div>
         </motion.div>
 
+        {/* Sidebar */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -198,6 +243,7 @@ export default function ProductDemoPage() {
         </motion.div>
       </div>
 
+      {/* Mobile hint */}
       {isMobile && (
         <AnimatePresence>
           <motion.div

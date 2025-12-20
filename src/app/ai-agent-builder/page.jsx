@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useState, useMemo, useRef } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -15,7 +9,6 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   useReactFlow,
-  Position,
   ReactFlowProvider,
   Panel,
 } from "reactflow";
@@ -23,8 +16,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
   ArrowUpToLine,
-  Settings,
-  Trash2,
   Play,
   Save,
   PlusCircle,
@@ -437,65 +428,72 @@ function WorkflowEditor() {
       </div>
 
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 py-4 px-6">
+      {/* Header */}
+      <header className="absolute top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 py-3 px-4 md:py-4 md:px-6">
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Zap className="w-5 h-5 text-purple-500" />
-            <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-pink-500">
+          {/* Logo Section */}
+          <div className="flex items-center space-x-1 md:space-x-2">
+            <Zap className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
+            <h1 className="text-sm md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-pink-500 truncate max-w-[120px] md:max-w-none">
               Agent Workflow Editor
             </h1>
             <Badge
               variant="outline"
-              className="border-purple-500 text-purple-400"
+              className="border-purple-500 text-purple-400 text-xs px-1.5 py-0 md:text-sm md:px-2"
             >
               Beta
             </Badge>
           </div>
 
-          <div className="flex space-x-3">
+          {/* Buttons Section */}
+          <div className="flex items-center space-x-1.5 md:space-x-3">
+            {/* Run Workflow Button */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <motion.button
                   whileHover={{ scale: 1.07 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleRunWorkflow}
-                  className="relative px-5 py-2.5 rounded-xl bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 
-                  hover:from-purple-800 hover:via-indigo-900 hover:to-blue-950 
-                  text-sm font-semibold text-white shadow-[0_0_12px_#8b5cf680] 
-                  transition duration-300 ease-in-out flex items-center space-x-2 overflow-hidden"
+                  className="relative px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 
+            hover:from-purple-800 hover:via-indigo-900 hover:to-blue-950 
+            text-xs md:text-sm font-semibold text-white shadow-[0_0_8px_#8b5cf680] md:shadow-[0_0_12px_#8b5cf680]
+            transition duration-300 ease-in-out flex items-center space-x-1 md:space-x-2 overflow-hidden"
                 >
-                  <span className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 blur-xl opacity-20 rounded-xl animate-pulse" />
-                  <Play className="w-4 h-4 z-10 text-white" />
-                  <span className="z-10">Run Workflow</span>
+                  <span className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 blur-lg md:blur-xl opacity-20 rounded-xl animate-pulse" />
+                  <Play className="w-3 h-3 md:w-4 md:h-4 z-10 text-white" />
+                  <span className="z-10 hidden sm:inline">Run Workflow</span>
+                  <span className="z-10 sm:hidden">Run</span>
                 </motion.button>
               </TooltipTrigger>
               <TooltipContent
                 side="bottom"
-                className="bg-gray-800 text-white border border-gray-700"
+                className="bg-gray-800 text-white border border-gray-700 text-xs md:text-sm"
               >
                 Execute the current workflow (Ctrl+R)
               </TooltipContent>
             </Tooltip>
 
+            {/* Save Workflow Button */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <motion.button
                   whileHover={{ scale: 1.07 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSaveWorkflow}
-                  className="relative px-5 py-2.5 rounded-xl bg-gradient-to-br from-teal-600 via-cyan-700 to-emerald-800 
-                  hover:from-teal-700 hover:via-cyan-800 hover:to-emerald-900 
-                  text-sm font-semibold text-white shadow-[0_0_12px_#34d39980] 
-                  transition duration-300 ease-in-out flex items-center space-x-2 overflow-hidden"
+                  className="relative px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl bg-gradient-to-br from-teal-600 via-cyan-700 to-emerald-800 
+            hover:from-teal-700 hover:via-cyan-800 hover:to-emerald-900 
+            text-xs md:text-sm font-semibold text-white shadow-[0_0_8px_#34d39980] md:shadow-[0_0_12px_#34d39980]
+            transition duration-300 ease-in-out flex items-center space-x-1 md:space-x-2 overflow-hidden"
                 >
-                  <span className="absolute -inset-0.5 bg-gradient-to-r from-teal-400 via-cyan-500 to-green-400 blur-xl opacity-20 rounded-xl animate-pulse" />
-                  <Save className="w-4 h-4 z-10 text-white" />
-                  <span className="z-10">Save Workflow</span>
+                  <span className="absolute -inset-0.5 bg-gradient-to-r from-teal-400 via-cyan-500 to-green-400 blur-lg md:blur-xl opacity-20 rounded-xl animate-pulse" />
+                  <Save className="w-3 h-3 md:w-4 md:h-4 z-10 text-white" />
+                  <span className="z-10 hidden sm:inline">Save Workflow</span>
+                  <span className="z-10 sm:hidden">Save</span>
                 </motion.button>
               </TooltipTrigger>
               <TooltipContent
                 side="bottom"
-                className="bg-gray-800 text-white border border-gray-700"
+                className="bg-gray-800 text-white border border-gray-700 text-xs md:text-sm"
               >
                 Save current workflow (Ctrl+S)
               </TooltipContent>

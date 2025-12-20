@@ -47,15 +47,29 @@ export default function ProjectCard({
       >
         {/* Top Preview */}
         <div className="relative w-full aspect-[4/3] bg-slate-900 flex items-center justify-center rounded-t-xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/80 via-slate-900/80 to-slate-800/80 z-0" />
+          {/* Blurred Background */}
+          {!liveComponent && imageToShow && (
+            <Image
+              src={imageToShow}
+              alt={`${title} background`}
+              fill
+              className="absolute inset-0 object-cover blur-sm scale-105 z-0"
+              sizes="100vw"
+            />
+          )}
+
+          {/* Overlay Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/60 via-slate-900/60 to-slate-800/60 z-10" />
+
+          {/* Main Image or Live Component */}
           {liveComponent ? (
-            <div className="w-full h-full relative z-10">{liveComponent}</div>
+            <div className="w-full h-full relative z-20">{liveComponent}</div>
           ) : (
             <Image
               src={imageToShow}
               alt={title}
               fill
-              className="object-contain p-2 z-10"
+              className="object-contain p-2 z-20"
               sizes="(max-width: 768px) 100vw, 33vw"
             />
           )}

@@ -13,6 +13,8 @@ import {
   animate,
 } from "framer-motion";
 import ParticlesBackground from "@/app/components/ParticlesBackground";
+import { FaMobile, FaSync } from "react-icons/fa";
+import { SiProgress } from "react-icons/si";
 
 export default function ScrollStoryDemo() {
   const containerRef = useRef(null);
@@ -24,7 +26,11 @@ export default function ScrollStoryDemo() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScroll = useRef(0);
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -32,6 +38,17 @@ export default function ScrollStoryDemo() {
   }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const scrollTop = container.scrollTop;
+
+    // Hide/show header
+    if (scrollTop > lastScroll.current + 5) setShowHeader(false);
+    else if (scrollTop < lastScroll.current - 5) setShowHeader(true);
+    lastScroll.current = scrollTop;
+
+    // Update active section and back-to-top
     if (latest < 0.2) setActiveSection(0);
     else if (latest < 0.45) setActiveSection(1);
     else if (latest < 0.75) setActiveSection(2);
@@ -51,9 +68,9 @@ export default function ScrollStoryDemo() {
 
       {/* Navigation Bar */}
       <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+        initial={false}
+        animate={{ y: showHeader ? 0 : -120 }} // move offscreen when hiding
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/50 border-b border-white/10"
       >
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
@@ -268,13 +285,13 @@ export default function ScrollStoryDemo() {
         ref={containerRef}
         className="h-full w-full overflow-y-auto scroll-smooth"
       >
-        <ScrollContent />
+        <ScrollContent scrollYProgress={scrollYProgress} />
       </div>
     </div>
   );
 }
 
-function ScrollContent() {
+function ScrollContent({ scrollYProgress }) {
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
@@ -284,16 +301,20 @@ function ScrollContent() {
   const inView2 = useInView(ref2, { amount: 0.5, once: true });
   const inView3 = useInView(ref3, { amount: 0.5, once: true });
 
-  const { scrollYProgress } = useScroll(); // ✅ Global scroll listener
   const [carouselWidth, setCarouselWidth] = useState(0);
 
   useEffect(() => {
-    if (carouselRef.current) {
-      const totalScroll =
-        carouselRef.current.scrollWidth -
-        carouselRef.current.parentElement.offsetWidth;
-      setCarouselWidth(-totalScroll); // ❗ scroll left = negative x
-    }
+    const calculateWidth = () => {
+      if (carouselRef.current) {
+        const totalScroll =
+          carouselRef.current.scrollWidth -
+          carouselRef.current.parentElement.offsetWidth;
+        setCarouselWidth(-totalScroll); // negative for left scroll
+      }
+    };
+    calculateWidth();
+    window.addEventListener("resize", calculateWidth);
+    return () => window.removeEventListener("resize", calculateWidth);
   }, []);
 
   const xTransform = useTransform(
@@ -311,7 +332,7 @@ function ScrollContent() {
   return (
     <div className="space-y-0 pt-20 pb-40 px-4 sm:px-6 max-w-7xl mx-auto">
       {/* Section 1: Hero */}
-      <section
+      <div
         id="section-0"
         ref={ref1}
         className="min-h-screen flex flex-col justify-center items-center text-center space-y-8 px-4 relative"
@@ -374,10 +395,10 @@ function ScrollContent() {
             ))}
           </motion.div>
         </motion.div>
-      </section>
+      </div>
 
       {/* Section 2: Features Carousel */}
-      <section
+      <div
         id="section-1"
         className="min-h-[150vh] flex flex-col justify-center relative"
       >
@@ -401,7 +422,7 @@ function ScrollContent() {
           >
             {[
               {
-                icon: "🔄",
+                icon: <FaSync></FaSync>,
                 title: "Scroll Sync",
                 desc: "Horizontal carousel that moves with vertical scroll",
               },
@@ -411,7 +432,7 @@ function ScrollContent() {
                 desc: "Dynamic dots that show current section",
               },
               {
-                icon: "📊",
+                icon: <SiProgress />,
                 title: "Progress Tracking",
                 desc: "Real-time scroll percentage indicator",
               },
@@ -422,7 +443,7 @@ function ScrollContent() {
                 desc: "Interactive elements with hover effects",
               },
               {
-                icon: "📱",
+                icon: <FaMobile />,
                 title: "Responsive Design",
                 desc: "Works flawlessly on all device sizes",
               },
@@ -445,10 +466,10 @@ function ScrollContent() {
             ))}
           </motion.div>
         </div>
-      </section>
+      </div>
 
       {/* Section 3: Animation Showcase */}
-      <section
+      <div
         id="section-2"
         ref={ref2}
         className="min-h-screen flex justify-center items-center px-4 relative"
@@ -500,10 +521,10 @@ function ScrollContent() {
             />
           </motion.div>
         </motion.div>
-      </section>
+      </div>
 
       {/* Section 4: Final CTA */}
-      <section
+      <div
         id="section-3"
         ref={ref3}
         className="min-h-screen flex justify-center items-center px-4 relative"
@@ -573,7 +594,7 @@ function ScrollContent() {
             </div>
           </div>
         </motion.div>
-      </section>
+      </div>
     </div>
   );
 }
@@ -581,15 +602,17 @@ function ScrollContent() {
 function StatCounter({ value, label, delay, inView }) {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (inView) {
+    if (inView && !hasAnimated.current) {
+      hasAnimated.current = true;
       const controls = animate(count, value, {
         duration: 2,
-        delay: delay,
+        delay,
         ease: "easeOut",
       });
-      return controls.stop;
+      return () => controls.stop();
     }
   }, [inView]);
 
