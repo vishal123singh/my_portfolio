@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 
 // Updated color palette
 const colors = {
@@ -292,6 +293,8 @@ export function OverviewTab({ projects, tasks, team }) {
 }
 
 export function ProjectTimeline({ projects }) {
+  const [tooltip, setTooltip] = useState(null);
+
   const now = new Date();
   const minDate = new Date(
     Math.min(...projects.map((p) => new Date(p.startDate)))
@@ -299,69 +302,99 @@ export function ProjectTimeline({ projects }) {
   const maxDate = new Date(
     Math.max(...projects.map((p) => new Date(p.endDate)))
   );
-
-  // Add padding to timeline
   minDate.setDate(minDate.getDate() - 15);
   maxDate.setDate(maxDate.getDate() + 15);
 
   const totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
+  const getOffset = (date) =>
+    ((new Date(date) - minDate) / (1000 * 60 * 60 * 24 * totalDays)) * 100;
 
-  const getLeftOffset = (date) =>
-    ((new Date(date) - minDate) / (1000 * 60 * 60 * 24) / totalDays) * 100;
+  const rowHeight = 44;
+  const contentHeight = projects.length * rowHeight + 80;
+
+  const colors = {
+    active: "bg-indigo-500",
+    completed: "bg-green-500",
+    planning: "bg-yellow-500",
+    "on-hold": "bg-gray-400",
+  };
 
   return (
-    <div className="relative w-full h-64 p-4 bg-white/10 rounded-lg shadow border border-white/20">
-      {/* Timeline axis */}
-      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-dotted bg-white/30" />
+    <div className="relative w-full rounded-xl border border-white/20 bg-white/10 backdrop-blur">
+      <div className="relative max-h-[420px] overflow-y-auto px-6 py-6">
+        {/* Timeline axis */}
+        <div className="absolute left-6 right-6 top-12 h-px bg-white/30" />
 
-      {/* Now marker */}
-      <div
-        className="absolute top-0 bottom-0 w-0.5 bg-red-400"
-        style={{ left: `${getLeftOffset(now)}%` }}
-      >
-        <div className="absolute -top-6 -left-4 text-xs text-red-400 font-semibold">
-          Now
+        {/* Now marker */}
+        <div
+          className="absolute top-10 bottom-10 w-px bg-red-400"
+          style={{ left: `${getOffset(now)}%` }}
+        >
+          <span className="absolute -top-5 -translate-x-1/2 text-xs text-red-400 font-semibold">
+            Now
+          </span>
+        </div>
+
+        {/* Timeline content */}
+        <div style={{ height: contentHeight }} className="relative mt-10">
+          {projects.map((project, index) => {
+            const left = getOffset(project.startDate);
+            const width = Math.max(getOffset(project.endDate) - left, 1);
+
+            return (
+              <div
+                key={project.id}
+                className="relative h-8"
+                style={{ top: index * rowHeight }}
+              >
+                {/* Label */}
+                <div className="absolute -top-4 left-0 text-xs text-white/90 truncate max-w-[65%]">
+                  {project.name}
+                </div>
+
+                {/* Bar */}
+                <div
+                  className={`absolute h-3 rounded-full cursor-pointer ${
+                    colors[project.status]
+                  }`}
+                  style={{ left: `${left}%`, width: `${width}%` }}
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setTooltip({
+                      project,
+                      x: rect.left + rect.width / 2,
+                      y: rect.top,
+                    });
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Projects */}
-      {projects.map((project, index) => {
-        const left = getLeftOffset(project.startDate);
-        const width = getLeftOffset(project.endDate) - left;
-
-        const colors = {
-          active: "bg-indigo-500",
-          completed: "bg-green-500",
-          planning: "bg-yellow-500",
-          onHold: "bg-gray-400",
-        };
-
-        return (
+      {/* Portal Tooltip */}
+      {tooltip &&
+        createPortal(
           <div
-            key={index}
-            className={`absolute h-4 rounded-full transition-all duration-300 ${
-              colors[project.status] || "bg-gray-300"
-            }`}
+            className="z-50 w-60 -translate-x-1/2 rounded-lg bg-black/90 p-3 text-xs text-white shadow-xl pointer-events-none"
             style={{
-              top: `${30 + index * 30}px`,
-              left: `${left}%`,
-              width: `${width}%`,
+              position: "fixed",
+              left: tooltip.x,
+              top: tooltip.y - 12,
             }}
           >
-            <div className="absolute -top-5 left-0 text-xs font-medium text-white">
-              {project.name}
+            <div className="font-semibold mb-1">{tooltip.project.name}</div>
+            <div>Status: {tooltip.project.status}</div>
+            <div>Progress: {tooltip.project.progress}%</div>
+            <div>Budget: ₹{tooltip.project.budget.toLocaleString()}</div>
+            <div className="text-white/60 mt-1">
+              {tooltip.project.startDate} → {tooltip.project.endDate}
             </div>
-          </div>
-        );
-      })}
-
-      {/* Optional: Date labels at ends */}
-      <div className="absolute bottom-2 left-0 text-xs text-white/70">
-        {minDate.toLocaleDateString()}
-      </div>
-      <div className="absolute bottom-2 right-0 text-xs text-white/70">
-        {maxDate.toLocaleDateString()}
-      </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
@@ -1132,7 +1165,7 @@ export function ReportsTab({ projects, tasks }) {
             .join(" ")}
         </CardHeader>
         <CardContent>
-          <div className="h-96 flex items-center justify-center">
+          <div className="h-96 flex items-center justify-center overflow-y-auto">
             <ReportVisualization type={reportType} data={reportData} />
           </div>
         </CardContent>
@@ -1214,7 +1247,7 @@ export function ReportVisualization({ type, data = [] }) {
     const chartData = data.length ? data : fallbackProjectData;
 
     return (
-      <div className="space-y-5 w-full">
+      <div className="space-y-5 w-full h-full">
         {chartData.map((project, index) => {
           const color =
             project.progress < 30
@@ -1311,27 +1344,43 @@ export function ReportVisualization({ type, data = [] }) {
     const max = Math.max(...chartData.map((item) => item.count));
 
     return (
-      <div className="flex items-end justify-around h-60 w-full px-4">
-        {chartData.map((item, index) => {
-          const height = (item.count / max) * 100;
-          return (
-            <div key={index} className="flex flex-col items-center w-1/5">
-              <motion.div
-                initial={{ height: 0 }}
-                animate={{ height: `${height}%` }}
-                transition={{ duration: 0.8 }}
-                className="w-full rounded-t-md"
-                style={{
-                  backgroundColor: barColors[index % barColors.length],
-                }}
-              />
-              <span className="text-xs mt-2 capitalize text-white/70">
-                {item.priority}
-              </span>
-              <span className="text-xs text-white">{item.count}</span>
-            </div>
-          );
-        })}
+      <div className="flex flex-col h-64 w-full px-4">
+        {/* Y-axis labels */}
+        <div className="flex-1 flex flex-col justify-between text-xs text-white/60">
+          {Array.from({ length: 5 }).map((_, i) => {
+            const val = Math.round((max / 4) * (4 - i));
+            return <div key={i}>{val}</div>;
+          })}
+        </div>
+
+        {/* Bars */}
+        <div className="flex items-end justify-around flex-1 gap-4 mt-2">
+          {chartData.map((item, index) => {
+            const heightPercent = (item.count / max) * 100;
+            return (
+              <div key={index} className="flex flex-col items-center w-1/5">
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${heightPercent}%` }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  className="w-full rounded-t-md shadow-md"
+                  style={{
+                    backgroundColor: barColors[index % barColors.length],
+                  }}
+                />
+                <span className="text-xs mt-2 capitalize text-white/80">
+                  {item.priority}
+                </span>
+                <span className="text-xs text-white font-semibold">
+                  {item.count}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* X-axis line */}
+        <div className="border-t border-white/30 mt-2 w-full" />
       </div>
     );
   }

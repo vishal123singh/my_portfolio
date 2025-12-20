@@ -27,17 +27,19 @@ export default function LayoutWrapper({ children }) {
 
   const isFullScreen = fullScreenRoutes.includes(pathname);
 
-  // Add special theme class for specific routes
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove("test-theme");
+    // Remove ALL custom classes
+    root.className = "";
 
     if (
       pathname.startsWith("/test") ||
-      pathname.includes("/project-dashboard") ||
+      pathname.includes("/projects/playground/") ||
       pathname === "/ai-agent-builder"
     ) {
-      root.classList.add("test-theme");
+      // root.classList.add("test-theme");
+    } else {
+      root.classList.add("app-theme");
     }
   }, [pathname]);
 
@@ -105,7 +107,9 @@ export default function LayoutWrapper({ children }) {
         <div className="relative z-10">{children}</div>
       </main>
 
-      <Toaster />
+      <div className="fixed bottom-4 right-4 z-[9999]">
+        <Toaster />
+      </div>
     </>
   );
 }

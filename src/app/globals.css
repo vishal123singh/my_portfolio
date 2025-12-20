@@ -6,15 +6,17 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --bg-dark: #0f172a;
+  --radius: 0.625rem;
+}
+
+.app-theme {
+      --bg-dark: #0f172a;
   --text-light: #f1f5f9;
 
   /* Updated to soft violet glow */
   --accent: #a78bfa;
 
   --btn-hover: #c084fc;
-
-  --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
