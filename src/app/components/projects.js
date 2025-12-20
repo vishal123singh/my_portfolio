@@ -6,6 +6,7 @@ import { Rocket, RocketIcon } from "lucide-react";
 import ProjectCard from "@/app/components/ProjectCard"; // adjust if needed
 import { projects } from "../../../data";
 import CosmicBackground from "./CosmicBackground";
+import { toast } from "sonner";
 
 export default function Projects() {
   const searchParams = useSearchParams();

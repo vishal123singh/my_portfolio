@@ -158,7 +158,7 @@ export function ConnectToDBNode({ data, isConnectable, id }) {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       //whileHover={{ scale: 1.02 }}
-      className="relative flex"
+      className="relative flex text-gray-300"
     >
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-green-600 rounded-xl blur-[2px] opacity-70"></div>
@@ -226,7 +226,7 @@ export function ConnectToDBNode({ data, isConnectable, id }) {
                       <Pencil className="w-4 h-4" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-gray-800 border border-gray-700">
+                  <TooltipContent className="bg-gray-800 border border-gray-700 text-gray-300">
                     Configure connection
                   </TooltipContent>
                 </Tooltip>
@@ -239,7 +239,7 @@ export function ConnectToDBNode({ data, isConnectable, id }) {
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-gray-800 border border-gray-700">
+                  <TooltipContent className="bg-gray-800 border border-gray-700 text-gray-300">
                     Delete node
                   </TooltipContent>
                 </Tooltip>
@@ -355,7 +355,7 @@ export function ConnectToDBNode({ data, isConnectable, id }) {
             </pre>
           ) : (
             <div className="flex-1 flex items-center justify-center p-4">
-              <p className="text-gray-500 text-sm text-center">
+              <p className="text-gray-400 text-sm text-center">
                 {loading
                   ? "Executing query..."
                   : "Execute a query to see results"}

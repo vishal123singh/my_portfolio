@@ -511,13 +511,18 @@ function WorkflowEditor() {
           }}
         >
           <SelectTrigger
-            className="w-56 bg-gray-800 border border-gray-600 text-white rounded-lg hover:border-purple-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-lg"
+            className="
+    w-56 bg-gray-800 border border-gray-600
+    text-white
+    [&_[data-placeholder]]:text-white
+    rounded-lg hover:border-purple-400
+    focus:ring-2 focus:ring-purple-500 focus:border-transparent
+    transition-all duration-200 shadow-lg
+  "
             aria-label="Add node type"
           >
-            <div className="flex items-center space-x-2">
-              <PlusCircle className="w-5 h-5 text-purple-400" />
-              <SelectValue placeholder="Add Node Type" />
-            </div>
+            <PlusCircle className="w-5 h-5 text-purple-400 mr-2" />
+            <SelectValue placeholder="Add Node Type" />
           </SelectTrigger>
 
           <SelectContent

@@ -127,7 +127,7 @@ export default function PromptNode({ data, isConnectable, id }) {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 400, damping: 20 }}
-      className="relative w-[28rem] group"
+      className="relative w-[28rem] group text-gray-200"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -495,27 +495,38 @@ export default function PromptNode({ data, isConnectable, id }) {
                       Optimization Settings
                     </Label>
                   </CardHeader>
-                  <CardContent className="p-3 pt-0">
-                    <div className="space-y-3">
+                  <CardContent className="px-4 pb-4 pt-2">
+                    <div className="divide-y divide-gray-700/50">
                       {Object.entries(optimizationSettings).map(
                         ([key, value]) => (
                           <div
                             key={key}
-                            className="flex items-center justify-between p-2 hover:bg-gray-600/30 rounded"
+                            className="flex items-center justify-between py-3 transition-colors hover:bg-gray-700/20 rounded-md px-2"
                           >
-                            <Label className="text-xs text-gray-200 capitalize">
-                              {key}
+                            <Label className="text-sm text-gray-200 capitalize tracking-wide">
+                              {key.replace(/([A-Z])/g, " $1")}
                             </Label>
-                            <Switch
-                              checked={value}
-                              onCheckedChange={() => {
+
+                            <button
+                              onClick={() =>
                                 setOptimizationSettings((prev) => ({
                                   ...prev,
                                   [key]: !prev[key],
-                                }));
-                              }}
-                              className="data-[state=checked]:bg-purple-500"
-                            />
+                                }))
+                              }
+                              className={`
+    relative w-8 h-4 rounded-full transition-colors
+    ${value ? "bg-purple-500" : "bg-gray-600"}
+  `}
+                            >
+                              <span
+                                className={`
+      absolute top-0.5 left-0.5 h-3 w-3 rounded-full bg-white
+      transition-transform
+      ${value ? "translate-x-4" : ""}
+    `}
+                              />
+                            </button>
                           </div>
                         )
                       )}

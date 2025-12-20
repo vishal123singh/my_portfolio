@@ -100,7 +100,7 @@ export function SwitchNode({ id, data, isConnectable }) {
               <h3 className="text-gray-200">Inputs</h3>
               <button
                 onClick={() => setShowInputs(false)}
-                className="text-gray-500 hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-300"
               >
                 <ChevronUp className="w-4 h-4" />
               </button>
@@ -133,7 +133,7 @@ export function SwitchNode({ id, data, isConnectable }) {
               <h3 className="text-gray-200">Executed Case</h3>
               <button
                 onClick={() => setShowOutputs(false)}
-                className="text-gray-500 hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-300"
               >
                 <ChevronUp className="w-4 h-4" />
               </button>
@@ -174,7 +174,7 @@ export function SwitchNode({ id, data, isConnectable }) {
             {/* Generate Button */}
             <Button
               onClick={handleGenerateCases}
-              className="w-full text-xs mb-2"
+              className="w-full text-xs mb-2 text-gray-300"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -213,7 +213,7 @@ export function SwitchNode({ id, data, isConnectable }) {
                   ))}
                 </ul>
               ) : (
-                <div className="text-center text-gray-500">No cases yet</div>
+                <div className="text-center text-gray-400">No cases yet</div>
               )}
             </div>
 

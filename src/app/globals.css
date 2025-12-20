@@ -1123,3 +1123,14 @@ footer {
     max-width: 100%;
   }
 }
+
+/* Sonner toaster must beat React Flow */
+[data-sonner-toaster] {
+  z-index: 999999 !important;
+  position: fixed !important;
+  pointer-events: auto;
+}
+
+.react-flow {
+  z-index: 1;
+}

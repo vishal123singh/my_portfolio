@@ -102,7 +102,7 @@ export default function OutputNode({ id, data, isConnectable }) {
               <h3 className="text-gray-400">Input Details</h3>
               <button
                 onClick={() => setShowInputs(false)}
-                className="text-gray-500 hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-300"
               >
                 <ChevronUp className="w-4 h-4" />
               </button>
@@ -170,7 +170,7 @@ export default function OutputNode({ id, data, isConnectable }) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleDelete}
-                  className="text-gray-500 hover:text-red-400 transition-colors"
+                  className="text-gray-400 hover:text-red-400 transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -214,7 +214,7 @@ export default function OutputNode({ id, data, isConnectable }) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowRaw(!showRaw)}
-                    className="text-xs text-gray-500 hover:text-emerald-400 flex items-center gap-1"
+                    className="text-xs text-gray-400 hover:text-emerald-400 flex items-center gap-1"
                     title={showRaw ? "Show formatted" : "Show raw"}
                   >
                     {showRaw ? (
@@ -225,7 +225,7 @@ export default function OutputNode({ id, data, isConnectable }) {
                   </button>
                   <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-xs text-gray-500 hover:text-emerald-400 flex items-center gap-1"
+                    className="text-xs text-gray-400 hover:text-emerald-400 flex items-center gap-1"
                     title={isExpanded ? "Collapse" : "Expand"}
                   >
                     {isExpanded ? (
@@ -246,7 +246,7 @@ export default function OutputNode({ id, data, isConnectable }) {
                   )}
 
               {!output && activeTab === "output" && (
-                <div className="text-center text-gray-500 text-xs py-4">
+                <div className="text-center text-gray-400 text-xs py-4">
                   No output data received yet
                 </div>
               )}
@@ -257,7 +257,7 @@ export default function OutputNode({ id, data, isConnectable }) {
               {hasInputs && (
                 <button
                   onClick={() => setShowInputs(!showInputs)}
-                  className="text-xs text-gray-500 hover:text-green-400 flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-700/50"
+                  className="text-xs text-gray-400 hover:text-green-400 flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-700/50"
                 >
                   {showInputs ? (
                     <ChevronUp className="w-3 h-3" />

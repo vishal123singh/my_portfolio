@@ -132,7 +132,7 @@ export function TriggerNode({ data, isConnectable, id }) {
               <h3 className="text-gray-400">Inputs</h3>
               <button
                 onClick={() => setShowInputs(false)}
-                className="text-gray-500 hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-300"
               >
                 <ChevronUp className="w-4 h-4" />
               </button>
@@ -177,7 +177,7 @@ export function TriggerNode({ data, isConnectable, id }) {
               <h3 className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">
                 Trigger Node
               </h3>
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex gap-2 opacity-100 group-hover:opacity-100 transition-opacity">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -193,7 +193,7 @@ export function TriggerNode({ data, isConnectable, id }) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleDelete}
-                  className="text-gray-500 hover:text-red-400 transition-colors"
+                  className="text-gray-400 hover:text-red-400 transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -274,7 +274,7 @@ export function TriggerNode({ data, isConnectable, id }) {
                                   />
                                   <button
                                     onClick={() => removePayloadField(key)}
-                                    className="text-gray-500 hover:text-red-400 p-1"
+                                    className="text-gray-400 hover:text-red-400 p-1"
                                   >
                                     <Trash2 className="w-3 h-3" />
                                   </button>
@@ -283,7 +283,7 @@ export function TriggerNode({ data, isConnectable, id }) {
                             )}
                           </div>
                         ) : (
-                          <div className="text-center text-gray-500 text-xs py-2">
+                          <div className="text-center text-gray-400 text-xs py-2">
                             No payload fields
                           </div>
                         )}
