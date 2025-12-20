@@ -50,7 +50,7 @@ MongoDB:
 `;
 
     const completion = await openai.chat.completions.create({
-      model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+      model: "openai/gpt-oss-20b:free",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt },

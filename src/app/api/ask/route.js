@@ -5,8 +5,7 @@ import OpenAI from "openai";
 // Initialize OpenAI client using OpenRouter
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey:
-    "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",
+  apiKey: process.env.OPEN_ROUTER_API_KEY,
 });
 
 // Structured data about Vishal, his portfolio, and personal details
@@ -279,8 +278,6 @@ export async function POST(req) {
       messages: [systemMessage, userMessage],
       stream: true,
     });
-
-    console.log(completion, "=====================");
 
     // Return streamed response
     const encoder = new TextEncoder();
