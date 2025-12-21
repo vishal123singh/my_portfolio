@@ -11,13 +11,13 @@ export default function AssistantLauncher() {
   return (
     <>
       <motion.div
-        className="fixed bottom-4 right-4 z-[999] group flex flex-col items-center"
+        className="fixed bottom-4 right-4 z-[9999] group flex flex-col items-center"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4, duration: 0.4 }}
       >
         <motion.div
-          onClick={() => setOpen(true)}
+          onPointerDown={() => setOpen(true)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           className="cursor-pointer"

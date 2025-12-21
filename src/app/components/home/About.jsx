@@ -1,10 +1,8 @@
 "use client";
-
 import { FaLock, FaUnlock } from "react-icons/fa";
 import Image from "next/image";
 import { useState } from "react";
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { keyProjects, techStack, experiences } from "../../../../data.js";
 
 const TechBubble = ({ icon: Icon, color, name, delay }) => {
@@ -238,7 +236,7 @@ export default function About() {
             <span className="text-pink-400 font-medium">
               full-stack developer
             </span>{" "}
-            with 3+ years of experience building dynamic apps across mobile and
+            with 4+ years of experience building dynamic apps across mobile and
             web. My work focuses on performance, usability, and integrating
             modern tech like LLMs, microservices, and real-time communication.
           </p>

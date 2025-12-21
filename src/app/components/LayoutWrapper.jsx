@@ -1,9 +1,7 @@
 "use client";
-
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
-import ResumeButton from "./ResumeButton";
 import AssistantWrapper from "./AssistantWrapper";
 import BackButton from "./common/BackButton";
 import { Toaster } from "@/components/ui/sonner";
@@ -47,7 +45,6 @@ export default function LayoutWrapper({ children }) {
     <>
       {!isFullScreen && <Navbar />}
       {!isFullScreen && <BackButton label="Back" />}
-      {!isFullScreen && <AssistantWrapper />}
       {/* {!isFullScreen && <ResumeButton />} */}
 
       <main

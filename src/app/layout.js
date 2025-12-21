@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import LayoutWrapper from "@/app/components/LayoutWrapper";
 import Head from "next/head";
 import { Toaster } from "@/components/ui/sonner";
+import AssistantWrapper from "./components/AssistantWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <LayoutWrapper>{children}</LayoutWrapper>
         </ThemeProvider>
+        <AssistantWrapper></AssistantWrapper>
       </body>
     </html>
   );
