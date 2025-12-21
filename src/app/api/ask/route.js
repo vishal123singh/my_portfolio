@@ -7,6 +7,9 @@ const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPEN_ROUTER_API_KEY,
 });
+console.log("OPEN_ROUTER_API_KEY exists:", process.env.OPEN_ROUTER_API_KEY);
+
+console.log("OPEN_ROUTER_API_KEY exists:", !!process.env.OPEN_ROUTER_API_KEY);
 
 // Structured data about Vishal, his portfolio, and personal details
 const contentMap = {
