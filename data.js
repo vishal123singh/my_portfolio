@@ -91,15 +91,17 @@ const projects = [
       "MongoDB",
     ],
     images: [
+      "/projects/screenshots/velotransact/1.png",
+      "/projects/screenshots/velotransact/2.png",
+      "/projects/screenshots/velotransact/3.png",
+      "/projects/screenshots/velotransact/4.png",
+      "/projects/screenshots/velotransact/5.png",
+      "/projects/screenshots/velotransact/6.png",
+      "/projects/screenshots/velotransact/7.png",
+      "/projects/screenshots/velotransact/8.png",
+      "/projects/screenshots/velotransact/9.png",
+      "/projects/screenshots/velotransact/10.png",
       "/projects/screenshots/velotransact/11.png",
-      "/projects/screenshots/velotransact/12.png",
-      "/projects/screenshots/velotransact/13.png",
-      "/projects/screenshots/velotransact/14.png",
-      "/projects/screenshots/velotransact/15.png",
-      "/projects/screenshots/velotransact/16.png",
-      "/projects/screenshots/velotransact/17.png",
-      "/projects/screenshots/velotransact/18.png",
-      "/projects/screenshots/velotransact/19.png",
     ],
     features: [
       {
@@ -195,7 +197,7 @@ const projects = [
     ],
 
     contributions: [],
-    displayImage: "/projects/screenshots/velotransact/13.png",
+    displayImage: "/projects/screenshots/velotransact/3.png",
   },
 
   {
@@ -206,14 +208,15 @@ const projects = [
     link: "https://www.aadvico.com/",
     tags: ["GCP", "Web", "Next.js", "Firebase"],
     images: [
-      "/projects/screenshots/aadvico/11.png",
-      "/projects/screenshots/aadvico/12.png",
-      "/projects/screenshots/aadvico/13.png",
-      "/projects/screenshots/aadvico/14.png",
-      "/projects/screenshots/aadvico/15.png",
       "/projects/screenshots/aadvico/1.png",
       "/projects/screenshots/aadvico/2.png",
       "/projects/screenshots/aadvico/3.png",
+      "/projects/screenshots/aadvico/4.png",
+      "/projects/screenshots/aadvico/5.png",
+      "/projects/screenshots/aadvico/6.png",
+      "/projects/screenshots/aadvico/7.png",
+      "/projects/screenshots/aadvico/8.png",
+      "/projects/screenshots/aadvico/9.png",
     ],
 
     features: [
@@ -269,7 +272,7 @@ const projects = [
       "Built admin dashboard for inventory and sales tracking.",
       "Implemented user authentication and profile management features.",
     ],
-    displayImage: "/projects/screenshots/aadvico/16.png",
+    displayImage: "/projects/screenshots/aadvico/2.png",
   },
 
   {
