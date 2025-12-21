@@ -279,6 +279,8 @@ export async function POST(req) {
       stream: true,
     });
 
+    console.log("completion", completion);
+
     // Return streamed response
     const encoder = new TextEncoder();
     return new Response(
@@ -295,6 +297,6 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error("Handler error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(error, { status: 500 });
   }
 }
