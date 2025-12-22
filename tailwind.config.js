@@ -11,6 +11,10 @@ module.exports = {
         neon: "#00f5ff",
         buy: "#00ff88",
         sell: "#ff4d4d",
+        gold: {
+          500: "#D4AF37",
+          600: "#C49B2F",
+        },
       },
 
       fontFamily: {

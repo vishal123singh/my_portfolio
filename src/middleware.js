@@ -28,7 +28,7 @@ export default async function middleware(req) {
     limiter = agentLimiter;
   }
 
-  const { success, limit, remaining, reset } = await ratelimit.limit(ip);
+  const { success, limit, remaining, reset } = await limiter.limit(ip);
 
   if (!success) {
     return new NextResponse(JSON.stringify({ error: "Too many requests" }), {
