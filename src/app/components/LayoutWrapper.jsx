@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
-import AssistantWrapper from "./AssistantWrapper";
 import BackButton from "./common/BackButton";
 import { Toaster } from "@/components/ui/sonner";
 import { motion } from "framer-motion";

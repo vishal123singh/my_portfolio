@@ -16,7 +16,7 @@ export async function POST(request) {
 
     const mailOptions = {
       from: process.env.ZOHO_USER,
-      to: email, // Receiver
+      to: process.env.RECIEVER_MAIL, // Receiver
       subject: `New message from ${name}`,
       html: `
         <h3>New Contact Message</h3>
