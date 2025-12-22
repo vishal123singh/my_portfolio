@@ -37,7 +37,7 @@ export default function Contact() {
       if (res.ok) {
         setSubmitSuccess(true);
         setFormData({ name: "", email: "", message: "" });
-        setTimeout(() => setSubmitSuccess(false), 3000);
+        setTimeout(() => setSubmitSuccess(false), 5000);
       } else {
         alert("Failed to send message. Try again later.");
       }
@@ -85,7 +85,8 @@ export default function Contact() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  Message sent successfully! We'll reach out to you shortly.
+                  Message sent successfully! <br></br>We'll reach out to you
+                  shortly.
                 </motion.div>
               )}
 
