@@ -8,6 +8,10 @@ import {
   updateDoc,
   addDoc,
   collection,
+  getDoc,
+  setDoc,
+  getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import {
   FiMic,
@@ -22,286 +26,277 @@ import ChatDrawer from "./ChatDrawer";
 
 export default function VideoRoom({ roomId, user }) {
   const router = useRouter();
+
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const pcRef = useRef(null);
   const localStream = useRef(null);
+  const pendingCandidates = useRef([]);
+
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCamOn, setIsCamOn] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [messages, setMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isMakingOffer, setIsMakingOffer] = useState(false);
 
   const [unreadCount, setUnreadCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // Load sound preference from localStorage
+  /* ---------------- Preferences ---------------- */
+
   useEffect(() => {
     const stored = localStorage.getItem("sound-enabled");
-    if (stored !== null) {
-      setSoundEnabled(stored === "true");
-    }
+    if (stored !== null) setSoundEnabled(stored === "true");
   }, []);
 
-  // Count unread messages when chat drawer is closed
   useEffect(() => {
     if (!isChatOpen && messages.length > 0) {
       const lastMsg = messages[messages.length - 1];
       if (lastMsg.senderId !== user.uid) {
-        setUnreadCount((prev) => prev + 1);
+        setUnreadCount((p) => p + 1);
       }
     } else if (isChatOpen) {
-      setUnreadCount(0); // Reset when drawer opens
+      setUnreadCount(0);
     }
   }, [messages, isChatOpen, user.uid]);
 
-  // Toggle sound and save preference
   const toggleSound = () => {
     const next = !soundEnabled;
     setSoundEnabled(next);
     localStorage.setItem("sound-enabled", String(next));
   };
 
+  /* ---------------- WebRTC ---------------- */
+
   useEffect(() => {
-    const callDoc = doc(db, "rooms", roomId);
+    if (!roomId || !user?.uid) return;
+
+    const roomRef = doc(db, "rooms", roomId);
     const messagesRef = collection(db, "rooms", roomId, "messages");
 
+    let unsubscribeRoom;
+    let unsubscribeIce;
+    let unsubscribeChat;
+
     const cleanup = () => {
-      if (localStream.current) {
-        localStream.current.getTracks().forEach((track) => track.stop());
-      }
+      localStream.current?.getTracks().forEach((t) => t.stop());
+      pcRef.current?.close();
       if (localVideoRef.current) localVideoRef.current.srcObject = null;
       if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
-      if (pcRef.current) pcRef.current.close();
     };
 
-    const initializeCall = async () => {
-      try {
-        pcRef.current = new RTCPeerConnection({
-          iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-        });
+    const init = async () => {
+      const roomSnap = await getDoc(roomRef);
 
-        localStream.current = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
+      let isCaller = false;
 
-        localStream.current.getTracks().forEach((track) => {
-          pcRef.current.addTrack(track, localStream.current);
-        });
+      if (!roomSnap.exists()) {
+        await setDoc(roomRef, { createdBy: user.uid });
+        isCaller = true;
+      } else {
+        const data = roomSnap.data();
+        if (!data.createdBy) {
+          await updateDoc(roomRef, { createdBy: user.uid });
+          isCaller = true;
+        } else {
+          isCaller = data.createdBy === user.uid;
+        }
+      }
 
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = localStream.current;
+      pcRef.current = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+
+      /* ---- Local media ---- */
+      localStream.current = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+
+      localStream.current.getTracks().forEach((track) => {
+        pcRef.current.addTrack(track, localStream.current);
+      });
+
+      localVideoRef.current.srcObject = localStream.current;
+
+      /* ---- Remote media ---- */
+      pcRef.current.ontrack = (e) => {
+        if (e.streams[0]) remoteVideoRef.current.srcObject = e.streams[0];
+      };
+
+      /* ---- ICE send ---- */
+      pcRef.current.onicecandidate = (e) => {
+        if (!e.candidate) return;
+        addDoc(
+          collection(
+            db,
+            "rooms",
+            roomId,
+            isCaller ? "callerCandidates" : "calleeCandidates"
+          ),
+          e.candidate.toJSON()
+        );
+      };
+
+      /* ---- Clear old ICE (caller only) ---- */
+      if (isCaller) {
+        for (const col of ["callerCandidates", "calleeCandidates"]) {
+          const snap = await getDocs(collection(roomRef, col));
+          snap.forEach((d) => deleteDoc(d.ref));
+        }
+      }
+
+      /* ---- ICE receive (queued) ---- */
+      const remoteIceRef = collection(
+        db,
+        "rooms",
+        roomId,
+        isCaller ? "calleeCandidates" : "callerCandidates"
+      );
+
+      unsubscribeIce = onSnapshot(remoteIceRef, (snap) => {
+        snap.docChanges().forEach((c) => {
+          if (c.type === "added") {
+            const candidate = new RTCIceCandidate(c.doc.data());
+            if (pcRef.current.remoteDescription) {
+              pcRef.current.addIceCandidate(candidate);
+            } else {
+              pendingCandidates.current.push(candidate);
+            }
+          }
+        });
+      });
+
+      /* ---- Signaling ---- */
+      unsubscribeRoom = onSnapshot(roomRef, async (snap) => {
+        const data = snap.data();
+        if (!data) return;
+
+        // Callee
+        if (!isCaller && data.offer && !pcRef.current.remoteDescription) {
+          await pcRef.current.setRemoteDescription(
+            new RTCSessionDescription(data.offer)
+          );
+
+          const answer = await pcRef.current.createAnswer();
+          await pcRef.current.setLocalDescription(answer);
+          await updateDoc(roomRef, { answer });
+
+          pendingCandidates.current.forEach((c) =>
+            pcRef.current.addIceCandidate(c)
+          );
+          pendingCandidates.current = [];
         }
 
-        pcRef.current.ontrack = (event) => {
-          if (remoteVideoRef.current && event.streams[0]) {
-            remoteVideoRef.current.srcObject = event.streams[0];
-          }
-        };
+        // Caller
+        if (isCaller && data.answer && !pcRef.current.remoteDescription) {
+          await pcRef.current.setRemoteDescription(
+            new RTCSessionDescription(data.answer)
+          );
 
-        pcRef.current.onicecandidate = async (event) => {
-          if (event.candidate) {
-            await updateDoc(callDoc, {
-              [`iceCandidates.${user.uid}`]: event.candidate.toJSON(),
-            });
-          }
-        };
+          pendingCandidates.current.forEach((c) =>
+            pcRef.current.addIceCandidate(c)
+          );
+          pendingCandidates.current = [];
+        }
+      });
 
-        const unsubscribe = onSnapshot(callDoc, async (snapshot) => {
-          const data = snapshot.data();
-          if (!data) return;
-
-          // Handle offer from remote
-          if (
-            data.offer &&
-            pcRef.current.signalingState === "stable" &&
-            !pcRef.current.currentRemoteDescription
-          ) {
-            try {
-              await pcRef.current.setRemoteDescription(
-                new RTCSessionDescription(data.offer)
-              );
-              const answer = await pcRef.current.createAnswer();
-              await pcRef.current.setLocalDescription(answer);
-              await updateDoc(callDoc, { answer });
-            } catch (error) {
-              console.error("Error handling remote offer:", error);
-            }
-          }
-
-          // Handle answer from remote
-          if (
-            data.answer &&
-            pcRef.current.signalingState === "have-local-offer"
-          ) {
-            try {
-              await pcRef.current.setRemoteDescription(
-                new RTCSessionDescription(data.answer)
-              );
-            } catch (error) {
-              console.error("Error setting remote answer:", error);
-            }
-          }
-
-          // Handle ICE candidate from remote
-          const candidate = data.iceCandidates?.[user.uid];
-          if (candidate) {
-            try {
-              await pcRef.current.addIceCandidate(
-                new RTCIceCandidate(candidate)
-              );
-              await updateDoc(callDoc, {
-                [`iceCandidates.${user.uid}`]: null,
-              });
-            } catch (err) {
-              console.error("ICE Candidate Error:", err);
-            }
-          }
-
-          // Create offer if none exists
-          if (
-            !data.offer &&
-            pcRef.current.signalingState === "stable" &&
-            !isMakingOffer
-          ) {
-            setIsMakingOffer(true);
-            try {
-              const offer = await pcRef.current.createOffer({
-                iceRestart: true,
-              });
-              await pcRef.current.setLocalDescription(offer);
-              await updateDoc(callDoc, { offer });
-            } catch (err) {
-              console.error("Error creating offer:", err);
-            } finally {
-              setIsMakingOffer(false);
-            }
-          }
-        });
-
-        const unsubChat = onSnapshot(messagesRef, (snapshot) => {
-          const msgs = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setMessages(msgs);
-        });
-
-        return () => {
-          unsubscribe();
-          unsubChat();
-          cleanup();
-        };
-      } catch (error) {
-        console.error("Error initializing call:", error);
+      /* ---- Offer ---- */
+      if (isCaller) {
+        const offer = await pcRef.current.createOffer();
+        await pcRef.current.setLocalDescription(offer);
+        await updateDoc(roomRef, { offer });
       }
+
+      /* ---- Chat ---- */
+      unsubscribeChat = onSnapshot(messagesRef, (snap) => {
+        setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      });
     };
 
-    initializeCall();
-    return cleanup;
+    init();
+
+    return () => {
+      unsubscribeRoom?.();
+      unsubscribeIce?.();
+      unsubscribeChat?.();
+      cleanup();
+    };
   }, [roomId, user.uid]);
+
+  /* ---------------- Media Controls ---------------- */
 
   const toggleMedia = (type) => {
     const track = localStream.current?.[`get${type}Tracks`]?.()[0];
-    if (track) {
-      const newState = !track.enabled;
-      track.enabled = newState;
-      return newState;
-    }
-    return false;
+    if (!track) return false;
+    track.enabled = !track.enabled;
+    return track.enabled;
   };
 
   const toggleMic = () => setIsMicOn(toggleMedia("Audio"));
   const toggleCamera = () => setIsCamOn(toggleMedia("Video"));
 
+  /* ---------------- Screen Share ---------------- */
+
   const toggleScreenShare = async () => {
-    try {
-      if (isScreenSharing) {
-        await switchToCamera();
-      } else {
-        await startScreenShare();
-      }
-    } catch (error) {
-      console.error("Screen sharing error:", error);
-    }
+    if (isScreenSharing) switchToCamera();
+    else startScreenShare();
   };
 
   const startScreenShare = async () => {
-    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+    const stream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
     });
-    const screenTrack = screenStream.getVideoTracks()[0];
-
-    const sender = pcRef.current
+    const track = stream.getVideoTracks()[0];
+    pcRef.current
       .getSenders()
-      .find((s) => s.track?.kind === "video");
-
-    if (sender) {
-      await sender.replaceTrack(screenTrack);
-    }
-
-    if (localVideoRef.current) {
-      localVideoRef.current.srcObject = screenStream;
-    }
-
-    screenTrack.onended = async () => {
-      await switchToCamera();
-    };
-
+      .find((s) => s.track?.kind === "video")
+      ?.replaceTrack(track);
+    localVideoRef.current.srcObject = stream;
+    track.onended = switchToCamera;
     setIsScreenSharing(true);
   };
 
   const switchToCamera = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    const cameraTrack = stream.getVideoTracks()[0];
-
-    const sender = pcRef.current
+    const track = stream.getVideoTracks()[0];
+    pcRef.current
       .getSenders()
-      .find((s) => s.track?.kind === "video");
-
-    if (sender) {
-      await sender.replaceTrack(cameraTrack);
-    }
-
-    if (localVideoRef.current) {
-      localVideoRef.current.srcObject = stream;
-    }
-
-    localStream.current = stream;
+      .find((s) => s.track?.kind === "video")
+      ?.replaceTrack(track);
+    localStream.current
+      .getVideoTracks()
+      .forEach((t) => localStream.current.removeTrack(t));
+    localStream.current.addTrack(track);
+    localVideoRef.current.srcObject = localStream.current;
     setIsScreenSharing(false);
   };
+
+  /* ---------------- Chat ---------------- */
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-
-    const message = {
+    await addDoc(collection(db, "rooms", roomId, "messages"), {
       user: user.displayName || "Anonymous",
       photoURL: user.photoURL || "",
       text: chatInput,
       timestamp: Date.now(),
-    };
-
-    try {
-      await addDoc(collection(db, "rooms", roomId, "messages"), message);
-      setChatInput("");
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
+      senderId: user.uid,
+    });
+    setChatInput("");
   };
+
+  /* ---------------- End Call ---------------- */
 
   const endCall = () => {
-    if (localStream.current) {
-      localStream.current.getTracks().forEach((track) => track.stop());
-    }
-    if (pcRef.current) {
-      pcRef.current.close();
-    }
+    localStream.current?.getTracks().forEach((t) => t.stop());
+    pcRef.current?.close();
     router.back();
   };
+
+  /* ---------------- UI ---------------- */
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -319,6 +314,7 @@ export default function VideoRoom({ roomId, user }) {
               You ({user?.displayName || "User"})
             </div>
           </div>
+
           <div className="relative rounded-lg overflow-hidden bg-gray-800 aspect-video">
             <video
               ref={remoteVideoRef}
@@ -332,7 +328,6 @@ export default function VideoRoom({ roomId, user }) {
           </div>
         </div>
 
-        {/* Control Bar */}
         <div className="flex justify-center items-center gap-4 py-4 bg-gray-800 rounded-lg">
           <ControlButton
             active={isMicOn}
@@ -361,18 +356,9 @@ export default function VideoRoom({ roomId, user }) {
             inactiveColor="text-gray-400"
             label="Screen Share"
           />
-          {/* <ControlButton
-            active={isChatOpen}
-            onClick={() => setIsChatOpen(!isChatOpen)}
-            activeIcon={<FiMessageCircle />}
-            inactiveIcon={<FiMessageCircle />}
-            activeColor="text-blue-400"
-            inactiveColor="text-blue-400"
-            label="Chat"
-          /> */}
 
           <button
-            onClick={() => setIsChatOpen(true)}
+            onClick={() => setIsChatOpen(!isChatOpen)}
             className="relative p-2 bg-white shadow rounded-full"
           >
             💬
@@ -386,14 +372,11 @@ export default function VideoRoom({ roomId, user }) {
           <button
             onClick={endCall}
             className="flex flex-col items-center justify-center p-3 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
-            title="End Call"
           >
             <FiPhoneOff className="text-white" />
           </button>
         </div>
       </div>
-
-      {/* Chat Drawer */}
 
       {isChatOpen && (
         <ChatDrawer
@@ -411,6 +394,8 @@ export default function VideoRoom({ roomId, user }) {
     </div>
   );
 }
+
+/* ---------------- Control Button ---------------- */
 
 const ControlButton = ({
   active,

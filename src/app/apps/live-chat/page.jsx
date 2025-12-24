@@ -7,7 +7,7 @@ const ChatBox = dynamic(() => import("./components/Chatbot"), {
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a]">
+    <main className="min-h-[100dvh] bg-[#0f172a]">
       <ChatBox />
     </main>
   );

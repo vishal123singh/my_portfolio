@@ -163,7 +163,7 @@ export default function BlogDetailPage() {
         </Link>
       </div>
 
-      <h1 className="text-2xl sm:text-4xl font-extrabold text-gradient mb-2 break-words">
+      <h1 className="text-2xl sm:text-4xl font-bold text-gradient mb-2 break-words">
         {blog.title}
       </h1>
 

@@ -4,7 +4,7 @@ import Comment from "@/models/Comment";
 
 // GET: Fetch all comments (with replies) for a blog post
 export async function GET(req, { params }) {
-  const { slug } = params;
+  const { slug } = await params;
   if (!slug) {
     return NextResponse.json({ error: "Missing slug" }, { status: 400 });
   }

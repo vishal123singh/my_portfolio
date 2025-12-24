@@ -8,8 +8,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPEN_ROUTER_API_KEY,
 });
 
-console.log("OPEN_ROUTER_API_KEY exists:", !!process.env.OPEN_ROUTER_API_KEY);
-
 // Structured data about Vishal, his portfolio, and personal details
 const contentMap = {
   vishal: {
@@ -280,8 +278,6 @@ export async function POST(req) {
       messages: [systemMessage, userMessage],
       stream: true,
     });
-
-    console.log("completion", completion);
 
     // Return streamed response
     const encoder = new TextEncoder();

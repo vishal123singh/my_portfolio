@@ -4,7 +4,7 @@ import { connectDB } from "@/lib/mongoose";
 import Blog from "@/models/Blog";
 
 export async function GET(req, { params }) {
-  const { slug: id } = params;
+  const { slug: id } = await params;
 
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });

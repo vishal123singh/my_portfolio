@@ -212,21 +212,19 @@ export default function MyBlogsPage() {
                     ) : (
                       <div className="w-full h-40 flex items-center justify-center bg-slate-800/50 rounded-lg mb-4">
                         <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="48"
-                          height="48"
-                          viewBox="0 0 24 24"
+                          viewBox="0 0 64 64"
+                          className="w-12 h-12 text-indigo-400/70"
                           fill="none"
                           stroke="currentColor"
-                          strokeWidth="1.5"
+                          strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="lucide lucide-galaxy text-purple-500/50"
                         >
-                          <path d="M12 2a10 10 0 0 1 8 16" />
-                          <path d="M12 2a10 10 0 0 0-8 16" />
-                          <path d="M8 8a10 10 0 0 1 8 8" />
-                          <path d="M8 8a10 10 0 0 0 8 8" />
+                          <path d="M14 8h28l8 8v40H14z" />
+                          <path d="M42 8v8h8" />
+                          <path d="M24 30l-6 6 6 6" />
+                          <path d="M40 30l6 6-6 6" />
+                          <path d="M30 26l4 16" />
                         </svg>
                       </div>
                     )}

@@ -11,22 +11,23 @@ const apps = [
     id: 1,
     name: "Live Chat",
     description:
-      "Real-time messaging with end-to-end encryption and AI moderation",
+      "AI-enhanced real-time messaging with secure, end-to-end encryption for seamless conversations.",
     category: "Communication",
     url: "/apps/live-chat",
     image: "/images/chat-app.jpg",
     featured: true,
-    tech: ["Firebase", "Next.js"],
+    tech: ["Next.js", "Firebase", "AI"],
   },
   {
     id: 2,
     name: "Video Calling",
-    description: "4K video conferencing",
+    description:
+      "Real-time video calls with live language translation — choose the language you speak and the language the other participant hears, enabling seamless conversations across languages.",
     category: "Communication",
     url: "/apps/video-calling",
     image: "/images/video-call.jpg",
     featured: true,
-    tech: ["WebRTC"],
+    tech: ["WebRTC", "AI"],
   },
 ];
 
@@ -97,15 +98,18 @@ export default function AppsShowcase() {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="max-w-2xl sm:max-w-4xl mx-auto relative mb-12 sm:mb-16 z-10 px-4"
       >
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        {/* Search Icon */}
+        <div className="absolute inset-y-0 left-4 pl-4 flex items-center pointer-events-none z-20">
           <FiSearch className="text-gray-500 text-xl" />
         </div>
+
+        {/* Input */}
         <input
           type="text"
           placeholder="Search applications..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-6 py-3 sm:py-4 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-white placeholder-gray-500 text-base sm:text-lg bg-black/30 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/30"
+          className="relative z-10 w-full pl-12 pr-6 py-3 sm:py-4 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-white placeholder-gray-500 text-base sm:text-lg bg-black/30 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/30"
         />
       </motion.div>
 

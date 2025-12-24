@@ -19,6 +19,51 @@ import {
 } from "lucide-react";
 import CosmicBackground from "../CosmicBackground";
 
+const container = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.05, // typing speed
+    },
+  },
+};
+
+const child = {
+  hidden: {
+    opacity: 0,
+    y: "0.25em",
+  },
+  visible: {
+    opacity: 1,
+    y: "0em",
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
+export function TypingText({ text, delay = 0, className = "" }) {
+  return (
+    <motion.span
+      className={`inline-block ${className}`}
+      variants={container}
+      initial="hidden"
+      animate="visible"
+      transition={{ delay }}
+    >
+      {text.split("").map((char, index) => (
+        <motion.span
+          key={index}
+          variants={child}
+          style={{ display: "inline-block", whiteSpace: "pre" }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </motion.span>
+  );
+}
+
 const InteractiveCodeLine = ({ children, delay = 0 }) => {
   const baseText = children;
   const count = useMotionValue(0);
@@ -81,6 +126,10 @@ function HomeHero() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
+                  {/* <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 inline-block">
+                    <TypingText text="Digital Craftsmanship" delay={0.3} />
+                  </span> */}
+
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 inline-block">
                     Digital Craftsmanship
                   </span>
