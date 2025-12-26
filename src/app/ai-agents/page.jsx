@@ -139,9 +139,6 @@ export default function AIAgentBuilderPage() {
             className="inline-flex items-center justify-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-gray-800 border border-gray-700"
           >
             <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400/20" />
-            <span className="text-sm font-medium text-gray-200">
-              Beta now available
-            </span>
           </motion.div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
@@ -378,74 +375,6 @@ export default function AIAgentBuilderPage() {
         </div>
       </section>
 
-      {/* LIVE DEMO SECTION */}
-      <section
-        id="demo"
-        className="py-24 px-6 max-w-6xl mx-auto text-center relative"
-      >
-        <div className="absolute inset-0 top-1/2 bg-gradient-to-b from-gray-950/50 to-gray-950 z-0" />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="relative z-10"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-amber-300 to-orange-400 text-transparent bg-clip-text">
-              Interactive Demo
-            </span>
-          </h2>
-          <p className="text-gray-400 mb-10 max-w-2xl mx-auto">
-            Experience the builder right in your browser - no installation
-            required
-          </p>
-
-          <div className="relative overflow-hidden rounded-3xl border border-gray-800 shadow-2xl bg-gradient-to-br from-gray-900 to-gray-950">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10" />
-            <div className="absolute top-4 left-4 flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-sm font-medium"
-            >
-              Live
-            </motion.div>
-
-            <iframe
-              src="/ai-agent-builder"
-              className="w-full h-[600px] relative z-10"
-              title="AI Agent Builder Live"
-            />
-          </div>
-
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {[
-              { label: "Chat Agent", emoji: "" },
-              { label: "Data Processor", emoji: "" },
-              { label: "API Integrator", emoji: "" },
-              { label: "Research Assistant", emoji: "" },
-            ].map((template, i) => (
-              <motion.button
-                key={i}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 flex items-center gap-2"
-              >
-                <span>{template.emoji}</span>
-                {template.label}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
       {/* TECH STACK */}
       <section className="py-24 px-6 text-center relative">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-950 to-black z-0" />
@@ -503,10 +432,7 @@ export default function AIAgentBuilderPage() {
                 <h3 className="text-2xl font-bold mb-4">
                   Ready to start building?
                 </h3>
-                <p className="text-gray-300 mb-6">
-                  Join thousands of developers creating AI agents with our
-                  visual builder. Start free with no credit card required.
-                </p>
+
                 <motion.a
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -528,38 +454,6 @@ export default function AIAgentBuilderPage() {
           </motion.div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-12 px-6 border-t border-gray-800 text-center text-gray-500 text-sm">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <div className="flex items-center justify-center gap-2">
-                <Brain className="w-6 h-6 text-purple-500" />
-                <span className="text-lg font-bold text-gray-300">
-                  AgentFlow
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-6 mb-4 md:mb-0">
-              {["Documentation", "Tutorials", "API", "Pricing", "Blog"].map(
-                (item, index) => (
-                  <a
-                    key={index}
-                    href="#"
-                    className="text-gray-500 hover:text-gray-300 transition-colors"
-                  >
-                    {item}
-                  </a>
-                )
-              )}
-            </div>
-            <div className="text-gray-500">
-              © {new Date().getFullYear()} AgentFlow. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

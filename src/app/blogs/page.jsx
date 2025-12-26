@@ -86,18 +86,19 @@ export default function MyBlogsPage() {
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent"
+            className="text-5xl font-bold mb-4 leading-[1.25] pb-2 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent"
           >
-            My Cosmic Journal
+            Builder’s Log
           </motion.h1>
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="text-lg text-purple-100/80"
           >
-            Thoughts, tutorials, and technical deep dives from across the
-            universe
+            Practical insights, real-world experiments, and lessons learned
+            while shipping products
           </motion.p>
 
           {!showEditor && (
@@ -118,7 +119,7 @@ export default function MyBlogsPage() {
                 className="flex items-center gap-2 px-6 py-3 text-sm bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:brightness-110 rounded-full font-medium transition-all shadow-lg hover:shadow-purple-500/30"
               >
                 <PenLine size={16} className="text-white" />
-                <span className="relative z-10">Compose Stellar Entry</span>
+                <span className="relative z-10">Write a New Post</span>
               </button>
             </motion.div>
           )}

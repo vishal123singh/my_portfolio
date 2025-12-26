@@ -3,26 +3,20 @@
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
+  useInView,
   useScroll,
-  useTransform,
   useSpring,
+  useTransform,
   useMotionValueEvent,
   AnimatePresence,
   useMotionValue,
   animate,
-  useInView,
 } from "framer-motion";
-import Image from "next/image";
-import {
-  FaGem,
-  FaChevronUp,
-  FaShoppingBag,
-  FaStar,
-  FaCrown,
-} from "react-icons/fa";
-import { GiDiamondRing, GiNecklace, GiEarrings } from "react-icons/gi";
+import ParticlesBackground from "@/app/components/ParticlesBackground";
+import { FaMobile, FaSync } from "react-icons/fa";
+import { SiProgress } from "react-icons/si";
 
-export default function JewelryScrollLanding() {
+export default function ScrollStoryDemo() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ container: containerRef });
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -30,33 +24,37 @@ export default function JewelryScrollLanding() {
 
   const [activeSection, setActiveSection] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Throttle scroll events
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScroll = useRef(0);
+
   useEffect(() => {
-    let timer;
-    const handleScroll = () => {
-      setIsScrolling(true);
-      clearTimeout(timer);
-      timer = setTimeout(() => setIsScrolling(false), 150);
-    };
-
-    const container = containerRef.current;
-    container?.addEventListener("scroll", handleScroll);
-    return () => {
-      container?.removeEventListener("scroll", handleScroll);
-      clearTimeout(timer);
-    };
+    if (typeof window === "undefined") return;
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    // Update active section
+    const container = containerRef.current;
+    if (!container) return;
+
+    const scrollTop = container.scrollTop;
+
+    // Hide/show header
+    if (scrollTop > lastScroll.current + 5) setShowHeader(false);
+    else if (scrollTop < lastScroll.current - 5) setShowHeader(true);
+    lastScroll.current = scrollTop;
+
+    // Update active section and back-to-top
     if (latest < 0.2) setActiveSection(0);
     else if (latest < 0.45) setActiveSection(1);
-    else if (latest < 0.7) setActiveSection(2);
+    else if (latest < 0.75) setActiveSection(2);
     else setActiveSection(3);
 
-    setShowBackToTop(latest > 0.1);
+    setShowBackToTop(latest > 0.3);
   });
 
   const scrollToSection = (index) => {
@@ -65,501 +63,535 @@ export default function JewelryScrollLanding() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
-      {/* Animated background particles */}
-      <div className="fixed inset-0 z-0">
-        {[...Array(20)].map((_, i) => (
+    <div className="relative h-screen overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      <ParticlesBackground />
+
+      {/* Navigation Bar */}
+      <motion.nav
+        initial={false}
+        animate={{ y: showHeader ? 0 : -120 }} // move offscreen when hiding
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/50 border-b border-white/10"
+      >
+        <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           <motion.div
-            key={i}
-            className="absolute w-[1px] h-[1px] bg-yellow-400/20 rounded-full"
-            initial={{
-              x: Math.random() * 100 + "vw",
-              y: Math.random() * 100 + "vh",
-            }}
-            animate={{
-              x: [null, Math.random() * 100 + "vw"],
-              y: [null, Math.random() * 100 + "vh"],
-            }}
-            transition={{
-              duration: 10 + Math.random() * 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-        ))}
-      </div>
+            whileHover={{ scale: 1.05 }}
+            className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-500"
+          >
+            ScrollMagic
+          </motion.div>
+
+          <div className="hidden md:flex gap-6">
+            {["Hero", "Features", "Animation", "Get Started"].map(
+              (label, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => scrollToSection(index)}
+                  animate={{
+                    color: activeSection === index ? "#34d399" : "#ffffff",
+                  }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="text-sm font-medium transition-all"
+                >
+                  {label}
+                </motion.button>
+              )
+            )}
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-cyan-600 rounded-lg text-sm font-semibold shadow-lg"
+          >
+            Try Demo
+          </motion.button>
+        </div>
+      </motion.nav>
 
       {/* Scroll progress bar */}
       <motion.div
         style={{ scaleX: progress }}
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 origin-left z-50 shadow-lg shadow-yellow-400/50"
+        className="fixed top-16 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-cyan-500 origin-left z-40"
       />
 
-      {/* Navigation dots */}
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4">
-        {[0, 1, 2, 3].map((index) => (
-          <button
-            key={index}
-            onClick={() => scrollToSection(index)}
-            className="relative group"
-            aria-label={`Go to section ${index + 1}`}
-          >
-            <motion.div
-              className={`w-3 h-3 rounded-full border ${
-                activeSection === index
-                  ? "bg-yellow-400 border-yellow-400"
-                  : "bg-transparent border-white/30"
-              } transition-all duration-300`}
-              animate={{
-                scale: activeSection === index ? 1.2 : 1,
-                boxShadow:
-                  activeSection === index
-                    ? "0 0 12px rgba(250, 204, 21, 0.8)"
-                    : "none",
-              }}
-            />
-            <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap bg-gray-900/90 backdrop-blur-sm px-3 py-1 rounded-lg text-sm border border-white/20">
-              Section {index + 1}
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Scroll percentage with improved visibility */}
+      {/* Percentage indicator */}
       <motion.div
         style={{
-          x: useTransform(
-            scrollYProgress,
-            [0, 1],
-            ["20px", "calc(100% - 60px)"]
-          ),
+          x: useTransform(scrollYProgress, [0, 1], ["0%", "calc(100% - 40px)"]),
           opacity: useTransform(
             scrollYProgress,
             [0, 0.05, 0.95, 1],
             [0, 1, 1, 0]
           ),
         }}
-        className="fixed top-4 z-50"
+        className="fixed top-20 text-xs z-40 px-3 py-1 bg-gray-800/80 backdrop-blur-sm rounded-full border border-white/10"
       >
-        <div className="flex items-center gap-2 px-4 py-2 bg-gray-900/80 backdrop-blur-md rounded-full border border-white/20 shadow-xl">
-          <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-pink-500 rounded-full animate-pulse" />
-          <span className="text-sm font-medium">
-            <motion.span>{percentage.get().toFixed(0)}</motion.span>%
-          </span>
+        <motion.span>{percentage.get().toFixed(0)}%</motion.span>
+      </motion.div>
+
+      {/* Mobile menu button */}
+      {isMobile && (
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className="fixed right-4 top-4 z-50 md:hidden p-2 rounded-full bg-gray-800/80 backdrop-blur-sm border border-white/10"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12H21"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M3 6H21"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M3 18H21"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.button>
+      )}
+
+      {/* Scroll section indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="fixed left-4 top-1/2 -translate-y-1/2 z-40 space-y-4 hidden md:block"
+      >
+        {["Hero", "Features", "Animation", "Get Started"].map(
+          (label, index) => (
+            <motion.button
+              key={index}
+              onClick={() => scrollToSection(index)}
+              animate={{
+                scale: activeSection === index ? 1.3 : 1,
+                backgroundColor:
+                  activeSection === index
+                    ? "rgba(52, 211, 153, 0.2)"
+                    : "rgba(255, 255, 255, 0.05)",
+              }}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              className={`w-4 h-4 rounded-full flex items-center justify-center transition-all duration-300 ${
+                activeSection === index ? "ring-2 ring-emerald-400" : ""
+              }`}
+            >
+              <motion.span
+                className="absolute left-6 whitespace-nowrap text-xs opacity-0"
+                animate={{
+                  opacity: activeSection === index ? 1 : 0,
+                  x: activeSection === index ? 10 : 0,
+                }}
+              >
+                {label}
+              </motion.span>
+            </motion.button>
+          )
+        )}
+      </motion.div>
+
+      {/* Scroll hint */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 1,
+          delay: 2,
+          repeat: Infinity,
+          repeatType: "reverse",
+          repeatDelay: 2,
+        }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30"
+      >
+        <div className="flex flex-col items-center">
+          <span className="text-sm text-white/60 mb-2">Scroll to explore</span>
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
+          >
+            <motion.div
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-1 h-2 bg-white/80 rounded-full mt-1"
+            />
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Back to top with better styling */}
+      {/* Back to top button */}
       <AnimatePresence>
         {showBackToTop && (
           <motion.button
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             onClick={() => scrollToSection(0)}
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="fixed right-6 bottom-6 z-50 p-3 bg-gradient-to-br from-yellow-400/20 to-pink-500/20 backdrop-blur-lg border border-white/20 rounded-xl shadow-2xl group"
-            aria-label="Back to top"
+            className="fixed right-6 bottom-6 z-40 p-3 bg-gray-800/80 backdrop-blur-sm border border-white/10 rounded-full shadow-lg"
           >
-            <FaChevronUp className="w-5 h-5 group-hover:text-yellow-400 transition-colors" />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 19V5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M5 12L12 5L19 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Floating CTA */}
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
-        className="fixed left-6 bottom-6 z-50 px-4 py-3 bg-gradient-to-r from-yellow-400 to-pink-500 text-black font-semibold rounded-xl shadow-2xl hover:shadow-yellow-400/30 hover:scale-105 transition-all duration-300 flex items-center gap-2"
-      >
-        <FaShoppingBag />
-        Shop Now
-      </motion.button>
+      {/* Decorative Glows */}
+      <div className="fixed top-[20%] left-[10%] w-72 h-72 bg-emerald-400/10 rounded-full blur-[100px] opacity-20 pointer-events-none" />
+      <div className="fixed bottom-[10%] right-[15%] w-60 h-60 bg-cyan-400/10 rounded-full blur-[80px] opacity-20 pointer-events-none" />
+      <div className="fixed top-[50%] left-[50%] w-80 h-80 bg-purple-500/10 rounded-full blur-[120px] opacity-10 pointer-events-none" />
 
-      {/* Main scroll container */}
+      {/* Main content container */}
       <div
         ref={containerRef}
-        className="h-screen w-full overflow-y-auto scroll-smooth scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20"
+        className="h-full w-full overflow-y-auto scroll-smooth"
       >
-        <ScrollContent
-          scrollYProgress={scrollYProgress}
-          isScrolling={isScrolling}
-        />
+        <ScrollContent scrollYProgress={scrollYProgress} />
       </div>
     </div>
   );
 }
 
-function ScrollContent({ scrollYProgress, isScrolling }) {
+function ScrollContent({ scrollYProgress }) {
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
+  const carouselRef = useRef(null);
 
   const inView1 = useInView(ref1, { amount: 0.5, once: true });
   const inView2 = useInView(ref2, { amount: 0.5, once: true });
   const inView3 = useInView(ref3, { amount: 0.5, once: true });
 
-  const jewelryCollections = [
-    {
-      img: "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6",
-      name: "Gold Necklace",
-      price: "$1,299",
-      icon: <GiNecklace />,
-    },
-    {
-      img: "https://images.unsplash.com/photo-1617038220319-276d3cfab638",
-      name: "Diamond Ring",
-      price: "$899",
-      icon: <GiDiamondRing />,
-    },
-    {
-      img: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a",
-      name: "Silver Bracelet",
-      price: "$499",
-      icon: <FaGem />,
-    },
-    {
-      img: "https://images.unsplash.com/photo-1585386959984-a4155223f19c",
-      name: "Pearl Earrings",
-      price: "$699",
-      icon: <GiEarrings />,
-    },
-  ];
+  const [carouselWidth, setCarouselWidth] = useState(0);
+
+  useEffect(() => {
+    const calculateWidth = () => {
+      if (carouselRef.current) {
+        const totalScroll =
+          carouselRef.current.scrollWidth -
+          carouselRef.current.parentElement.offsetWidth;
+        setCarouselWidth(-totalScroll); // negative for left scroll
+      }
+    };
+    calculateWidth();
+    window.addEventListener("resize", calculateWidth);
+    return () => window.removeEventListener("resize", calculateWidth);
+  }, []);
+
+  const xTransform = useTransform(
+    scrollYProgress,
+    [0.2, 0.45],
+    [0, carouselWidth]
+  );
 
   const stats = [
-    { value: 150, label: "Pieces Sold", suffix: "k+" },
-    { value: 20, label: "Collections", suffix: "+" },
-    { value: 10, label: "Years in Business", suffix: "+" },
+    { value: 100, label: "Components" },
+    { value: 24, label: "Animations" },
+    { value: 5, label: "Sections" },
   ];
 
   return (
-    <div className="space-y-32 pt-20 pb-40 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Section 0: Enhanced Hero */}
+    <div className="space-y-0 pt-20 pb-40 px-4 sm:px-6 max-w-7xl mx-auto">
+      {/* Section 1: Hero */}
       <div
         id="section-0"
         ref={ref1}
-        className="min-h-screen flex flex-col justify-center items-center text-center space-y-8 relative"
+        className="min-h-screen flex flex-col justify-center items-center text-center space-y-8 px-4 relative"
       >
-        {/* Decorative elements */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={inView1 ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 1 }}
-          className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-yellow-400/10 to-pink-500/10 rounded-full blur-3xl"
-        />
-
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           animate={inView1 ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, type: "spring" }}
-          className="relative z-10"
+          transition={{ duration: 0.8 }}
+          className="space-y-6 relative z-10"
         >
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <FaCrown className="w-8 h-8 text-yellow-400" />
-            <span className="text-sm font-semibold text-yellow-400 tracking-widest">
-              LUXURY COLLECTION
-            </span>
-          </div>
-
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500">
-              Timeless
-            </span>
-            <br />
-            <span className="text-white">Elegance</span>
-          </h1>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView1 ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="text-lg sm:text-xl text-gray-300 max-w-2xl leading-relaxed"
-        >
-          Discover timeless pieces crafted for elegance and style. Each
-          collection tells a story of exquisite craftsmanship and luxury.
-        </motion.p>
-
-        {/* Enhanced stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView1 ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-12"
-        >
-          {stats.map((stat, index) => (
-            <StatCounter
-              key={index}
-              value={stat.value}
-              label={stat.label}
-              suffix={stat.suffix}
-              inView={inView1}
-              delay={0.7 + index * 0.2}
-            />
-          ))}
-        </motion.div>
-
-        {/* Scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView1 ? { opacity: 1 } : {}}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-sm text-gray-400">Scroll to explore</span>
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
+            initial={{ scale: 0.8 }}
+            animate={inView1 ? { scale: 1 } : {}}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="inline-block px-4 py-2 bg-emerald-500/10 border border-emerald-400/30 rounded-full text-emerald-400 text-sm mb-4"
           >
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2" />
+            Framer Motion + Next.js
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={inView1 ? { opacity: 1 } : {}}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-500 mb-4 leading-[1.25] pb-2"
+          >
+            Scroll-Driven Magic
+          </motion.h1>
+
+          <motion.div
+            initial={{ width: 0 }}
+            animate={inView1 ? { width: "100%" } : {}}
+            transition={{ delay: 0.4, duration: 1 }}
+            className="h-1 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 rounded-full mx-auto max-w-md"
+          />
+
+          <motion.p
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={inView1 ? { opacity: 1, filter: "blur(0px)" } : {}}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="text-lg sm:text-xl max-w-3xl text-gray-300 leading-relaxed"
+          >
+            Experience the power of scroll-triggered animations with this
+            interactive demo built using React and Framer Motion.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView1 ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.8, duration: 0.8 }}
+            className="flex flex-wrap justify-center gap-6 mt-8"
+          >
+            {stats.map((stat, index) => (
+              <StatCounter
+                key={index}
+                value={stat.value}
+                label={stat.label}
+                delay={0.8 + index * 0.2}
+                inView={inView1}
+              />
+            ))}
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Section 1: Enhanced Horizontal Collections */}
-      <div id="section-1" ref={ref2} className="min-h-[120vh] relative">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="sticky top-20 z-20"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-center">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">
-              Featured
-            </span>
-            <span className="text-white"> Collections</span>
-          </h2>
-          <p className="text-gray-300 text-center max-w-2xl mx-auto mb-12">
-            Handpicked luxury pieces that redefine elegance and style
-          </p>
-        </motion.div>
-
-        <div className="relative h-[60vh] lg:h-[70vh]">
-          <motion.div
-            className="flex gap-8 w-max px-4 sm:px-8"
-            style={{
-              x: useTransform(
-                scrollYProgress,
-                [0.2, 0.45],
-                [0, -((jewelryCollections.length - 1) * 420)]
-              ),
-            }}
+      {/* Section 2: Features Carousel */}
+      <div
+        id="section-1"
+        className="min-h-[150vh] flex flex-col justify-center relative"
+      >
+        <div className="absolute top-1/4 left-0 right-0 text-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl sm:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500"
           >
-            {jewelryCollections.map((item, index) => (
+            Interactive Features
+          </motion.h2>
+        </div>
+
+        <div className="relative h-[60vh] sm:h-[70vh] overflow-hidden mt-20">
+          <motion.div
+            ref={carouselRef}
+            className="flex space-x-6 w-max px-4 sm:px-10 items-center"
+            style={{ x: xTransform }}
+          >
+            {[
+              {
+                icon: <FaSync></FaSync>,
+                title: "Scroll Sync",
+                desc: "Horizontal carousel that moves with vertical scroll",
+              },
+              {
+                icon: "✨",
+                title: "Animated Indicators",
+                desc: "Dynamic dots that show current section",
+              },
+              {
+                icon: <SiProgress />,
+                title: "Progress Tracking",
+                desc: "Real-time scroll percentage indicator",
+              },
+              {
+                icon: "🎚️",
+                title: "Motion Controls",
+                whileHover: { scale: 1.05, rotate: 2 },
+                desc: "Interactive elements with hover effects",
+              },
+              {
+                icon: <FaMobile />,
+                title: "Responsive Design",
+                desc: "Works flawlessly on all device sizes",
+              },
+            ].map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50, rotateY: 90 }}
-                whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.15 }}
-                whileHover={{ y: -20, scale: 1.02 }}
-                className="w-[85vw] sm:w-[400px] shrink-0 bg-gradient-to-b from-white/5 to-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6 flex flex-col items-center hover:border-yellow-400/50 hover:shadow-2xl hover:shadow-yellow-400/20 transition-all duration-500 group"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="w-[80vw] sm:w-[400px] shrink-0 bg-white/5 border border-white/10 p-6 rounded-2xl shadow-lg backdrop-blur-lg hover:border-emerald-400/30 transition-all duration-300"
+                whileHover={feature.whileHover || { scale: 1.02 }}
               >
-                <div className="relative w-full h-64 mb-6 overflow-hidden rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute top-4 right-4 z-10 p-2 bg-black/50 rounded-full">
-                    {item.icon}
-                  </div>
-                  <Image
-                    src={item.img}
-                    width={400}
-                    height={400}
-                    alt={item.name}
-                    className="rounded-2xl object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
-                  />
+                <div className="h-12 w-12 mb-4 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-500 flex items-center justify-center text-xl">
+                  {feature.icon}
                 </div>
-
-                <div className="w-full">
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-2xl font-bold">{item.name}</h3>
-                    <span className="text-yellow-400 text-xl font-bold">
-                      {item.price}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar key={i} className="w-4 h-4 text-yellow-400" />
-                    ))}
-                    <span className="text-gray-400 text-sm ml-2">
-                      (48 reviews)
-                    </span>
-                  </div>
-
-                  <button className="w-full py-3 bg-gradient-to-r from-yellow-400/10 to-pink-500/10 border border-white/20 rounded-xl hover:from-yellow-400/20 hover:to-pink-500/20 hover:border-yellow-400/50 transition-all duration-300 flex items-center justify-center gap-2 group/btn">
-                    <span>View Details</span>
-                    <motion.span
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      →
-                    </motion.span>
-                  </button>
-                </div>
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-white/70 text-sm">{feature.desc}</p>
               </motion.div>
             ))}
           </motion.div>
-
-          {/* Scroll hint for horizontal section */}
-          <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block">
-            <div className="flex flex-col items-center gap-2 text-gray-400">
-              <span className="text-sm rotate-90 whitespace-nowrap">
-                Scroll →
-              </span>
-              <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/50 to-transparent" />
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Section 2: Enhanced Feature Showcase */}
+      {/* Section 3: Animation Showcase */}
       <div
         id="section-2"
-        ref={ref3}
-        className="min-h-screen flex flex-col justify-center items-center text-center relative"
+        ref={ref2}
+        className="min-h-screen flex justify-center items-center px-4 relative"
       >
         <motion.div
-          initial={{ scale: 0.8, opacity: 0, rotateY: 90 }}
-          whileInView={{ scale: 1, opacity: 1, rotateY: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, type: "spring" }}
-          className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-8 sm:p-12 shadow-2xl max-w-4xl overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8, y: 50 }}
+          animate={inView2 ? { opacity: 1, scale: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, type: "spring" }}
+          className="bg-gradient-to-br from-indigo-600/90 to-purple-700/90 p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] backdrop-blur-sm border border-white/10 text-center max-w-2xl w-full hover:shadow-[0_20px_50px_rgba(124,58,237,0.4)] transition-all duration-500"
         >
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `radial-gradient(circle at 25% 25%, white 1px, transparent 1px)`,
-                backgroundSize: "40px 40px",
-              }}
-            />
+          <div className="h-16 w-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-500 flex items-center justify-center text-2xl font-bold">
+            ✨
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+            Animation Showcase
+          </h2>
+          <p className="text-white/80 text-sm sm:text-base mb-6">
+            Experience the full potential of Framer Motion with these advanced
+            animation techniques.
+          </p>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <AnimationExample type="spring" />
+            <AnimationExample type="tween" />
+            <AnimationExample type="inertia" />
+            <AnimationExample type="keyframes" />
           </div>
 
-          <div className="relative z-10">
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              rotate: [0, 5, -5, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            className="w-full h-2 bg-gradient-to-r from-emerald-400/30 via-cyan-400/30 to-blue-500/30 rounded-full overflow-hidden"
+          >
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="inline-flex items-center justify-center p-4 bg-gradient-to-r from-yellow-400/20 to-pink-500/20 rounded-full mb-6"
-            >
-              <FaGem className="w-16 h-16 text-yellow-400" />
-            </motion.div>
-
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">
-                Limited Edition
-              </span>
-              <br />
-              Masterpiece
-            </h2>
-
-            <p className="text-gray-300 mb-8 text-lg leading-relaxed max-w-2xl mx-auto">
-              Experience the pinnacle of jewelry craftsmanship. Our limited
-              edition collection features ethically sourced diamonds and 24k
-              gold, crafted by master artisans.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-              {[
-                { label: "Ethically Sourced", value: "100%" },
-                { label: "Certified Diamonds", value: "GIA" },
-                { label: "Warranty", value: "Lifetime" },
-              ].map((item, index) => (
-                <div key={index} className="p-4 bg-white/5 rounded-xl">
-                  <div className="text-2xl font-bold text-yellow-400 mb-1">
-                    {item.value}
-                  </div>
-                  <div className="text-sm text-gray-400">{item.label}</div>
-                </div>
-              ))}
-            </div>
-
-            <button className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-pink-500 text-black font-bold rounded-xl hover:shadow-2xl hover:shadow-yellow-400/30 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 mx-auto">
-              <FaShoppingBag />
-              Reserve Your Piece
-            </button>
-          </div>
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "loop",
+              }}
+              className="h-full w-1/2 bg-gradient-to-r from-emerald-400 to-cyan-500"
+            />
+          </motion.div>
         </motion.div>
       </div>
 
-      {/* Section 3: Enhanced CTA */}
+      {/* Section 4: Final CTA */}
       <div
         id="section-3"
-        className="min-h-screen flex flex-col justify-center items-center text-center space-y-8 relative overflow-hidden"
+        ref={ref3}
+        className="min-h-screen flex justify-center items-center px-4 relative"
       >
-        {/* Animated background */}
         <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 bg-gradient-to-r from-yellow-400/5 via-pink-500/5 to-purple-500/5"
-        />
-
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10"
+          initial={{ x: "-100vw", opacity: 0 }}
+          animate={inView3 ? { x: 0, opacity: 1 } : {}}
+          transition={{ duration: 1, type: "spring" }}
+          className="bg-white/5 border border-white/10 rounded-2xl p-8 shadow-xl max-w-2xl w-full backdrop-blur-lg hover:backdrop-blur-xl transition-all duration-500"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500">
-              Your Journey
-            </span>
-            <br />
-            <span className="text-white">Begins Here</span>
-          </h2>
-
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-12">
-            Join thousands of satisfied customers who have found their perfect
-            piece. Start your collection today with exclusive benefits.
+          <h3 className="text-2xl font-bold mb-4 text-white">
+            Ready to Build Your Own?
+          </h3>
+          <p className="text-white/80 text-sm sm:text-base mb-6">
+            This demo showcases just a fraction of what's possible with modern
+            web animation libraries. The entire codebase is available for you to
+            explore and learn from.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.a
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 0 15px rgba(34,211,238,0.5)",
+              }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-5 bg-gradient-to-r from-yellow-400 to-pink-500 text-black font-bold rounded-2xl shadow-2xl hover:shadow-yellow-400/40 transition-all duration-300 text-lg"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-600 rounded-xl font-semibold text-white shadow-md text-center"
+              href="https://github.com/your-repo"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Start Shopping
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
+              View on GitHub
+            </motion.a>
+            <motion.a
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 0 15px rgba(124,58,237,0.5)",
+              }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 text-lg"
+              className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-white shadow-md text-center"
+              href="#section-0"
             >
-              Book Consultation
-            </motion.button>
+              Back to Top
+            </motion.a>
           </div>
 
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-            {[
-              { label: "Free Shipping", value: "Worldwide" },
-              { label: "Secure Payment", value: "256-bit SSL" },
-              { label: "30-Day Returns", value: "No Questions" },
-              { label: "24/7 Support", value: "Premium Service" },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="text-yellow-400 font-semibold mb-1">
-                  {item.value}
-                </div>
-                <div className="text-gray-400">{item.label}</div>
-              </motion.div>
-            ))}
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <h4 className="text-sm font-semibold mb-3 text-white/70">
+              Tech Stack:
+            </h4>
+            <div className="flex flex-wrap justify-center gap-3">
+              {[
+                "Next.js",
+                "Framer Motion",
+                "Tailwind CSS",
+                "React Icons",
+                "TypeScript",
+              ].map((tech, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ y: -3 }}
+                  className="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10"
+                >
+                  {tech}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>
@@ -567,7 +599,7 @@ function ScrollContent({ scrollYProgress, isScrolling }) {
   );
 }
 
-function StatCounter({ value, label, suffix = "", inView, delay }) {
+function StatCounter({ value, label, delay, inView }) {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const hasAnimated = useRef(false);
@@ -576,28 +608,73 @@ function StatCounter({ value, label, suffix = "", inView, delay }) {
     if (inView && !hasAnimated.current) {
       hasAnimated.current = true;
       const controls = animate(count, value, {
-        duration: 2.5,
+        duration: 2,
         delay,
-        ease: [0.2, 0.65, 0.3, 0.9],
+        ease: "easeOut",
       });
       return () => controls.stop();
     }
   }, [inView]);
 
   return (
+    <motion.div className="text-center min-w-[100px]">
+      <motion.div className="text-3xl font-bold text-emerald-400">
+        {rounded}
+      </motion.div>
+      <div className="text-sm text-white/60">{label}</div>
+    </motion.div>
+  );
+}
+
+function AnimationExample({ type }) {
+  const [isActive, setIsActive] = useState(false);
+
+  const animationProps = {
+    spring: {
+      animate: {
+        scale: isActive ? 1.2 : 1,
+        backgroundColor: isActive ? "#34d399" : "#3b82f6",
+      },
+      transition: { type: "spring", stiffness: 300, damping: 20 },
+    },
+    tween: {
+      animate: {
+        x: isActive ? 20 : 0,
+        rotate: isActive ? 10 : 0,
+      },
+      transition: { duration: 0.5, ease: "easeInOut" },
+    },
+    inertia: {
+      animate: {
+        y: isActive ? -20 : 0,
+        backgroundColor: isActive ? "#a855f7" : "#3b82f6",
+      },
+      transition: { type: "inertia", velocity: 50 },
+    },
+    keyframes: {
+      animate: {
+        scale: isActive ? [1, 1.2, 0.9, 1.1, 1] : 1,
+        backgroundColor: isActive
+          ? ["#3b82f6", "#34d399", "#a855f7", "#3b82f6"]
+          : "#3b82f6",
+      },
+      transition: { duration: 1.5 },
+    },
+  };
+
+  return (
     <motion.div
-      className="text-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-yellow-400/30 transition-all duration-300 hover:scale-105"
-      whileHover={{ y: -5 }}
+      onClick={() => setIsActive(!isActive)}
+      className="p-4 rounded-lg bg-blue-500/20 border border-white/10 cursor-pointer flex flex-col items-center"
+      {...animationProps[type]}
     >
-      <div className="flex items-baseline justify-center gap-1 mb-2">
-        <motion.div className="text-4xl sm:text-5xl font-bold text-yellow-400">
-          {rounded}
-        </motion.div>
-        {suffix && <span className="text-2xl text-yellow-400">{suffix}</span>}
+      <div className="w-12 h-12 mb-2 rounded-md bg-white/20 flex items-center justify-center">
+        <motion.div
+          className="w-6 h-6 rounded bg-white"
+          {...animationProps[type]}
+        />
       </div>
-      <div className="text-gray-400 text-sm uppercase tracking-wider">
-        {label}
-      </div>
+      <span className="text-xs font-medium capitalize">{type}</span>
     </motion.div>
   );
 }

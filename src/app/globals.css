@@ -7,6 +7,8 @@
 
 :root {
   --radius: 0.625rem;
+    --bg-dark: #0f172a;
+  --text-light: #f1f5f9;
 }
 
 .app-theme {
