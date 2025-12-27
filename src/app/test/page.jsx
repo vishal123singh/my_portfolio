@@ -1,106 +1,305 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { useRef, useState, useEffect } from "react";
 
-export default function DenimStoreUI() {
+// Chaikin smoothing
+const chaikinSmooth = (points, iterations = 2) => {
+  if (points.length < 2) return points;
+  let pts = [...points];
+  for (let k = 0; k < iterations; k++) {
+    const newPts = [];
+    newPts.push(pts[0]);
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i];
+      const p1 = pts[i + 1];
+      newPts.push({
+        x: 0.75 * p0.x + 0.25 * p1.x,
+        y: 0.75 * p0.y + 0.25 * p1.y,
+      });
+      newPts.push({
+        x: 0.25 * p0.x + 0.75 * p1.x,
+        y: 0.25 * p0.y + 0.75 * p1.y,
+      });
+    }
+    newPts.push(pts[pts.length - 1]);
+    pts = newPts;
+  }
+  return pts;
+};
+
+// Helper: check if stroke is closed
+const isClosed = (points, threshold = 10) => {
+  if (points.length < 3) return false;
+  const start = points[0];
+  const end = points[points.length - 1];
+  const dx = start.x - end.x;
+  const dy = start.y - end.y;
+  return Math.sqrt(dx * dx + dy * dy) < threshold;
+};
+
+export default function CanvasBezier() {
+  const canvasRef = useRef(null);
+  const [strokes, setStrokes] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
+  const [currentStroke, setCurrentStroke] = useState([]);
+  const [drawing, setDrawing] = useState(false);
+  const [strokeColor, setStrokeColor] = useState("#000000");
+  const [fillColor, setFillColor] = useState("#ff0000"); // default fill
+
+  const [canvasSize, setCanvasSize] = useState({ width: 500, height: 300 });
+
+  useEffect(() => {
+    const updateSize = () => {
+      setCanvasSize({ width: 500, height: 300 });
+      redrawCanvas();
+    };
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, [strokes]);
+
+  const getPoint = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    if (e.touches) {
+      const touch = e.touches[0];
+      return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    } else {
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+  };
+
+  const redrawCanvas = (allStrokes = strokes, tempStroke = []) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    allStrokes.forEach((s) => {
+      const smoothPts = chaikinSmooth(s.points, 2);
+      if (!smoothPts.length) return;
+      ctx.beginPath();
+      ctx.moveTo(smoothPts[0].x, smoothPts[0].y);
+      smoothPts.forEach((p) => ctx.lineTo(p.x, p.y));
+      if (s.fillColor && s.closed) {
+        ctx.fillStyle = s.fillColor;
+        ctx.fill();
+      }
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.stroke();
+    });
+
+    if (tempStroke.length > 0) {
+      const smoothPts = chaikinSmooth(tempStroke, 2);
+      ctx.beginPath();
+      ctx.moveTo(smoothPts[0].x, smoothPts[0].y);
+      smoothPts.forEach((p) => ctx.lineTo(p.x, p.y));
+      if (fillColor && isClosed(tempStroke)) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+      }
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.stroke();
+    }
+  };
+
+  const startDrawing = (e) => {
+    const point = getPoint(e);
+    setCurrentStroke([point]);
+    setDrawing(true);
+  };
+
+  const draw = (e) => {
+    if (!drawing) return;
+    const point = getPoint(e);
+    const newStroke = [...currentStroke, point];
+    setCurrentStroke(newStroke);
+    redrawCanvas(strokes, newStroke);
+  };
+
+  const stopDrawing = () => {
+    if (currentStroke.length > 0) {
+      const closed = isClosed(currentStroke);
+      setStrokes([
+        ...strokes,
+        {
+          points: currentStroke,
+          color: strokeColor,
+          fillColor: closed ? fillColor : "",
+          closed,
+        },
+      ]);
+      setRedoStack([]);
+      setCurrentStroke([]);
+    }
+    setDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    setStrokes([]);
+    setRedoStack([]);
+    setCurrentStroke([]);
+    const canvas = canvasRef.current;
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const undo = () => {
+    if (!strokes.length) return;
+    const last = strokes[strokes.length - 1];
+    setStrokes(strokes.slice(0, -1));
+    setRedoStack([last, ...redoStack]);
+    redrawCanvas(strokes.slice(0, -1));
+  };
+
+  const redo = () => {
+    if (!redoStack.length) return;
+    const [first, ...rest] = redoStack;
+    const newStrokes = [...strokes, first];
+    setStrokes(newStrokes);
+    setRedoStack(rest);
+    redrawCanvas(newStrokes);
+  };
+
+  const exportAsPNG = () => {
+    const canvas = canvasRef.current;
+    const link = document.createElement("a");
+    link.download = "drawing.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
+  const smoothPath = (points) => {
+    if (!points.length) return "";
+    const pts = chaikinSmooth(points, 2);
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length; i++) d += ` L ${pts[i].x} ${pts[i].y}`;
+    if (isClosed(points)) d += " Z"; // close path in SVG
+    return d;
+  };
+
+  const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="${
+    canvasSize.width
+  }" height="${canvasSize.height}" viewBox="0 0 ${canvasSize.width} ${
+    canvasSize.height
+  }">
+  ${strokes
+    .map(
+      (s) =>
+        `<path d="${smoothPath(s.points)}" fill="${
+          s.fillColor || "none"
+        }" stroke="${
+          s.color
+        }" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`
+    )
+    .join("\n  ")}
+</svg>`;
+
   return (
-    <div className="relative min-h-screen bg-[#1a1a1a] overflow-hidden text-white">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <Image
-          src="/denim-store-bg.jpg" // optional background image
-          alt="Store"
-          fill
-          className="object-cover opacity-40"
-        />
+    <div style={{ padding: 20 }}>
+      <h2>Smooth Bézier Canvas with Auto Fill Closed Paths</h2>
+
+      <div style={{ marginBottom: 10 }}>
+        <label>
+          Stroke Color:{" "}
+          <input
+            type="color"
+            value={strokeColor}
+            onChange={(e) => setStrokeColor(e.target.value)}
+          />
+        </label>
+        <label style={{ marginLeft: 10 }}>
+          Fill Color:{" "}
+          <input
+            type="color"
+            value={fillColor}
+            onChange={(e) => setFillColor(e.target.value)}
+          />
+        </label>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-10">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-10">
-          <div className="bg-black/60 px-5 py-2 rounded-md text-sm tracking-widest">
-            DENIM COLLECTION
-          </div>
-          <div className="bg-blue-600/80 px-4 py-2 rounded-md text-sm">
-            NEW ARRIVALS
-          </div>
-        </div>
+      <canvas
+        ref={canvasRef}
+        width={canvasSize.width}
+        height={canvasSize.height}
+        style={{
+          border: "1px solid black",
+          cursor: "crosshair",
+          touchAction: "none",
+          backgroundColor: "#fff",
+        }}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
+      />
 
-        {/* Jeans Rack */}
-        <div className="flex justify-center gap-12 mb-16">
-          {["Slim Fit", "Regular Fit", "Relaxed Fit"].map((label, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.15 }}
-              className="flex flex-col items-center"
-            >
-              <div className="w-44 h-64 bg-gradient-to-b from-blue-900 to-blue-700 rounded-xl shadow-2xl" />
-              <button className="mt-4 px-4 py-1 text-xs bg-black/60 rounded-full">
-                Tap to Compare
-              </button>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Center Table */}
-        <div className="relative mx-auto w-[340px] bg-black/60 backdrop-blur-lg rounded-xl p-5 mb-10">
-          <div className="text-sm mb-2 opacity-70">Popular Choices</div>
-          <div className="flex gap-2">
-            <span className="px-3 py-1 bg-white/10 rounded-full text-xs">
-              Soft Stretch Denim
-            </span>
-            <span className="px-3 py-1 bg-white/10 rounded-full text-xs">
-              Vintage Wash Jeans
-            </span>
-          </div>
-        </div>
-
-        {/* Assistant Bubble */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="absolute right-10 top-44 flex items-center gap-3 bg-white/90 text-black p-4 rounded-xl shadow-xl max-w-xs"
+      <div style={{ marginTop: 12 }}>
+        <button onClick={clearCanvas}>Clear</button>
+        <button onClick={undo} style={{ marginLeft: 10 }}>
+          Undo
+        </button>
+        <button onClick={redo} style={{ marginLeft: 10 }}>
+          Redo
+        </button>
+        <button onClick={exportAsPNG} style={{ marginLeft: 10 }}>
+          Export PNG
+        </button>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(svgString);
+            alert("SVG copied to clipboard!");
+          }}
+          style={{ marginLeft: 10 }}
         >
-          <div className="w-12 h-12 rounded-full bg-blue-500" />
-          <p className="text-sm">
-            Looking for <b>slim</b> or <b>relaxed</b> fit?
-          </p>
-        </motion.div>
-
-        {/* Try On Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="absolute right-10 bottom-20 w-72 bg-black/70 backdrop-blur-xl rounded-2xl p-5"
-        >
-          <h4 className="text-sm font-semibold mb-3">Try It On</h4>
-          <div className="text-xs opacity-70 mb-2">Size: M</div>
-          <div className="text-xs opacity-70 mb-4">
-            Fits like your favorite pair
-          </div>
-          <button className="w-full py-2 bg-blue-600 rounded-lg text-sm font-medium hover:bg-blue-500 transition">
-            Virtual Try-On →
-          </button>
-        </motion.div>
-
-        {/* Suggested Items */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="absolute left-10 bottom-24 bg-black/70 backdrop-blur-xl rounded-xl p-4 w-52"
-        >
-          <div className="text-xs opacity-70 mb-2">Suggested Sneaker</div>
-          <div className="w-full h-16 bg-white/10 rounded-md mb-3" />
-          <button className="text-xs underline opacity-80">
-            Match with this top →
-          </button>
-        </motion.div>
+          Copy SVG
+        </button>
       </div>
+
+      {strokes.length > 0 && (
+        <>
+          <h3>SVG Preview</h3>
+          <svg
+            width={canvasSize.width}
+            height={canvasSize.height}
+            viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
+            style={{ border: "1px dashed gray", background: "white" }}
+          >
+            {strokes.map((s, idx) => (
+              <path
+                key={idx}
+                d={smoothPath(s.points)}
+                fill={s.fillColor || "none"}
+                stroke={s.color}
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            ))}
+          </svg>
+
+          <h3>SVG Code</h3>
+          <pre
+            style={{
+              background: "#f5f5f5",
+              color: "#000",
+              padding: 12,
+              whiteSpace: "pre-wrap",
+              overflowX: "auto",
+              height: "200px",
+            }}
+          >
+            {svgString.split("\n").map((line, idx) => (
+              <div key={idx}>{line}</div>
+            ))}
+          </pre>
+        </>
+      )}
     </div>
   );
 }
