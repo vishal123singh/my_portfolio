@@ -23,6 +23,15 @@ import {
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import ChatDrawer from "./ChatDrawer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Globe, MessageCircle } from "lucide-react";
 
 export default function VideoRoom({ roomId, user }) {
   const router = useRouter();
@@ -42,6 +51,12 @@ export default function VideoRoom({ roomId, user }) {
 
   const [unreadCount, setUnreadCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  const [inputLang, setInputLang] = useState("hi-IN");
+  const [outputLang, setOutputLang] = useState("en");
+
+  const recognitionRef = useRef(null);
+  const [translationEnabled, setTranslationEnabled] = useState(false);
 
   /* ---------------- Preferences ---------------- */
 
@@ -121,8 +136,12 @@ export default function VideoRoom({ roomId, user }) {
       localVideoRef.current.srcObject = localStream.current;
 
       /* ---- Remote media ---- */
+
       pcRef.current.ontrack = (e) => {
-        if (e.streams[0]) remoteVideoRef.current.srcObject = e.streams[0];
+        if (e.streams[0]) {
+          remoteVideoRef.current.srcObject = e.streams[0];
+          remoteVideoRef.current.muted = translationEnabled;
+        }
       };
 
       /* ---- ICE send ---- */
@@ -234,7 +253,17 @@ export default function VideoRoom({ roomId, user }) {
     return track.enabled;
   };
 
-  const toggleMic = () => setIsMicOn(toggleMedia("Audio"));
+  const toggleMic = () => {
+    const enabled = toggleMedia("Audio");
+    setIsMicOn(enabled);
+
+    if (!enabled) {
+      stopSpeechRecognition();
+    } else if (translationEnabled) {
+      startSpeechRecognition();
+    }
+  };
+
   const toggleCamera = () => setIsCamOn(toggleMedia("Video"));
 
   /* ---------------- Screen Share ---------------- */
@@ -295,6 +324,101 @@ export default function VideoRoom({ roomId, user }) {
     pcRef.current?.close();
     router.back();
   };
+
+  const startSpeechRecognition = () => {
+    if (!translationEnabled) return;
+
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      console.error("SpeechRecognition not supported");
+      return;
+    }
+
+    if (recognitionRef.current) return; // already running
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = inputLang;
+    recognition.continuous = true;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[event.results.length - 1][0].transcript;
+
+      console.log("🎤 Heard:", transcript);
+      translateAndSpeak(transcript);
+    };
+
+    recognition.onend = () => {
+      // Chrome auto-stops — restart safely
+      recognitionRef.current = null;
+      if (translationEnabled && isMicOn) {
+        startSpeechRecognition();
+      }
+    };
+
+    recognition.onerror = (e) => {
+      console.error("Speech recognition error", e);
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+  };
+
+  const translateText = async (text) => {
+    console.log("🌐 Sending to /api/translate:", text);
+
+    const res = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, target: outputLang }),
+    });
+
+    const data = await res.json();
+    console.log("✅ Translation result:", data);
+
+    return data.translatedText;
+  };
+
+  const speakText = (text) => {
+    speechSynthesis.cancel(); // prevent queue buildup
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = outputLang;
+    utterance.rate = 1;
+    utterance.pitch = 1;
+
+    speechSynthesis.speak(utterance);
+  };
+
+  const translateAndSpeak = async (text) => {
+    try {
+      const translated = await translateText(text);
+      speakText(translated);
+    } catch (err) {
+      console.error("Translation error", err);
+    }
+  };
+
+  const stopSpeechRecognition = () => {
+    recognitionRef.current?.stop();
+    recognitionRef.current = null;
+  };
+
+  useEffect(() => {
+    stopSpeechRecognition();
+
+    if (isMicOn && translationEnabled) {
+      startSpeechRecognition();
+    }
+  }, [inputLang, translationEnabled, isMicOn]);
+
+  useEffect(() => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.muted = translationEnabled;
+    }
+  }, [translationEnabled]);
 
   /* ---------------- UI ---------------- */
 
@@ -357,40 +481,80 @@ export default function VideoRoom({ roomId, user }) {
             label="Screen Share"
           />
 
-          <button
+          <Button
+            variant="default"
+            className="relative p-2 rounded-full bg-white shadow"
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="relative p-2 bg-white shadow rounded-full"
           >
-            💬
+            <MessageCircle className="w-5 h-5 text-gray-700" />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
                 {unreadCount}
               </span>
             )}
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="default"
+            className="flex items-center justify-center p-3 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
             onClick={endCall}
-            className="flex flex-col items-center justify-center p-3 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
           >
-            <FiPhoneOff className="text-white" />
-          </button>
+            <FiPhoneOff className="w-5 h-5 text-white" />
+          </Button>
         </div>
       </div>
 
-      {isChatOpen && (
-        <ChatDrawer
-          showChat={isChatOpen}
-          setShowChat={setIsChatOpen}
-          chatMessages={messages}
-          handleSendMessage={handleSendMessage}
-          message={chatInput}
-          setMessage={setChatInput}
-          user={user}
-          soundEnabled={soundEnabled}
-          toggleSound={toggleSound}
-        />
-      )}
+      <div className="flex gap-4 items-center mt-4 mb-4">
+        {/* Input Language */}
+        <Select value={inputLang} onValueChange={setInputLang}>
+          <SelectTrigger className="w-[120px]">
+            <SelectValue placeholder="Input Lang" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="hi-IN">Hindi</SelectItem>
+            <SelectItem value="en-US">English</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Output Language */}
+        <Select value={outputLang} onValueChange={setOutputLang}>
+          <SelectTrigger className="w-[120px]">
+            <SelectValue placeholder="Output Lang" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="en">English</SelectItem>
+            <SelectItem value="hi">Hindi</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Button
+          className={`flex items-center gap-2 ${
+            translationEnabled
+              ? "bg-green-600 hover:bg-green-700 text-white"
+              : "bg-gray-600 hover:bg-gray-700 text-white"
+          }`}
+          onClick={() => {
+            const next = !translationEnabled;
+            setTranslationEnabled(next);
+            next ? startSpeechRecognition() : stopSpeechRecognition();
+          }}
+        >
+          <Globe className="w-4 h-4" />
+          Translate
+        </Button>
+      </div>
+
+      <ChatDrawer
+        showChat={isChatOpen}
+        setShowChat={setIsChatOpen}
+        chatMessages={messages}
+        handleSendMessage={handleSendMessage}
+        message={chatInput}
+        setMessage={setChatInput}
+        user={user}
+        soundEnabled={soundEnabled}
+        toggleSound={toggleSound}
+      />
     </div>
   );
 }

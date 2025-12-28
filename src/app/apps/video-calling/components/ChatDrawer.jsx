@@ -1,7 +1,10 @@
 "use client";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function ChatDrawer({
   showChat,
@@ -37,18 +40,22 @@ export default function ChatDrawer({
           <div className="flex justify-between items-center p-3 border-b border-gray-700 bg-gray-900">
             <h3 className="text-white font-semibold">Live Chat</h3>
             <div className="flex items-center gap-2">
-              <button
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-blue-400 hover:text-blue-300"
                 onClick={toggleSound}
-                className="text-xs text-blue-400 hover:text-blue-300"
               >
                 Sound: {soundEnabled ? "On" : "Off"}
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white p-1"
                 onClick={() => setShowChat(false)}
-                className="text-gray-400 hover:text-white"
               >
                 <FiX size={20} />
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -89,19 +96,19 @@ export default function ChatDrawer({
             onSubmit={handleSendMessage}
             className="p-3 border-t border-gray-700 bg-gray-800"
           >
-            <div className="flex">
-              <input
+            <div className="flex gap-2">
+              <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="flex-1 p-2 rounded-l bg-gray-700 text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                 placeholder="Type your message..."
+                className="flex-1"
               />
-              <button
+              <Button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 Send
-              </button>
+              </Button>
             </div>
           </form>
         </motion.div>

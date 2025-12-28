@@ -11,13 +11,13 @@ export default function RoomLobby({ user }) {
   const [roomId, setRoomId] = useState("");
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [isJoiningRoom, setIsJoiningRoom] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
       toast.success("Logged out successfully");
-    } catch (error) {
-      console.error("Logout failed:", error);
+    } catch {
       toast.error("Logout failed. Please try again.");
     }
   };
@@ -28,16 +28,10 @@ export default function RoomLobby({ user }) {
         video: true,
         audio: true,
       });
-
-      // Stop tracks immediately (we just needed permission)
       stream.getTracks().forEach((track) => track.stop());
-
       return true;
-    } catch (error) {
-      console.error("Media permission denied:", error);
-      toast.error(
-        "Camera & microphone permission is required to join the meeting"
-      );
+    } catch {
+      toast.error("Camera & microphone permission is required");
       return false;
     }
   };
@@ -48,8 +42,6 @@ export default function RoomLobby({ user }) {
 
     setIsCreatingRoom(true);
     try {
-      console.log("User UID:", user?.uid);
-
       const docRef = await addDoc(collection(db, "rooms"), {
         host: user.uid,
         hostName: user.displayName,
@@ -57,16 +49,13 @@ export default function RoomLobby({ user }) {
         participants: [user.uid],
       });
 
-      toast.success("Meeting started successfully");
-
       const roomLink = `${window.location.origin}/apps/video-calling/${docRef.id}`;
       await navigator.clipboard.writeText(roomLink);
-      toast.success("Meeting link copied to clipboard!");
 
+      toast.success("Meeting started & link copied");
       window.location.href = roomLink;
-    } catch (error) {
-      console.error("Error creating meeting:", error);
-      toast.error("Failed to start meeting. Please try again.");
+    } catch {
+      toast.error("Failed to start meeting");
     } finally {
       setIsCreatingRoom(false);
     }
@@ -74,110 +63,112 @@ export default function RoomLobby({ user }) {
 
   const joinRoom = () => {
     if (!roomId.trim()) {
-      toast.error("Please enter a valid meeting ID");
+      toast.error("Enter a valid meeting ID");
       return;
     }
 
     setIsJoiningRoom(true);
-    try {
-      const roomLink = `${
-        window.location.origin
-      }/apps/video-calling/${roomId.trim()}`;
-      window.location.href = roomLink;
-      toast.success("Joining meeting...");
-    } catch (error) {
-      console.error("Error joining meeting:", error);
-      toast.error("Failed to join meeting. Please check the ID and try again.");
-    } finally {
-      setIsJoiningRoom(false);
-    }
+    window.location.href = `${
+      window.location.origin
+    }/apps/video-calling/${roomId.trim()}`;
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md overflow-hidden p-6">
-        {/* User Profile Section */}
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white shadow-xl border border-white/50 p-6">
+        {/* Profile */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            {user.photoURL && (
-              <img
-                src={user.photoURL}
-                alt={user.displayName}
-                className="w-10 h-10 rounded-full"
-              />
-            )}
+            <div className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-indigo-500 flex items-center justify-center bg-indigo-500 text-white font-semibold">
+              {user.photoURL && !imageError ? (
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  className="w-full h-full object-cover"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <span className="text-lg">
+                  {user.displayName
+                    ?.split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </span>
+              )}
+            </div>
+
             <div>
-              <h2 className="font-semibold text-gray-800">
+              <h2 className="font-semibold text-gray-900">
                 {user.displayName}
               </h2>
               <p className="text-xs text-gray-500">{user.email}</p>
             </div>
           </div>
+
           <button
             onClick={handleLogout}
-            className="text-gray-500 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-gray-100"
+            className="p-2 rounded-full hover:bg-red-50 text-gray-500 hover:text-red-500 transition"
             title="Logout"
           >
-            <FiLogOut />
+            <FiLogOut size={18} />
           </button>
         </div>
 
-        {/* Create Room Button */}
+        {/* Create Meeting */}
         <button
           onClick={createRoom}
           disabled={isCreatingRoom}
-          className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg mb-4 transition-all ${
-            isCreatingRoom
-              ? "bg-green-400 cursor-not-allowed"
-              : "bg-green-500 hover:bg-green-600"
-          } text-white font-medium shadow-sm`}
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-medium transition-all shadow-md hover:shadow-lg active:scale-[0.98]
+            ${
+              isCreatingRoom
+                ? "bg-emerald-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+            }`}
         >
           <FiVideo />
-          {isCreatingRoom ? "Starting Meeting..." : "Start New Meeting"}
+          {isCreatingRoom ? "Starting meeting..." : "Start new meeting"}
         </button>
 
-        <div className="flex items-center my-4">
-          <div className="flex-grow border-t border-gray-200"></div>
-          <span className="mx-4 text-sm text-gray-400">OR</span>
-          <div className="flex-grow border-t border-gray-200"></div>
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="px-3 text-xs text-gray-400">OR</span>
+          <div className="flex-1 h-px bg-gray-200" />
         </div>
 
-        {/* Join Room Section */}
-        <div className="space-y-2">
-          <label
-            htmlFor="roomId"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Join with a meeting ID
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="roomId"
-              type="text"
-              placeholder="Enter Meeting ID"
-              value={roomId}
-              onChange={(e) => setRoomId(e.target.value)}
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
-              onKeyPress={(e) => e.key === "Enter" && joinRoom()}
-            />
-            <button
-              onClick={joinRoom}
-              disabled={isJoiningRoom || !roomId.trim()}
-              className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-all ${
+        {/* Join Meeting */}
+        <label className="text-sm font-medium text-gray-700 mb-2 block">
+          Join with meeting ID
+        </label>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="e.g. a9F3xP2"
+            value={roomId}
+            onChange={(e) => setRoomId(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && joinRoom()}
+            className="flex-1 rounded-xl border border-gray-300 px-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+          <button
+            onClick={joinRoom}
+            disabled={isJoiningRoom || !roomId.trim()}
+            className={`px-4 rounded-xl flex items-center gap-1 text-white font-medium transition
+              ${
                 isJoiningRoom || !roomId.trim()
-                  ? "bg-blue-300 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600"
-              } text-white font-medium`}
-            >
-              <FiKey size={16} />
-              {isJoiningRoom ? "Joining..." : "Join"}
-            </button>
-          </div>
+                  ? "bg-indigo-300 cursor-not-allowed"
+                  : "bg-indigo-500 hover:bg-indigo-600"
+              }`}
+          >
+            <FiKey size={16} />
+            {isJoiningRoom ? "Joining" : "Join"}
+          </button>
         </div>
 
-        {/* Help Text */}
+        {/* Footer */}
         <p className="mt-6 text-xs text-gray-500 text-center">
-          Your meetings are end-to-end encrypted for security.
+          🔒 End-to-end encrypted • Secure video meetings
         </p>
       </div>
     </div>

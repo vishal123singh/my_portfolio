@@ -154,7 +154,7 @@ export default function ChatBox() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 max-w-md w-full border border-white/20">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl mb-6 border border-white/30">
@@ -205,7 +205,7 @@ export default function ChatBox() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col h-[90vh] max-h-[800px]">
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4">
@@ -246,7 +246,7 @@ export default function ChatBox() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setAiMode(!aiMode)}
-                className={`p-2 rounded-full transition-all ${
+                className={`cursor-pointer p-2 rounded-full transition-all ${
                   aiMode ? "bg-white/20" : "hover:bg-white/10"
                 }`}
                 title="Toggle AI Mode"
@@ -257,7 +257,7 @@ export default function ChatBox() {
               </button>
               <button
                 onClick={handleLogout}
-                className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="cursor-pointer p-2 rounded-full hover:bg-white/10 transition-colors"
                 title="Logout"
               >
                 <LogOut className="w-5 h-5" />
@@ -302,7 +302,7 @@ export default function ChatBox() {
                       isOwn ? "justify-end" : "justify-start"
                     } items-end gap-3`}
                   >
-                    {!isOwn && !isAI && (
+                    {/* {!isOwn && !isAI && (
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
                         <img
                           src={msg.avatar}
@@ -313,7 +313,7 @@ export default function ChatBox() {
                           }}
                         />
                       </div>
-                    )}
+                    )} */}
                     {isAI && (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
                         <Bot className="w-4 h-4 text-white" />
@@ -456,7 +456,7 @@ export default function ChatBox() {
             <button
               onClick={sendMessage}
               disabled={!input.trim()}
-              className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="cursor-pointer w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               <Send className="w-5 h-5" />
             </button>
@@ -466,7 +466,7 @@ export default function ChatBox() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setAiMode(!aiMode)}
-                className={`flex items-center gap-2 text-sm transition-colors ${
+                className={`cursor-pointer flex items-center gap-2 text-sm transition-colors ${
                   aiMode
                     ? "text-purple-600 font-semibold"
                     : "text-gray-500 hover:text-gray-700"
