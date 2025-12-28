@@ -95,7 +95,6 @@ const projects = [
       "/projects/screenshots/velotransact/2.png",
       "/projects/screenshots/velotransact/3.png",
       "/projects/screenshots/velotransact/4.png",
-      "/projects/screenshots/velotransact/5.png",
       "/projects/screenshots/velotransact/6.png",
       "/projects/screenshots/velotransact/7.png",
       "/projects/screenshots/velotransact/8.png",

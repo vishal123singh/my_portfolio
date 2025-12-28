@@ -45,14 +45,18 @@ export default function SwiperGallery({ images }) {
                     </div>
                   </div>
                 ) : (
-                  /* 🖥 Web Presentation */
-                  <Image
-                    src={src}
-                    alt={`Web screenshot ${i + 1}`}
-                    fill
-                    sizes="100vw"
-                    className="relative z-10 object-cover"
-                  />
+                  <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
+                    <div className="relative w-full max-w-[1400px] h-[85%] rounded-xl overflow-hidden shadow-2xl bg-black/40 backdrop-blur-md border border-white/10">
+                      <Image
+                        src={src}
+                        alt={`Web screenshot ${i + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 1400px"
+                        className="object-contain"
+                        priority={i === 0}
+                      />
+                    </div>
+                  </div>
                 )}
 
                 {/* Overlay */}

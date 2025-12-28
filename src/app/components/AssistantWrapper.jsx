@@ -13,12 +13,7 @@ const AssistantLauncher = dynamic(() => import("./AssistantLauncher"), {
 export default function AssistantWrapper() {
   const pathname = usePathname();
 
-  if (
-    pathname.includes("/apps") ||
-    pathname.startsWith("/test") ||
-    pathname.includes("/projects/playground/") ||
-    pathname === "/ai-agent-builder"
-  ) {
+  if (pathname !== "/") {
     return null;
   }
 

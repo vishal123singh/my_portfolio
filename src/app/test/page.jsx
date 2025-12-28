@@ -44,7 +44,8 @@ export default function CanvasBezier() {
   const [currentStroke, setCurrentStroke] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const [strokeColor, setStrokeColor] = useState("#000000");
-  const [fillColor, setFillColor] = useState("#ff0000"); // default fill
+  const [fillColor, setFillColor] = useState("#1500ffff"); // default fill
+  const [mode, setMode] = useState("draw"); // "draw" | "fill"
 
   const [canvasSize, setCanvasSize] = useState({ width: 500, height: 300 });
 
@@ -108,8 +109,35 @@ export default function CanvasBezier() {
 
   const startDrawing = (e) => {
     const point = getPoint(e);
+
+    if (mode === "fill") {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      const updated = strokes.map((s) => {
+        if (s.closed && hitTestStroke(ctx, s, point.x, point.y)) {
+          return { ...s, fillColor };
+        }
+        return s;
+      });
+
+      setStrokes(updated);
+      redrawCanvas(updated);
+      return;
+    }
+
+    // normal drawing
     setCurrentStroke([point]);
     setDrawing(true);
+  };
+
+  const hitTestStroke = (ctx, stroke, x, y) => {
+    const pts = chaikinSmooth(stroke.points, 2);
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    pts.forEach((p) => ctx.lineTo(p.x, p.y));
+    ctx.closePath();
+    return ctx.isPointInPath(x, y);
   };
 
   const draw = (e) => {
@@ -218,6 +246,10 @@ export default function CanvasBezier() {
             onChange={(e) => setFillColor(e.target.value)}
           />
         </label>
+      </div>
+      <div className="flex gap-4">
+        <button onClick={() => setMode("fill")}>Fill</button>
+        <button onClick={() => setMode("draw")}>Draw</button>
       </div>
 
       <canvas
