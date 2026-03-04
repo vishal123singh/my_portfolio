@@ -51,6 +51,10 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+html{
+    scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
@@ -1147,3 +1151,4 @@ footer {
 .swiper-pagination-bullet-active {
   background: #ffffff !important;
 }
+

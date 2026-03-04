@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 
@@ -14,24 +13,97 @@ export default function ProjectCard({
   images = [],
   tags = [],
   liveComponent = null,
+  fullPageImages = [], // Array of image URLs that are full page screenshots
 }) {
   const [hovered, setHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Start slideshow on hover if no liveComponent
-  useEffect(() => {
-    if (!liveComponent && hovered && images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % images.length);
-      }, 1500);
-      return () => clearInterval(interval);
-    } else {
-      setCurrentImageIndex(0);
-    }
-  }, [hovered, images, liveComponent]);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const scrollRef = useRef(null);
+  const animationRef = useRef(null);
+  const transitionTimeoutRef = useRef(null);
 
   const imageToShow =
     hovered && images.length > 0 ? images[currentImageIndex] : displayImage;
+
+  // Check if current image is a full page screenshot
+  const isFullPage = fullPageImages.includes(imageToShow);
+
+  // Handle the scroll animation only for full page images
+  useEffect(() => {
+    if (!liveComponent && hovered && images.length > 0) {
+      // Only run scroll animation for full page images
+      if (isFullPage) {
+        const startScroll = () => {
+          let startTime = null;
+          const scrollDuration = 3000; // 3 seconds for full scroll
+
+          const animate = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / scrollDuration, 1);
+
+            // Easing function for smooth scroll
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            setScrollProgress(easeProgress * 100);
+
+            if (progress < 1) {
+              animationRef.current = requestAnimationFrame(animate);
+            } else {
+              // Reached bottom, prepare for next image
+              setIsTransitioning(true);
+
+              // Transition to next image after a brief pause
+              transitionTimeoutRef.current = setTimeout(() => {
+                setCurrentImageIndex((prev) => (prev + 1) % images.length);
+                setScrollProgress(0);
+                setIsTransitioning(false);
+              }, 500);
+            }
+          };
+
+          animationRef.current = requestAnimationFrame(animate);
+        };
+
+        startScroll();
+      } else {
+        // For regular images, just do a simple slideshow
+        const interval = setInterval(() => {
+          setIsTransitioning(true);
+          setTimeout(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % images.length);
+            setIsTransitioning(false);
+          }, 300);
+        }, 2500);
+
+        return () => clearInterval(interval);
+      }
+    }
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, [hovered, images, currentImageIndex, liveComponent, isFullPage]);
+
+  // Reset when hover ends
+  useEffect(() => {
+    if (!hovered) {
+      setCurrentImageIndex(0);
+      setScrollProgress(0);
+      setIsTransitioning(false);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    }
+  }, [hovered]);
 
   return (
     <Link href={`/projects/${slug}`}>
@@ -45,33 +117,96 @@ export default function ProjectCard({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        {/* Top Preview */}
-        <div className="relative w-full aspect-[4/3] bg-slate-900 flex items-center justify-center rounded-t-xl overflow-hidden">
-          {/* Blurred Background */}
-          {!liveComponent && imageToShow && (
-            <Image
-              src={imageToShow}
-              alt={`${title} background`}
-              fill
-              className="absolute inset-0 object-cover blur-sm scale-105 z-0"
-              sizes="100vw"
-            />
+        {/* Top Preview - Full Page Screenshot with Scrolling */}
+        <div className="relative w-full aspect-[4/3] bg-slate-900 rounded-t-xl overflow-hidden">
+          {liveComponent ? (
+            <div className="w-full h-full relative">{liveComponent}</div>
+          ) : (
+            <>
+              {/* Current Image with Scroll Effect */}
+              <motion.div
+                className="absolute inset-0 w-full h-full"
+                animate={{
+                  opacity: isTransitioning ? 0 : 1,
+                  scale: isTransitioning ? 0.95 : 1,
+                }}
+                transition={{ duration: 0.4 }}
+                style={{
+                  backgroundImage: `url(${imageToShow})`,
+                  backgroundSize: isFullPage ? "100% auto" : "contain",
+                  backgroundPosition: isFullPage
+                    ? `center ${scrollProgress}%`
+                    : "center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundColor: "#0f172a", // slate-900 fallback
+                }}
+              />
+
+              {/* Next Image (preloaded for transition) */}
+              {/* Background Blur Layer (only for non-full images) */}
+              {!isFullPage && (
+                <motion.div
+                  className="absolute inset-0 w-full h-full"
+                  style={{
+                    backgroundImage: `url(${imageToShow})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                  animate={{
+                    opacity: isTransitioning ? 0 : 1,
+                    scale: 1.1,
+                  }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="absolute inset-0 backdrop-blur-2xl bg-slate-900/40" />
+                </motion.div>
+              )}
+
+              {/* Main Image Layer */}
+              <motion.div
+                className="absolute inset-0 w-full h-full"
+                animate={{
+                  opacity: isTransitioning ? 0 : 1,
+                  scale: isTransitioning ? 0.96 : 1,
+                }}
+                transition={{ duration: 0.4 }}
+                style={{
+                  backgroundImage: `url(${imageToShow})`,
+                  backgroundSize: isFullPage ? "100% auto" : "contain",
+                  backgroundPosition: isFullPage
+                    ? `center ${scrollProgress}%`
+                    : "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            </>
           )}
 
-          {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800/60 via-slate-900/60 to-slate-800/60 z-10" />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60 pointer-events-none z-20" />
 
-          {/* Main Image or Live Component */}
-          {liveComponent ? (
-            <div className="w-full h-full relative z-20">{liveComponent}</div>
-          ) : (
-            <Image
-              src={imageToShow}
-              alt={title}
-              fill
-              className="object-contain p-2 z-20"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
+          {/* Progress Indicator */}
+          {hovered && images.length > 0 && !liveComponent && (
+            <div className="absolute top-2 right-2 flex gap-1 z-30">
+              {images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex
+                      ? "w-4 bg-white"
+                      : "w-2 bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Full Page Indicator */}
+          {hovered && isFullPage && (
+            <div className="absolute bottom-2 left-2 bg-black/50 text-white/70 text-[10px] px-2 py-1 rounded-full backdrop-blur-sm z-30">
+              ↓ {Math.round(scrollProgress)}%
+            </div>
           )}
         </div>
 

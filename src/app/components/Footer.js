@@ -27,9 +27,9 @@ export default function Footer() {
   const footerLinks = [
     { name: "Home", href: "/" },
     { name: "Projects", href: "/projects" },
-    { name: "UI/UX", href: "/mockups" },
+    // { name: "UI/UX", href: "/mockups" },
     { name: "Blogs", href: "/blogs" },
-    { name: "Apps", href: "/apps" },
+    // { name: "Apps", href: "/apps" },
   ];
 
   return (
@@ -107,9 +107,6 @@ export default function Footer() {
           className="mt-12 pt-6 border-t border-white/10 text-center text-xs text-white/50"
         >
           <p>© {new Date().getFullYear()} Vishal Singh. All rights reserved.</p>
-          <p className="mt-1">
-            Built with Next.js, Tailwind CSS, and Framer Motion
-          </p>
         </motion.div>
       </div>
     </div>

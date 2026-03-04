@@ -9,7 +9,7 @@ const SwiperGallery = dynamic(() => import("./SwiperGallery"), {
   ssr: false,
 });
 
-export default function ProjectGalleryClient({ images }) {
+export default function ProjectGalleryClient({ images, fullPageImages }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -18,5 +18,5 @@ export default function ProjectGalleryClient({ images }) {
 
   if (!isMounted) return null;
 
-  return <SwiperGallery images={images} />;
+  return <SwiperGallery images={images} fullPageImages={fullPageImages} />;
 }

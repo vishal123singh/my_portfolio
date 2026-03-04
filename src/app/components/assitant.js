@@ -167,7 +167,7 @@ function ChatMessage({ msg }) {
         {isUser ? (
           <p>{msg.text}</p>
         ) : (
-          <div className="prose prose-sm prose-invert max-w-none">
+          <div className="prose prose-sm prose-invert max-w-none overflow-auto">
             <ReactMarkdown>{msg.text}</ReactMarkdown>
           </div>
         )}

@@ -73,6 +73,15 @@ import {
   Mail,
   Activity,
   Repeat,
+  Globe,
+  QrCode,
+  Signal,
+  DollarSign,
+  Map,
+  MapPin,
+  BarChart3,
+  Truck,
+  Warehouse,
 } from "lucide-react";
 
 const projects = [
@@ -80,7 +89,7 @@ const projects = [
     title: "Velotransact",
     slug: "velotransact",
     description: "Smarter Vehicle Transactions Platform.",
-    link: "https://velotransact.ontheweb.app/",
+    link: "https://velotransact.com/",
     tags: [
       "GCP",
       "Web",
@@ -91,16 +100,33 @@ const projects = [
       "MongoDB",
     ],
     images: [
-      "/projects/screenshots/velotransact/1.png",
-      "/projects/screenshots/velotransact/2.png",
-      "/projects/screenshots/velotransact/3.png",
-      "/projects/screenshots/velotransact/4.png",
-      "/projects/screenshots/velotransact/6.png",
-      "/projects/screenshots/velotransact/7.png",
-      "/projects/screenshots/velotransact/8.png",
-      "/projects/screenshots/velotransact/9.png",
-      "/projects/screenshots/velotransact/10.png",
-      "/projects/screenshots/velotransact/11.png",
+      "/projects/screenshots/velotransact/velotransact_1.png",
+      "/projects/screenshots/velotransact/velotransact_2.png",
+      "/projects/screenshots/velotransact/velotransact_3.png",
+      "/projects/screenshots/velotransact/velotransact_4.png",
+      "/projects/screenshots/velotransact/velotransact_5.png",
+      "/projects/screenshots/velotransact/velotransact_6.png",
+      "/projects/screenshots/velotransact/velotransact_7.png",
+      "/projects/screenshots/velotransact/velotransact_8.png",
+      "/projects/screenshots/velotransact/velotransact_9.png",
+      "/projects/screenshots/velotransact/velotransact_10.png",
+      "/projects/screenshots/velotransact/velotransact_11.png",
+      "/projects/screenshots/velotransact/velotransact_12.png",
+      "/projects/screenshots/velotransact/velotransact_13.png",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/velotransact/velotransact_1.png",
+      "/projects/screenshots/velotransact/velotransact_2.png",
+      "/projects/screenshots/velotransact/velotransact_3.png",
+      "/projects/screenshots/velotransact/velotransact_4.png",
+      "/projects/screenshots/velotransact/velotransact_5.png",
+      "/projects/screenshots/velotransact/velotransact_6.png",
+      "/projects/screenshots/velotransact/velotransact_7.png",
+      "/projects/screenshots/velotransact/velotransact_8.png",
+      "/projects/screenshots/velotransact/velotransact_9.png",
+      "/projects/screenshots/velotransact/velotransact_10.png",
+      "/projects/screenshots/velotransact/velotransact_12.png",
+      "/projects/screenshots/velotransact/velotransact_13.png",
     ],
     features: [
       {
@@ -196,7 +222,7 @@ const projects = [
     ],
 
     contributions: [],
-    displayImage: "/projects/screenshots/velotransact/3.png",
+    displayImage: "/projects/screenshots/velotransact/velotransact_10.png",
   },
 
   {
@@ -207,15 +233,18 @@ const projects = [
     link: "https://www.aadvico.com/",
     tags: ["GCP", "Web", "Next.js", "Firebase"],
     images: [
-      "/projects/screenshots/aadvico/1.png",
-      "/projects/screenshots/aadvico/2.png",
-      "/projects/screenshots/aadvico/3.png",
-      "/projects/screenshots/aadvico/4.png",
-      "/projects/screenshots/aadvico/5.png",
-      "/projects/screenshots/aadvico/6.png",
-      "/projects/screenshots/aadvico/7.png",
-      "/projects/screenshots/aadvico/8.png",
-      "/projects/screenshots/aadvico/9.png",
+      "/projects/screenshots/aadvico/aadvico_1.webp",
+      "/projects/screenshots/aadvico/aadvico_2.webp",
+      "/projects/screenshots/aadvico/aadvico_3.webp",
+      "/projects/screenshots/aadvico/aadvico_4.webp",
+      "/projects/screenshots/aadvico/aadvico_5.webp",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/aadvico/aadvico_1.webp",
+      "/projects/screenshots/aadvico/aadvico_2.webp",
+      "/projects/screenshots/aadvico/aadvico_3.webp",
+      "/projects/screenshots/aadvico/aadvico_4.webp",
+      "/projects/screenshots/aadvico/aadvico_5.webp",
     ],
 
     features: [
@@ -271,7 +300,144 @@ const projects = [
       "Built admin dashboard for inventory and sales tracking.",
       "Implemented user authentication and profile management features.",
     ],
-    displayImage: "/projects/screenshots/aadvico/2.png",
+    displayImage: "/projects/screenshots/aadvico/aadvico_1.webp",
+  },
+
+  {
+    title: "Resiliq",
+    slug: "resiliq",
+    description:
+      "Resiliq is a full-featured logistics management platform that handles end-to-end delivery operations. The system supports multiple user roles including Super Admin, Hub Managers, Delivery Associates, Franchise Managers, Cluster Managers, City Managers, and more",
+    link: "https://dashboardv1.resiliq.in",
+    tags: ["Webhook", "Web", "React", "Node JS", "Express JS"],
+    images: [
+      "/projects/screenshots/resiliq/resiliq_1.webp",
+      "/projects/screenshots/resiliq/resiliq_2.webp",
+      "/projects/screenshots/resiliq/resiliq_3.webp",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/resiliq/resiliq_2.webp",
+      "/projects/screenshots/resiliq/resiliq_3.webp",
+    ],
+    features: [
+      {
+        title: "Order Management",
+        icon: <Package size={20} />,
+        description:
+          "Create, assign, track, and manage delivery orders with complete lifecycle visibility from pickup to final delivery.",
+      },
+      {
+        title: "Real-time Tracking",
+        icon: <MapPin size={20} />,
+        description:
+          "Monitor delivery associates in real-time with GPS-based tracking, live status updates, and route visibility.",
+      },
+      {
+        title: "Multi-role Access Control",
+        icon: <User size={20} />,
+        description:
+          "Enable role-based dashboards and permissions for Super Admins, Hub Managers, Franchise Managers, and Delivery Associates.",
+      },
+      {
+        title: "Payment Processing",
+        icon: <CreditCard size={20} />,
+        description:
+          "Seamlessly manage Cash on Delivery (COD), online payments, and automated settlement workflows.",
+      },
+      {
+        title: "Analytics & Reporting",
+        icon: <BarChart3 size={20} />,
+        description:
+          "Access comprehensive dashboards, performance metrics, financial reports, and operational insights in real time.",
+      },
+      {
+        title: "Fleet Management",
+        icon: <Truck size={20} />,
+        description:
+          "Manage vehicles, rentals, maintenance tracking, and optimize fleet utilization for efficient operations.",
+      },
+      {
+        title: "Hub Operations",
+        icon: <Warehouse size={20} />,
+        description:
+          "Streamline hub-level activities including shipment sorting, allocation, and division management.",
+      },
+    ],
+    contributions: [
+      "Designed and implemented secure HMAC-SHA256 webhook authentication with timestamp validation to prevent replay attacks",
+      "Built idempotent order processing system to prevent duplicate order creation and handle payload conflicts safely",
+      "Developed automatic AWB generation with client-specific prefixes and dynamic shipment code handling",
+      "Implemented intelligent hub and division routing logic based on pincode and store configuration",
+      "Engineered support for COD, prepaid, and reverse payment flows with strict validation rules",
+      "Designed scalable order schema supporting B2C, B2B, and inventory models",
+      "Built comprehensive address management for delivery, pickup, and RTO with geo-coordinates support",
+      "Implemented structured validation and error handling (400, 401, 409, 429, 500) for predictable integrations",
+      "Integrated rate limiting and request time-window validation for system protection",
+      "Authored detailed Swagger/OpenAPI documentation with multi-language integration samples (cURL, Node.js, Python)",
+    ],
+    displayImage: "/projects/screenshots/resiliq/resiliq_1.webp",
+  },
+  {
+    title: "Romesim",
+    slug: "romesim",
+    description:
+      "RomeSIM is a global eSIM service provider that offers digital mobile connectivity for travelers and businesses. It enables users to buy and activate eSIM data and voice plans for use in over 190 countries without needing a physical SIM card. RomeSIM’s service delivers eSIMs instantly via email (with QR codes) and lets you stay connected on high-speed 4G/5G networks while abroad, helping avoid expensive roaming charges and simplifying international mobile connectivity.",
+    link: "https://romesim.com",
+    tags: ["WordPress"],
+    images: [
+      "/projects/screenshots/romesim/romesim_1.webp",
+      "/projects/screenshots/romesim/romesim_2.png",
+      "/projects/screenshots/romesim/romesim_3.png",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/romesim/romesim_1.webp",
+      "/projects/screenshots/romesim/romesim_2.png",
+      "/projects/screenshots/romesim/romesim_3.png",
+    ],
+    features: [
+      {
+        title: "Global Coverage",
+        icon: <Globe size={20} />,
+        description:
+          "Access mobile data in 190+ countries through partnerships with hundreds of network providers worldwide.",
+      },
+      {
+        title: "Instant eSIM Delivery",
+        icon: <Mail size={20} />,
+        description:
+          "Receive your eSIM instantly via email with a QR code — no physical SIM card or shipping delays.",
+      },
+      {
+        title: "Fast & Easy Activation",
+        icon: <QrCode size={20} />,
+        description:
+          "Activate your eSIM within minutes by scanning a QR code and connecting immediately upon arrival.",
+      },
+      {
+        title: "High-Speed 5G/4G Connectivity",
+        icon: <Signal size={20} />,
+        description:
+          "Enjoy reliable 5G and 4G internet speeds for seamless browsing, streaming, and communication.",
+      },
+      {
+        title: "Flexible Travel Plans",
+        icon: <Map size={20} />,
+        description:
+          "Choose from local, regional, or global data plans designed for short trips, business travel, or long stays.",
+      },
+      {
+        title: "Cost-Effective Roaming Alternative",
+        icon: <DollarSign size={20} />,
+        description:
+          "Avoid expensive international roaming charges with affordable prepaid eSIM data packages.",
+      },
+    ],
+
+    contributions: [
+      "Authentication & Authorization",
+      "Multi-Country eSim Purchase",
+    ],
+    displayImage: "/projects/screenshots/romesim/romesim_1.webp",
   },
 
   {

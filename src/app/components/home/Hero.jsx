@@ -69,7 +69,7 @@ const InteractiveCodeLine = ({ children, delay = 0 }) => {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const displayText = useTransform(rounded, (latest) =>
-    baseText.slice(0, latest)
+    baseText.slice(0, latest),
   );
 
   useEffect(() => {
@@ -126,10 +126,6 @@ function HomeHero() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
-                  {/* <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 inline-block">
-                    <TypingText text="Digital Craftsmanship" delay={0.3} />
-                  </span> */}
-
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 inline-block">
                     Digital Craftsmanship
                   </span>

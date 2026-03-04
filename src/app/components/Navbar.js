@@ -11,9 +11,9 @@ import CosmicBackground from "./CosmicBackground";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "UI/UX", href: "/mockups" },
+  // { label: "UI/UX", href: "/mockups" },
   { label: "Blogs", href: "/blogs" },
-  { label: "Apps", href: "/apps" },
+  // { label: "Apps", href: "/apps" },
   { label: "AI Agents Builder", href: "/ai-agents" },
 ];
 
