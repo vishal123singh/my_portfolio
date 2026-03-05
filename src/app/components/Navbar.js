@@ -13,8 +13,8 @@ const navLinks = [
   { label: "Projects", href: "/projects" },
   // { label: "UI/UX", href: "/mockups" },
   { label: "Blogs", href: "/blogs" },
-  // { label: "Apps", href: "/apps" },
-  { label: "AI Agents Builder", href: "/ai-agents" },
+  { label: "Apps", href: "/apps" },
+  // { label: "AI Agents Builder", href: "/ai-agents" },
 ];
 
 export default function Navbar() {

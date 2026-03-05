@@ -29,7 +29,7 @@ export default function Footer() {
     { name: "Projects", href: "/projects" },
     // { name: "UI/UX", href: "/mockups" },
     { name: "Blogs", href: "/blogs" },
-    // { name: "Apps", href: "/apps" },
+    { name: "Apps", href: "/apps" },
   ];
 
   return (

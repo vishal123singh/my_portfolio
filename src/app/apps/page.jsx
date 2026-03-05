@@ -29,6 +29,17 @@ const apps = [
     featured: true,
     tech: ["WebRTC", "AI"],
   },
+  {
+    id: 3,
+    name: "AI Agents Builder",
+    description:
+      " Build, test, and deploy LLM-based agents with a drag-and-drop interface. Create complex workflows in minutes, not hours.",
+    category: "AI/ML",
+    url: "/ai-agents",
+    image: "/images/viva.png",
+    featured: true,
+    tech: ["WebRTC", "AI"],
+  },
 ];
 
 export default function AppsShowcase() {
@@ -46,7 +57,7 @@ export default function AppsShowcase() {
     (app) =>
       app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.category.toLowerCase().includes(searchTerm.toLowerCase())
+      app.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const containerVariants = {
