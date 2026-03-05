@@ -447,9 +447,15 @@ const projects = [
       "AI-powered digital concierge chatbot for hotels offering room services, travel planning, ticket booking,and itinerary management.",
     link: "https://admin-tool-dev.genaisolutions.ai/",
     images: [
+      "/projects/screenshots/koodums-chat/koodums_1.webp",
+      "/projects/screenshots/koodums-chat/koodums_2.webp",
       "/projects/screenshots/koodums-chat/1.png",
       "/projects/screenshots/koodums-chat/2.png",
       "/projects/screenshots/koodums-chat/3.png",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/koodums-chat/koodums_1.webp",
+      "/projects/screenshots/koodums-chat/koodums_2.webp",
     ],
     tags: ["AI Agents", "Node JS", "Typescript", "Python", "GCP", "MCP"],
 
@@ -494,7 +500,7 @@ const projects = [
       "Enabled AI agents to dynamically chain tool calls through MCP servers to enrich user conversations and deliver personalized, context-aware responses.",
       "Collaborated on integration with cloud services for scalable deployment and real-time system performance.",
     ],
-    displayImage: "/projects/screenshots/koodums-chat/3.png",
+    displayImage: "/projects/screenshots/koodums-chat/koodums_1.webp",
   },
   {
     title: "SWIFI",
@@ -522,6 +528,7 @@ const projects = [
       "Financial education mobile app for children. Gamified with task & reward systems.",
     link: "https://play.google.com/store/apps/details?id=com.kiddiekredit.app&pcampaignid=web_share",
     images: [
+      "/projects/screenshots/kk/kiddie_kredit_1.webp",
       "/projects/screenshots/kk/5.png",
       "/projects/screenshots/kk/2.png",
       "/projects/screenshots/kk/4.png",
@@ -535,8 +542,9 @@ const projects = [
       "/projects/screenshots/kk/14.png",
       "/projects/screenshots/kk/15.png",
     ],
+    fullPageImages: ["/projects/screenshots/kk/kiddie_kredit_1.webp"],
     tags: ["React Native", "Node JS", "Android", "IOS", "Animation"],
-    displayImage: "/projects/screenshots/kk/6.png",
+    displayImage: "/projects/screenshots/kk/kiddie_kredit_1.webp",
     contributions: [
       "Developed gamified task/reward system for children’s financial literacy",
       "Built multi-role support (child, guardian, admin)",
@@ -913,21 +921,43 @@ const experiences = [
 
 const keyProjects = [
   {
-    name: "Koodums Chat",
-    description: "Generative AI Agents Builder.",
-    tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
+    title: "Velotransact",
+    slug: "velotransact",
+    category: "Web Application",
+    description: "Smarter Vehicle Transactions Platform.",
+    tech: "React • Node.js • TypeScript • Firebase • MongoDB • GCP • Express.js",
+    image: "/projects/screenshots/velotransact/velotransact_10.png",
+    color: "from-purple-600 to-pink-600",
+    link: "https://velotransact.com/",
   },
   {
-    name: "Earnings Call",
+    title: "Koodums Chat",
+    category: "Web Application",
+    description: "Generative AI Agents Builder.",
+    tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
+    image: "/projects/screenshots/koodums-chat/koodums_1.webp",
+    color: "from-purple-600 to-pink-600",
+    link: "https://admin-tool-dev.genaisolutions.ai/",
+  },
+  {
+    title: "Aadvico",
+    category: "Web Application",
     description:
       "AI-powered financial analysis platform with LLM integration and voice assistant.",
     tech: "Next.js • AWS • AI Agents",
+    image: "/projects/screenshots/aadvico/aadvico_1.webp",
+    color: "from-blue-600 to-cyan-600",
+    link: "https://aadvico.com/",
   },
   {
-    name: "Kiddie-Kredit",
+    title: "Kiddie-Kredit",
+    category: "Mobile Application",
     description:
       "Financial education mobile app for children. Gamified with task & reward systems.",
     tech: "React Native • Node.js • Socket.io",
+    image: "/projects/screenshots/kk/kiddie_kredit_1.webp",
+    color: "from-orange-600 to-red-600",
+    link: "https://play.google.com/store/apps/details?id=com.kiddiekredit.app&pcampaignid=web_share",
   },
 ];
 

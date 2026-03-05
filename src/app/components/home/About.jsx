@@ -1,8 +1,8 @@
 "use client";
 import { FaLock, FaUnlock } from "react-icons/fa";
 import Image from "next/image";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { keyProjects, techStack, experiences } from "../../../../data.js";
 
 const TechBubble = ({ icon: Icon, color, name, delay }) => {
@@ -289,43 +289,136 @@ export default function About() {
           </div>
         </motion.div>
         {/* Projects */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-2xl font-bold text-center text-white mb-8">
-            Notable Projects
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            {keyProjects.map((project, i) => (
-              <motion.div
-                key={i}
-                className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all"
-                whileHover={{ y: -5 }}
-              >
-                <h4 className="text-lg font-semibold text-white mb-2">
-                  {project.name}
-                </h4>
-                <p className="text-sm text-white/70 mb-4">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tech.split(" • ").map((tech, j) => (
-                    <span
-                      key={j}
-                      className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/80"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        <Work />
       </div>
+    </section>
+  );
+}
+
+function Work() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
+
+  return (
+    <section
+      id="work"
+      ref={containerRef}
+      className="relative py-32 overflow-hidden"
+    >
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="max-w-4xl mx-auto text-center mb-20"
+        >
+          <span className="text-sm tracking-widest text-neutral-500 mb-4 block">
+            SELECTED WORK
+          </span>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
+            Featured <span className="text-gradient">Projects</span>
+          </h2>
+        </motion.div>
+
+        <div className="space-y-32">
+          {keyProjects.map((project, index) => (
+            <motion.div
+              key={project.title}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 1,
+                delay: index * 0.2,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="group relative"
+            >
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div
+                  className={`order-2 ${index % 2 === 0 ? "md:order-1" : "md:order-2"}`}
+                >
+                  <span className="text-sm text-neutral-500 mb-2 block">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+                    {project.title}
+                  </h3>
+                  <span
+                    className={`inline-block px-4 py-2 text-sm bg-gradient-to-r ${project.color} rounded-full mb-4`}
+                  >
+                    {project.category}
+                  </span>
+                  <p className="text-neutral-400 text-lg mb-8">
+                    {project.description}
+                  </p>
+                  <motion.a
+                    href={project.link}
+                    className="inline-flex items-center gap-2 text-sm tracking-wide hover:gap-4 transition-all"
+                    whileHover={{ x: 10 }}
+                  >
+                    View Project
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        d="M5 12h14M12 5l7 7-7 7"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </motion.a>
+                </div>
+
+                <div
+                  className={`relative order-1 ${index % 2 === 0 ? "md:order-2" : "md:order-1"}`}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="relative aspect-[4/3] rounded-2xl overflow-hidden glass group cursor-pointer"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-transparent mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
+
+                    {/* Placeholder for actual project image */}
+                    <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center">
+                      <img
+                        src={project.image} // add image URL in your project object
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    {/* Hover overlay */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 bg-gradient-to-t from-purple-600/20 to-transparent"
+                    />
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <motion.div
+        style={{ y }}
+        className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] -z-10"
+      />
     </section>
   );
 }
