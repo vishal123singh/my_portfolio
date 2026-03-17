@@ -91,15 +91,17 @@ const projects = [
     description: "Smarter Vehicle Transactions Platform.",
     link: "https://velotransact.com/",
     tags: [
-      "GCP",
-      "Web",
+      "Web Application",
       "React",
-      "Firebase",
       "Node JS",
       "Express JS",
       "MongoDB",
+      "Payment Gateway",
+      "GCP",
+      "AWS",
     ],
     images: [
+      "/projects/screenshots/velotransact/velo.webp",
       "/projects/screenshots/velotransact/velotransact_1.png",
       "/projects/screenshots/velotransact/velotransact_2.png",
       "/projects/screenshots/velotransact/velotransact_3.png",
@@ -115,6 +117,7 @@ const projects = [
       "/projects/screenshots/velotransact/velotransact_13.png",
     ],
     fullPageImages: [
+      "/projects/screenshots/velotransact/velo.webp",
       "/projects/screenshots/velotransact/velotransact_1.png",
       "/projects/screenshots/velotransact/velotransact_2.png",
       "/projects/screenshots/velotransact/velotransact_3.png",
@@ -222,7 +225,7 @@ const projects = [
     ],
 
     contributions: [],
-    displayImage: "/projects/screenshots/velotransact/velotransact_10.png",
+    displayImage: "/projects/screenshots/velotransact/velo.webp",
   },
 
   {
@@ -231,7 +234,7 @@ const projects = [
     description:
       "Aadvico’s website is an e-commerce platform for buying healthy roasted makhana snacks, with product browsing, shopping cart, account login, order management, health benefit details, and support contact info.",
     link: "https://www.aadvico.com/",
-    tags: ["GCP", "Web", "Next.js", "Firebase"],
+    tags: ["GCP", "Web Application", "Next.js", "Vercel"],
     images: [
       "/projects/screenshots/aadvico/aadvico_1.webp",
       "/projects/screenshots/aadvico/aadvico_2.webp",
@@ -309,7 +312,7 @@ const projects = [
     description:
       "Resiliq is a full-featured logistics management platform that handles end-to-end delivery operations. The system supports multiple user roles including Super Admin, Hub Managers, Delivery Associates, Franchise Managers, Cluster Managers, City Managers, and more",
     link: "https://dashboardv1.resiliq.in",
-    tags: ["Webhook", "Web", "React", "Node JS", "Express JS"],
+    tags: ["Webhook", "Web Application", "React", "Node JS", "Express JS"],
     images: [
       "/projects/screenshots/resiliq/resiliq_1.webp",
       "/projects/screenshots/resiliq/resiliq_2.webp",
@@ -377,6 +380,7 @@ const projects = [
     ],
     displayImage: "/projects/screenshots/resiliq/resiliq_1.webp",
   },
+
   {
     title: "Romesim",
     slug: "romesim",
@@ -447,6 +451,10 @@ const projects = [
       "AI-powered digital concierge chatbot for hotels offering room services, travel planning, ticket booking,and itinerary management.",
     link: "https://admin-tool-dev.genaisolutions.ai/",
     images: [
+      "/projects/screenshots/koodums-chat/koodums.webp",
+      "/projects/screenshots/koodums-chat/koodums_11.webp",
+      "/projects/screenshots/koodums-chat/koodums_22.webp",
+      "/projects/screenshots/koodums-chat/koodums_33.webp",
       "/projects/screenshots/koodums-chat/koodums_1.webp",
       "/projects/screenshots/koodums-chat/koodums_2.webp",
       "/projects/screenshots/koodums-chat/1.png",
@@ -454,6 +462,10 @@ const projects = [
       "/projects/screenshots/koodums-chat/3.png",
     ],
     fullPageImages: [
+      "/projects/screenshots/koodums-chat/koodums.webp",
+      "/projects/screenshots/koodums-chat/koodums_11.webp",
+      "/projects/screenshots/koodums-chat/koodums_22.webp",
+      "/projects/screenshots/koodums-chat/koodums_33.webp",
       "/projects/screenshots/koodums-chat/koodums_1.webp",
       "/projects/screenshots/koodums-chat/koodums_2.webp",
     ],
@@ -500,8 +512,9 @@ const projects = [
       "Enabled AI agents to dynamically chain tool calls through MCP servers to enrich user conversations and deliver personalized, context-aware responses.",
       "Collaborated on integration with cloud services for scalable deployment and real-time system performance.",
     ],
-    displayImage: "/projects/screenshots/koodums-chat/koodums_1.webp",
+    displayImage: "/projects/screenshots/koodums-chat/koodums_11.webp",
   },
+
   {
     title: "SWIFI",
     slug: "swifi",
@@ -521,6 +534,37 @@ const projects = [
 
     displayImage: "/projects/screenshots/swifi/1.png",
   },
+
+  {
+    title: "PetLinx",
+    slug: "petlinx",
+    description:
+      "Pet grooming and daycare platform with customizable email templates.",
+    link: "https://petlinx.com/",
+    images: [
+      "/projects/screenshots/petlinx/petlinx11.webp",
+      "/projects/screenshots/petlinx/petlinx22.webp",
+      "/projects/screenshots/petlinx/petlinx33.webp",
+      "/projects/screenshots/petlinx/petlinx44.webp",
+      "/projects/screenshots/petlinx/petlinx55.webp",
+      "/projects/screenshots/petlinx/petlinx66.webp",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/petlinx/petlinx11.webp",
+      "/projects/screenshots/petlinx/petlinx22.webp",
+      "/projects/screenshots/petlinx/petlinx33.webp",
+      "/projects/screenshots/petlinx/petlinx44.webp",
+      "/projects/screenshots/petlinx/petlinx55.webp",
+      "/projects/screenshots/petlinx/petlinx66.webp",
+    ],
+    tags: ["Web Application", "React", "Node JS", "Express Js"],
+    contributions: [
+      "Built email template editor for customizable communications.",
+      "Performed bug fixing and code optimization for improved performance.",
+    ],
+    displayImage: "/projects/screenshots/petlinx/petlinx22.webp",
+  },
+
   {
     title: "Kiddie Kredit",
     slug: "kiddie-kredit",
@@ -554,13 +598,14 @@ const projects = [
       "Developed secure authentication, push notifications, and parental controls for data privacy.",
     ],
   },
+
   {
     title: "Earnings Call",
     slug: "earnings-call",
     description:
       "AI-powered insights platform for earnings calls and SEC filings.",
     link: "https://earnings-call.vercel.app/",
-    tags: ["AI", "Web", "Next.js", "AWS"],
+    tags: ["AI", "Web Application", "Next.js", "AWS"],
     images: [
       "/projects/screenshots/earnings-call/1.png",
       "/projects/screenshots/earnings-call/2.png",
@@ -826,24 +871,6 @@ const projects = [
     displayImage: "/projects/screenshots/autoflow/1.png",
   },
 
-  {
-    title: "PetLinx",
-    slug: "petlinx",
-    description:
-      "Pet grooming and daycare platform with customizable email templates.",
-    link: "https://petlinx.com/",
-    images: [
-      "/projects/screenshots/petlinx/1.png",
-      "/projects/screenshots/petlinx/2.png",
-    ],
-    tags: ["AI", "Web", "Next.js"],
-    contributions: [
-      "Built email template editor for customizable communications.",
-      "Performed bug fixing and code optimization for improved performance.",
-    ],
-    displayImage: "/projects/screenshots/petlinx/1.png",
-  },
-
   // {
   //   title: "DELIGO",
   //   slug: "deligo",
@@ -926,7 +953,7 @@ const keyProjects = [
     category: "Web Application",
     description: "Smarter Vehicle Transactions Platform.",
     tech: "React • Node.js • TypeScript • Firebase • MongoDB • GCP • Express.js",
-    image: "/projects/screenshots/velotransact/velotransact_10.png",
+    image: "/projects/screenshots/velotransact/velo.webp",
     color: "from-purple-600 to-pink-600",
     link: "https://velotransact.com/",
   },
@@ -935,7 +962,7 @@ const keyProjects = [
     category: "Web Application",
     description: "Generative AI Agents Builder.",
     tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
-    image: "/projects/screenshots/koodums-chat/koodums_1.webp",
+    image: "/projects/screenshots/koodums-chat/koodums.webp",
     color: "from-purple-600 to-pink-600",
     link: "https://admin-tool-dev.genaisolutions.ai/",
   },

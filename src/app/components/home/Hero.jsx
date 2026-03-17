@@ -19,6 +19,30 @@ import {
 } from "lucide-react";
 import CosmicBackground from "../CosmicBackground";
 
+const techStack = [
+  {
+    name: "System Architecture",
+    icon: Network,
+    color: "from-cyan-400 to-blue-500",
+  },
+  {
+    name: "Frontend Engineering",
+    icon: Code2,
+    color: "from-purple-400 to-pink-500",
+  },
+  {
+    name: "Backend Development",
+    icon: Terminal,
+    color: "from-orange-400 to-red-500",
+  },
+  {
+    name: "Cloud Infrastructure",
+    icon: Cpu,
+    color: "from-green-400 to-teal-500",
+  },
+  { name: "Algorithms", icon: Binary, color: "from-yellow-400 to-amber-500" },
+];
+
 const container = {
   hidden: {},
   visible: {
@@ -262,56 +286,32 @@ function HomeHero() {
 
         {/* Tech Stack */}
         <motion.div
-          className="mt-16 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 justify-items-center"
+          className="mt-24 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ duration: 0.6 }}
         >
-          {[
-            {
-              name: "System Architecture",
-              icon: Network,
-              color: "from-cyan-400 to-blue-500",
-            },
-            {
-              name: "Frontend Engineering",
-              icon: Code2,
-              color: "from-purple-400 to-pink-500",
-            },
-            {
-              name: "Backend Development",
-              icon: Terminal,
-              color: "from-orange-400 to-red-500",
-            },
-            {
-              name: "Cloud Infrastructure",
-              icon: Cpu,
-              color: "from-green-400 to-teal-500",
-            },
-            {
-              name: "Algorithms",
-              icon: Binary,
-              color: "from-yellow-400 to-amber-500",
-            },
-          ].map((tech) => (
+          {techStack.map((tech) => (
             <motion.div
               key={tech.name}
-              className={`w-full sm:w-64 px-4 py-2 sm:px-5 sm:py-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all ${
-                activeTech === tech.name
-                  ? "bg-white/10 border border-white/20 shadow-lg"
-                  : "bg-white/5 border border-white/10"
-              }`}
-              whileHover={{ y: -4, scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onHoverStart={() => handleTechHover(tech.name)}
-              onHoverEnd={() => handleTechHover(null)}
+              className="group flex items-start gap-4 p-4 rounded-xl cursor-pointer"
+              whileHover={{ y: -2 }}
+              transition={{ type: "tween", duration: 0.2 }}
             >
-              <div className={`bg-gradient-to-r ${tech.color} p-2 rounded-lg`}>
-                <tech.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              {/* Icon */}
+              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <tech.icon className="w-5 h-5 text-white/80" />
               </div>
-              <span className="text-white/90 text-sm sm:text-base font-medium">
-                {tech.name}
-              </span>
+
+              {/* Text */}
+              <div className="flex flex-col">
+                <span className="text-white/90 text-sm font-medium tracking-tight">
+                  {tech.name}
+                </span>
+
+                {/* subtle underline */}
+                <span className="h-px w-0 bg-white/30 mt-2 group-hover:w-6 transition-all duration-300" />
+              </div>
             </motion.div>
           ))}
         </motion.div>
