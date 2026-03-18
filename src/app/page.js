@@ -13,9 +13,9 @@ export default function Home() {
   return (
     <>
       <HomeHero />
-      <Work />
-      <Skills />
       <About />
+      <Skills />
+      <Work />
       <Contact />
       <Footer />
     </>

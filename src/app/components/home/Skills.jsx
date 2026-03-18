@@ -85,7 +85,7 @@ export default function TechStack() {
             transition={{ delay: 0.1 }}
           >
             <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              Technical Toolbox
+              TECH STACK
             </span>
           </motion.h2>
           <motion.p
