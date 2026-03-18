@@ -7,38 +7,44 @@ import {
 } from "./lib/rateLimit";
 
 export default async function middleware(req) {
-  // Apply only to API routes
-  if (!req.nextUrl.pathname.startsWith("/api")) {
-    return NextResponse.next();
-  }
+  const pathname = req.nextUrl.pathname;
 
-  const ip = req.ip ?? req.headers.get("x-forwarded-for") ?? "127.0.0.1";
-  // Determine which limiter to use based on route
+  // Only apply to API routes (optional)
+  if (!pathname.startsWith("/api")) return NextResponse.next();
+
+  // Get IP
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : "127.0.0.1";
+
+  // Determine limiter
   let limiter = globalLimiter;
-
-  if (req.nextUrl.pathname.startsWith("/api/youtube")) {
+  if (pathname.startsWith("/api/youtube")) limiter = agentLimiter;
+  else if (pathname.startsWith("/api/ask")) limiter = vivalimiter;
+  else if (pathname.startsWith("/api/send-email")) limiter = contactLimiter;
+  else if (
+    pathname.startsWith("/api/google-search") ||
+    pathname.startsWith("/api/nodes")
+  )
     limiter = agentLimiter;
-  } else if (req.nextUrl.pathname.startsWith("/api/ask")) {
-    limiter = vivalimiter;
-  } else if (req.nextUrl.pathname.startsWith("/api/send-email")) {
-    limiter = contactLimiter;
-  } else if (req.nextUrl.pathname.startsWith("/api/google-search")) {
-    limiter = agentLimiter;
-  } else if (req.nextUrl.pathname.startsWith("/api/nodes")) {
-    limiter = agentLimiter;
-  }
 
-  const { success, limit, remaining, reset } = await limiter.limit(ip);
+  try {
+    const { success, limit, remaining, reset } = await limiter.limit(ip);
 
-  if (!success) {
-    return new NextResponse(JSON.stringify({ error: "Too many requests" }), {
-      status: 429,
-      headers: {
-        "X-RateLimit-Limit": limit.toString(),
-        "X-RateLimit-Remaining": remaining.toString(),
-        "X-RateLimit-Reset": reset.toString(),
-      },
-    });
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString(),
+          },
+        },
+      );
+    }
+  } catch (err) {
+    console.error("Rate limiter error:", err);
   }
 
   return NextResponse.next();
