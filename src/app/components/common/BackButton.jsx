@@ -19,16 +19,46 @@ export default function BackButton({ label = "Back" }) {
         top-3 right-3
         md:left-6 md:right-auto
         flex items-center gap-2
-        px-3 py-2
-        rounded-md
+        px-4 py-2.5
+        rounded-full
         text-sm font-medium
-        text-purple-300
-        hover:text-pink-400
-        transition-colors
+        backdrop-blur-md
+        transition-all duration-300
+        group
       "
+      style={{
+        color: "var(--text-primary)",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: `
+          inset 0 1px 0 rgba(255,255,255,0.06),
+          0 8px 20px rgba(0,0,0,0.6)
+        `,
+      }}
     >
-      <ArrowLeft className="w-4 h-4" />
-      <span className="hidden sm:inline">{label}</span>
+      {/* Icon */}
+      <ArrowLeft
+        className="
+          w-4 h-4
+          transition-transform duration-300
+          group-hover:-translate-x-1
+        "
+        style={{ color: "var(--accent)" }}
+      />
+
+      {/* Label */}
+      <span className="hidden sm:inline text-white/70 group-hover:text-white transition-colors">
+        {label}
+      </span>
+
+      {/* Hover Glow */}
+      <div
+        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(255,255,255,0.12), transparent 70%)",
+        }}
+      />
     </button>
   );
 }

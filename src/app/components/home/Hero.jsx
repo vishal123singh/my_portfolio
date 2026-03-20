@@ -2,322 +2,537 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  animate,
-  AnimatePresence,
-} from "framer-motion";
-import {
-  Terminal,
-  Code2,
-  Cpu,
-  Network,
-  Binary,
-  ArrowRight,
-} from "lucide-react";
-import CosmicBackground from "../CosmicBackground";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TextPlugin } from "gsap/TextPlugin";
+import { ArrowRight, Code2 } from "lucide-react";
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 const techStack = [
-  {
-    name: "System Architecture",
-    icon: Network,
-    color: "from-cyan-400 to-blue-500",
-  },
-  {
-    name: "Frontend Engineering",
-    icon: Code2,
-    color: "from-purple-400 to-pink-500",
-  },
-  {
-    name: "Backend Development",
-    icon: Terminal,
-    color: "from-orange-400 to-red-500",
-  },
-  {
-    name: "Cloud Infrastructure",
-    icon: Cpu,
-    color: "from-green-400 to-teal-500",
-  },
-  { name: "Algorithms", icon: Binary, color: "from-yellow-400 to-amber-500" },
+  { name: "REACT", category: "Frontend", icon: "⚛️" },
+  { name: "NEXT.JS", category: "Framework", icon: "▲" },
+  { name: "NODE.JS", category: "Backend", icon: "●" },
+  { name: "TYPESCRIPT", category: "Language", icon: "⌘" },
+  { name: "PYTHON", category: "Language", icon: "🐍" },
+  { name: "AWS", category: "Cloud", icon: "☁️" },
+  { name: "DOCKER", category: "DevOps", icon: "⎈" },
+  { name: "GRAPHQL", category: "API", icon: "◉" },
 ];
 
-const container = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.05, // typing speed
-    },
-  },
-};
-
-const child = {
-  hidden: {
-    opacity: 0,
-    y: "0.25em",
-  },
-  visible: {
-    opacity: 1,
-    y: "0em",
-    transition: {
-      duration: 0.2,
-    },
-  },
-};
-
-export function TypingText({ text, delay = 0, className = "" }) {
-  return (
-    <motion.span
-      className={`inline-block ${className}`}
-      variants={container}
-      initial="hidden"
-      animate="visible"
-      transition={{ delay }}
-    >
-      {text.split("").map((char, index) => (
-        <motion.span
-          key={index}
-          variants={child}
-          style={{ display: "inline-block", whiteSpace: "pre" }}
-        >
-          {char}
-        </motion.span>
-      ))}
-    </motion.span>
-  );
-}
-
-const InteractiveCodeLine = ({ children, delay = 0 }) => {
-  const baseText = children;
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
-  const displayText = useTransform(rounded, (latest) =>
-    baseText.slice(0, latest),
-  );
-
-  useEffect(() => {
-    const controls = animate(count, baseText.length, {
-      type: "tween",
-      delay,
-      duration: 0.5 + Math.random() * 0.5,
-      ease: "easeInOut",
-    });
-    return controls.stop;
-  }, []);
-
-  return (
-    <div className="font-mono text-white/80 text-sm sm:text-base">
-      <motion.span>{displayText}</motion.span>
-      <motion.span
-        className="inline-block w-2 h-5 bg-white ml-1"
-        animate={{ opacity: [0, 1, 0] }}
-        transition={{ repeat: Infinity, duration: 1 }}
-      />
-    </div>
-  );
-};
-
-function HomeHero() {
+export default function HomeHero() {
   const router = useRouter();
   const containerRef = useRef(null);
-  const [activeTech, setActiveTech] = useState(null);
+  const heroRef = useRef(null);
+  const codeRef = useRef(null);
+  const loaderRef = useRef(null);
+  const [isReady, setIsReady] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [activeTech, setActiveTech] = useState(null);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
-  const handleTechHover = (tech) => setActiveTech(tech);
-  const handleLaunch = () => router.push("/projects");
+  useEffect(() => {
+    // Handle window resize
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    // Initial loader animation
+    const loaderCtx = gsap.context(() => {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setIsReady(true);
+          document.body.style.overflow = "auto";
+        },
+      });
+
+      tl.to(loaderRef.current, {
+        scaleY: 0,
+        transformOrigin: "top",
+        duration: 1.8,
+        ease: "power4.inOut",
+        delay: 1,
+      }).to(
+        loaderRef.current,
+        {
+          display: "none",
+        },
+        "-=1.3",
+      );
+    });
+
+    return () => {
+      loaderCtx.revert();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+
+    // Main animations
+    const ctx = gsap.context(() => {
+      // Magnetic effect for CTA
+      const cta = document.querySelector(".magnetic-cta");
+      if (cta) {
+        cta.addEventListener("mousemove", (e) => {
+          const rect = cta.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+
+          gsap.to(cta, {
+            x: x * 0.3,
+            y: y * 0.3,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+        });
+
+        cta.addEventListener("mouseleave", () => {
+          gsap.to(cta, {
+            x: 0,
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+        });
+      }
+
+      // Main title animation with 3D effect
+      const heroTl = gsap.timeline();
+
+      heroTl
+        .fromTo(
+          ".hero-line",
+          {
+            y: 200,
+            opacity: 0,
+            rotateX: -45,
+            filter: "blur(10px)",
+          },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            filter: "blur(0px)",
+            duration: 1.8,
+            stagger: 0.15,
+            ease: "power4.out",
+          },
+        )
+        .fromTo(
+          ".hero-pre-title",
+          {
+            y: 30,
+            opacity: 0,
+            rotateX: -15,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 1,
+            ease: "power3.out",
+          },
+          "-=1.4",
+        )
+        .fromTo(
+          ".hero-description",
+          {
+            y: 30,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power3.out",
+          },
+          "-=0.8",
+        )
+        .fromTo(
+          ".hero-cta",
+          {
+            scale: 0.8,
+            opacity: 0,
+          },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 1,
+            ease: "elastic.out(1, 0.5)",
+          },
+          "-=0.5",
+        );
+
+      // Tech stack items with staggered animation
+      gsap.fromTo(
+        ".tech-item",
+        {
+          y: 30,
+          opacity: 0,
+          scale: 0.8,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          stagger: 0.03,
+          delay: 1.2,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: ".tech-stack",
+            start: "top bottom-=50",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+
+      // Parallax layers with smooth scroll - only on larger screens
+      if (window.innerWidth >= 768) {
+        gsap.to(".parallax-layer-1", {
+          yPercent: 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.5,
+          },
+        });
+
+        gsap.to(".parallax-layer-2", {
+          yPercent: 30,
+          scale: 1.1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 2,
+          },
+        });
+
+        gsap.to(".parallax-layer-3", {
+          yPercent: 40,
+          opacity: 0.2,
+          scale: 1.2,
+          ease: "none",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 2.5,
+          },
+        });
+      }
+
+      // Floating orbs animation
+      gsap.to(".floating-orb-1", {
+        x: 100,
+        y: 50,
+        duration: 20,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.to(".floating-orb-2", {
+        x: -80,
+        y: -30,
+        duration: 15,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.to(".floating-orb-3", {
+        x: 60,
+        y: -80,
+        duration: 18,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      // Cleanup
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [isReady]);
+
+  const handleLaunch = () => {
+    router.push("/projects");
+  };
 
   return (
-    <section
-      className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 md:px-8 py-12"
-      ref={containerRef}
-    >
-      <CosmicBackground />
-      <div className="w-full z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center">
-          {/* Left Column */}
+    <div className="overflow-hidden">
+      {/* Loading Screen - Matching About theme */}
+      <div
+        ref={loaderRef}
+        className="fixed inset-0 z-[100] flex items-center justify-center"
+        style={{
+          background: "var(--bg-darker)",
+          transformOrigin: "top",
+        }}
+      >
+        <div className="text-center relative px-4">
           <div className="relative">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              {/* Heading */}
-              <div className="mb-6 sm:mb-8">
-                <motion.h1
-                  className="text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 inline-block">
-                    Digital Craftsmanship
-                  </span>
-                  <br />
-                  <motion.span
-                    className="text-xl sm:text-3xl text-white/90 font-medium"
-                    initial={{ x: -20 }}
-                    animate={{ x: 0 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    Through{" "}
-                    <span className="text-blue-300 font-mono">Code</span>
-                  </motion.span>
-                </motion.h1>
-              </div>
+            <span className="text-6xl sm:text-8xl font-light tracking-tight relative z-10 text-white/90">
+              V<span className="text-white/20">S</span>
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-3xl animate-pulse" />
+          </div>
+          <div className="mt-8 relative">
+            <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto" />
+            <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-auto mt-1 animate-pulse" />
+          </div>
+          <div className="mt-8 text-white/30 text-xs sm:text-sm tracking-[0.3em] animate-pulse">
+            CRAFTING DIGITAL EXPERIENCES
+          </div>
+        </div>
+      </div>
 
-              {/* Subheading */}
-              <motion.p
-                className="text-base sm:text-xl text-white/80 mb-8 sm:mb-10 max-w-lg leading-relaxed"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-              >
-                Building performant, scalable systems with obsessive attention
-                to detail and user experience.
-              </motion.p>
-
-              {/* Terminal Output */}
-              <motion.div
-                className="space-y-3 mb-8 sm:mb-10"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-              >
-                <InteractiveCodeLine delay={0.2}>
-                  $ whoami --developer
-                </InteractiveCodeLine>
-                <InteractiveCodeLine delay={0.4}>
-                  =&gt; Vishal Singh: Full-Stack Engineer
-                </InteractiveCodeLine>
-                <InteractiveCodeLine delay={0.6}>
-                  $ cat ./expertise.txt
-                </InteractiveCodeLine>
-                <InteractiveCodeLine delay={0.8}>
-                  =&gt; System Architecture | Performance Optimization |
-                  Developer Experience
-                </InteractiveCodeLine>
-              </motion.div>
-
-              {/* CTA */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-              >
-                <button
-                  onClick={handleLaunch}
-                  onMouseEnter={() => setIsHovering(true)}
-                  onMouseLeave={() => setIsHovering(false)}
-                  className="relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600/30 to-purple-600/30 backdrop-blur-lg rounded-xl border border-white/20 hover:border-white/40 transition-all group overflow-hidden w-full sm:w-auto"
-                >
-                  <span className="relative z-10 flex items-center justify-center gap-3 text-white font-medium text-base sm:text-lg">
-                    <Terminal className="w-5 h-5" />
-                    Explore My Work
-                    <motion.span
-                      animate={{ x: isHovering ? 5 : 0 }}
-                      transition={{ type: "spring", stiffness: 500 }}
-                    >
-                      <ArrowRight className="w-5 h-5" />
-                    </motion.span>
-                  </span>
-                  <span className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </button>
-              </motion.div>
-            </motion.div>
+      <section
+        ref={containerRef}
+        className="relative min-h-screen px-4 sm:px-6 md:px-12 lg:px-24 py-20 overflow-hidden"
+        style={{
+          background: "var(--gradient-matte)",
+          color: "var(--text-primary)",
+        }}
+      >
+        {/* Parallax Background - Matching About styling */}
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="parallax-layer-1 absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0f0f0f] to-[#0a0a0a]" />
+          <div className="parallax-layer-2 absolute inset-0 opacity-30">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03)_0%,transparent_60%)]" />
+          </div>
+          <div className="parallax-layer-3 absolute inset-0">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl" />
           </div>
 
-          {/* Right Column */}
-          <div className="relative h-auto lg:h-[500px]">
-            <motion.div
-              className="bg-black/20 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden p-6 sm:p-8 shadow-2xl"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              {/* Window Controls */}
-              <div className="flex gap-2 mb-6">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-              </div>
+          {/* Floating Orbs - Subtle like About */}
+          <div className="floating-orb-1 absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-full blur-3xl" />
+          <div className="floating-orb-2 absolute bottom-40 right-20 w-96 h-96 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-full blur-3xl" />
+          <div className="floating-orb-3 absolute top-1/2 left-1/2 w-48 h-48 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-full blur-3xl" />
 
-              {/* Fake Code */}
-              <div className="font-mono text-sm space-y-4">
-                <div className="text-white/70">
-                  <span className="text-purple-400">const</span> developer ={" "}
-                  {"{"}
-                </div>
-                <div className="ml-6 text-white/80">
-                  <span className="text-blue-400">name</span>:{" "}
-                  <span className="text-green-400">'Vishal Singh'</span>,
-                </div>
-                <div className="ml-6 text-white/80">
-                  <span className="text-blue-400">focus</span>: [
-                  <span className="text-green-400">'Systems'</span>,{" "}
-                  <span className="text-green-400">'Performance'</span>,{" "}
-                  <span className="text-green-400">'DX'</span>],
-                </div>
-                <div className="ml-6 text-white/80">
-                  <span className="text-blue-400">approach</span>:{" "}
-                  <span className="text-green-400">'First principles'</span>,
-                </div>
-                <div className="text-white/70">{"};"}</div>
-                <div className="pt-6 text-white/60">
-                  <span className="text-purple-400">
-                    // Crafting elegant solutions since ...
-                  </span>
-                </div>
-              </div>
+          {/* Grid overlay - Matching About grid */}
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+              `,
+              backgroundSize: "90px 90px",
+            }}
+          />
+        </div>
 
-              {/* Glow Circle */}
-              <motion.div
-                className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"
-                animate={{ scale: [1, 1.2, 1], rotate: [0, 10, 0] }}
-                transition={{
-                  duration: 12,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+        <div
+          ref={heroRef}
+          className="relative min-h-[calc(100vh-10rem)] flex items-center"
+        >
+          <div className="max-w-7xl mx-auto w-full relative z-10">
+            {/* Pre-title - Matching About styling */}
+            <span className="hero-pre-title inline-block text-white/40 text-xs sm:text-sm tracking-[0.3em] mb-4 sm:mb-6 opacity-0">
+              <span
+                className="inline-block w-8 sm:w-12 h-px mr-3 sm:mr-4 align-middle"
+                style={{ background: "var(--accent)" }}
               />
-            </motion.div>
+              FULL-STACK DEVELOPER
+            </span>
+
+            {/* Main Title - Matching About color scheme */}
+            <h1 className="mb-6 sm:mb-8">
+              <div className="overflow-hidden">
+                <span className="hero-line block text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-light tracking-tight text-white/90 opacity-0 leading-[0.9] relative">
+                  DIGITAL
+                  <span className="absolute -top-2 sm:-top-4 -right-2 sm:-right-4 text-[8px] sm:text-xs text-white/30 tracking-widest rotate-12 hidden lg:inline-block">
+                    ✦ SINCE 2016
+                  </span>
+                </span>
+              </div>
+              <div className="overflow-hidden">
+                <span className="hero-line block text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-light tracking-tight text-white/90 opacity-0 leading-[0.9]">
+                  <span className="text-white/50 relative">
+                    CRAFTSMANSHIP
+                    <span className="absolute -bottom-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                  </span>
+                </span>
+              </div>
+            </h1>
+
+            {/* Description - Matching About text opacity */}
+            <div className="hero-description max-w-xl sm:max-w-2xl opacity-0">
+              <p className="text-base sm:text-xl md:text-2xl text-white/60 leading-relaxed">
+                Building performant, scalable systems with obsessive attention
+                to detail and user experience through first principles thinking.
+              </p>
+            </div>
+
+            {/* CTA Button - Styled like About cards */}
+            <div className="hero-cta mt-8 sm:mt-12 opacity-0">
+              <button
+                onClick={handleLaunch}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                className="magnetic-cta group relative px-6 sm:px-8 py-3 sm:py-4 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                style={{
+                  background:
+                    "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                }}
+                aria-label="Explore my work"
+              >
+                <span className="relative z-10 tracking-wider text-xs sm:text-sm font-medium flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
+                  EXPLORE MY WORK
+                  <ArrowRight
+                    size={16}
+                    className={`transform transition-all duration-300 ${
+                      isHovering ? "translate-x-1 rotate-0" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                </span>
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                  style={{
+                    background:
+                      "linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+                  }}
+                />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Tech Stack */}
-        <motion.div
-          className="mt-24 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          {techStack.map((tech) => (
-            <motion.div
-              key={tech.name}
-              className="group flex items-start gap-4 p-4 rounded-xl cursor-pointer"
-              whileHover={{ y: -2 }}
-              transition={{ type: "tween", duration: 0.2 }}
-            >
-              {/* Icon */}
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <tech.icon className="w-5 h-5 text-white/80" />
+        {/* Tech Stack - Bottom - Matching About styling */}
+        <div className="tech-stack absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 w-full px-4 sm:px-6 md:px-12 lg:px-24">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10">
+            {techStack.map((tech, index) => (
+              <div
+                key={tech.name}
+                className="tech-item group relative opacity-0 cursor-pointer"
+                onMouseEnter={() => setActiveTech(index)}
+                onMouseLeave={() => setActiveTech(null)}
+              >
+                <div className="flex flex-col items-center">
+                  <span className="text-base sm:text-lg mb-1 opacity-40 group-hover:opacity-80 transition-opacity duration-300">
+                    {tech.icon}
+                  </span>
+                  <span className="text-[10px] sm:text-xs md:text-sm text-white/30 group-hover:text-white/60 transition-colors duration-500 tracking-wider">
+                    {tech.name}
+                  </span>
+                  <span
+                    className={`absolute -top-5 sm:-top-6 left-1/2 -translate-x-1/2 text-[8px] sm:text-[10px] text-white/20 whitespace-nowrap transition-opacity duration-300 ${
+                      activeTech === index ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    {tech.category}
+                  </span>
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:w-full transition-all duration-500" />
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
 
-              {/* Text */}
-              <div className="flex flex-col">
-                <span className="text-white/90 text-sm font-medium tracking-tight">
-                  {tech.name}
-                </span>
+        {/* Scroll Indicator - Matching About styling */}
+        <div className="absolute bottom-20 sm:bottom-24 left-1/2 transform -translate-x-1/2 hidden sm:block">
+          <div className="relative">
+            <div className="w-px h-12 sm:h-16 bg-gradient-to-b from-white/30 via-white/20 to-transparent mx-auto animate-scroll" />
+            <div className="absolute top-8 sm:top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+              <span className="text-[8px] sm:text-[10px] text-white/20 tracking-[0.3em] rotate-90 block">
+                SCROLL
+              </span>
+            </div>
+          </div>
+        </div>
 
-                {/* subtle underline */}
-                <span className="h-px w-0 bg-white/30 mt-2 group-hover:w-6 transition-all duration-300" />
+        {/* Floating Elements - Matching About decorative borders */}
+        <div
+          className="absolute -bottom-32 -right-32 w-64 sm:w-96 h-64 sm:h-96 rounded-full opacity-5"
+          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+        />
+        <div
+          className="absolute top-1/2 -left-32 w-64 sm:w-96 h-64 sm:h-96 rounded-full opacity-5"
+          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+        />
+
+        {/* Mini Stats - Matching About styling */}
+        <div className="absolute top-1/2 right-4 lg:right-8 transform -translate-y-1/2 hidden 2xl:block">
+          <div className="space-y-4 sm:space-y-6">
+            {[
+              { label: "YEARS", value: "8+" },
+              { label: "PROJECTS", value: "50+" },
+              { label: "CLIENTS", value: "30+" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-right">
+                <div className="text-xl sm:text-2xl text-white/60 font-light">
+                  {stat.value}
+                </div>
+                <div className="text-[10px] sm:text-xs text-white/30 tracking-wider">
+                  {stat.label}
+                </div>
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <style jsx>{`
+        @keyframes scroll {
+          0% {
+            transform: translateY(-100%);
+          }
+          50% {
+            transform: translateY(100%);
+          }
+          100% {
+            transform: translateY(-100%);
+          }
+        }
+
+        .animate-scroll {
+          animation: scroll 3s ease-in-out infinite;
+        }
+
+        .parallax-layer-1,
+        .parallax-layer-2,
+        .parallax-layer-3 {
+          will-change: transform;
+        }
+
+        .perspective {
+          perspective: 2000px;
+        }
+
+        .floating-orb-1,
+        .floating-orb-2,
+        .floating-orb-3 {
+          will-change: transform;
+        }
+
+        @media (max-width: 640px) {
+          .animate-scroll {
+            animation: none;
+          }
+        }
+      `}</style>
+    </div>
   );
 }
-
-export default HomeHero;

@@ -1,25 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginModal({ onClose, onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPass, setShowPass] = useState(false);
+
   const modalRef = useRef(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
+
     if (!email || !password) {
-      setError("Please fill all fields.");
+      setError("All fields are required");
     } else if (!email.includes("@")) {
-      setError("Invalid email format.");
+      setError("Invalid email");
     } else if (email === "bs08081996@gmail.com" && password === "locknkey") {
       localStorage.setItem("isLoggedIn", "true");
       onSuccess();
     } else {
-      setError("Incorrect credentials.");
+      setError("Incorrect credentials");
     }
   };
 
@@ -34,63 +38,177 @@ export default function LoginModal({ onClose, onSuccess }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md flex items-center justify-center px-4">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center px-4"
+      style={{
+        background: "rgba(10,10,10,0.75)",
+        backdropFilter: "blur(16px)",
+      }}
+    >
       <motion.div
         ref={modalRef}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-        className="relative w-full max-w-sm bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl shadow-xl px-6 py-8"
+        initial={{ opacity: 0, scale: 0.96, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="relative w-full max-w-sm rounded-3xl p-6 overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(145deg, var(--bg-light), var(--bg-darker))",
+          border: "1px solid rgba(255,255,255,0.06)",
+          boxShadow: `
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 40px 100px -20px rgba(0,0,0,0.8)
+          `,
+        }}
       >
+        {/* Subtle glow layer */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at 20% 0%, rgba(255,255,255,0.08), transparent 40%)",
+          }}
+        />
+
+        {/* Inner border */}
+        <div
+          className="absolute inset-0 rounded-3xl pointer-events-none"
+          style={{
+            border: "1px solid rgba(255,255,255,0.04)",
+          }}
+        />
+
+        {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-5 text-white/70 hover:text-white text-2xl leading-none"
-          aria-label="Close"
+          className="absolute top-4 right-5 text-xl transition hover:opacity-80"
+          style={{ color: "var(--text-muted)" }}
         >
-          &times;
+          ×
         </button>
 
-        <h2 className="text-3xl font-bold text-center mb-6 text-pink-400 tracking-tight">
-          Sign In to Write
+        {/* Title */}
+        <h2
+          className="text-2xl text-center mb-8 tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Sign In
         </h2>
 
-        {error && (
-          <div className="mb-4 text-center text-sm text-red-400 bg-red-400/10 border border-red-400/30 rounded-lg px-4 py-2">
-            {error}
-          </div>
-        )}
+        {/* Error */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-5 text-sm text-center rounded-lg px-4 py-2"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                color: "var(--text-secondary)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div>
-            <label className="block text-sm text-white/80 mb-1">Email</label>
+        <form onSubmit={handleLogin} className="space-y-6">
+          {/* EMAIL */}
+          <div className="relative group">
             <input
               type="email"
-              required
-              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+              required
+              className="w-full px-4 pt-5 pb-2 rounded-xl outline-none transition"
+              style={{
+                background: "var(--bg-darker)",
+                color: "var(--text-primary)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+            />
+
+            <label
+              className="absolute left-4 transition-all pointer-events-none"
+              style={{
+                color: "var(--text-muted)",
+                top: email ? "6px" : "50%",
+                transform: email ? "none" : "translateY(-50%)",
+                fontSize: email ? "11px" : "14px",
+              }}
+            >
+              Email
+            </label>
+
+            {/* Focus glow */}
+            <div
+              className="absolute inset-0 rounded-xl opacity-0 group-focus-within:opacity-100 transition pointer-events-none"
+              style={{
+                boxShadow: "0 0 0 1px var(--accent)",
+              }}
             />
           </div>
 
-          <div>
-            <label className="block text-sm text-white/80 mb-1">Password</label>
+          {/* PASSWORD */}
+          <div className="relative group">
             <input
-              type="password"
-              required
-              placeholder="••••••••"
+              type={showPass ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+              required
+              className="w-full px-4 pt-5 pb-2 rounded-xl outline-none transition pr-10"
+              style={{
+                background: "var(--bg-darker)",
+                color: "var(--text-primary)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+            />
+
+            <label
+              className="absolute left-4 transition-all pointer-events-none"
+              style={{
+                color: "var(--text-muted)",
+                top: password ? "6px" : "50%",
+                transform: password ? "none" : "translateY(-50%)",
+                fontSize: password ? "11px" : "14px",
+              }}
+            >
+              Password
+            </label>
+
+            {/* Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 hover:opacity-80"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+
+            {/* Focus glow */}
+            <div
+              className="absolute inset-0 rounded-xl opacity-0 group-focus-within:opacity-100 transition pointer-events-none"
+              style={{
+                boxShadow: "0 0 0 1px var(--accent)",
+              }}
             />
           </div>
 
+          {/* BUTTON */}
           <button
             type="submit"
-            className="w-full py-2 rounded-full bg-pink-500 hover:bg-pink-400 text-white font-semibold transition duration-200 shadow-lg"
+            className="w-full py-2.5 rounded-full transition active:scale-[0.97]"
+            style={{
+              background: "var(--accent)",
+              color: "#000",
+              boxShadow: "0 10px 30px rgba(255,255,255,0.15)",
+            }}
           >
-            Login
+            Continue
           </button>
         </form>
       </motion.div>

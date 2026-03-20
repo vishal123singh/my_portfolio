@@ -108,8 +108,13 @@ export default function ProjectCard({
   return (
     <Link href={`/projects/${slug}`}>
       <motion.div
-        className="group rounded-xl overflow-hidden shadow-md cursor-pointer flex flex-col h-full"
-        whileHover={{ scale: 1.02 }}
+        className="group rounded-xl overflow-hidden cursor-pointer flex flex-col h-full transition-all duration-300 hover:scale-[1.02]"
+        style={{
+          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+        }}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -118,7 +123,7 @@ export default function ProjectCard({
         onMouseLeave={() => setHovered(false)}
       >
         {/* Top Preview - Full Page Screenshot with Scrolling */}
-        <div className="relative w-full aspect-[4/3] bg-slate-900 rounded-t-xl overflow-hidden">
+        <div className="relative w-full aspect-[4/3] overflow-hidden">
           {liveComponent ? (
             <div className="w-full h-full relative">{liveComponent}</div>
           ) : (
@@ -138,11 +143,10 @@ export default function ProjectCard({
                     ? `center ${scrollProgress}%`
                     : "center",
                   backgroundRepeat: "no-repeat",
-                  backgroundColor: "#0f172a", // slate-900 fallback
+                  backgroundColor: "#0f0f0f",
                 }}
               />
 
-              {/* Next Image (preloaded for transition) */}
               {/* Background Blur Layer (only for non-full images) */}
               {!isFullPage && (
                 <motion.div
@@ -159,7 +163,10 @@ export default function ProjectCard({
                   }}
                   transition={{ duration: 0.4 }}
                 >
-                  <div className="absolute inset-0 backdrop-blur-2xl bg-slate-900/40" />
+                  <div
+                    className="absolute inset-0 backdrop-blur-2xl"
+                    style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+                  />
                 </motion.div>
               )}
 
@@ -183,8 +190,8 @@ export default function ProjectCard({
             </>
           )}
 
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60 pointer-events-none z-20" />
+          {/* Gradient Overlay - Matching About style */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 pointer-events-none z-20" />
 
           {/* Progress Indicator */}
           {hovered && images.length > 0 && !liveComponent && (
@@ -194,8 +201,8 @@ export default function ProjectCard({
                   key={index}
                   className={`h-1 rounded-full transition-all duration-300 ${
                     index === currentImageIndex
-                      ? "w-4 bg-white"
-                      : "w-2 bg-white/50"
+                      ? "w-4 bg-white/90"
+                      : "w-2 bg-white/30"
                   }`}
                 />
               ))}
@@ -204,18 +211,25 @@ export default function ProjectCard({
 
           {/* Full Page Indicator */}
           {hovered && isFullPage && (
-            <div className="absolute bottom-2 left-2 bg-black/50 text-white/70 text-[10px] px-2 py-1 rounded-full backdrop-blur-sm z-30">
+            <div
+              className="absolute bottom-2 left-2 text-white/50 text-[10px] px-2 py-1 rounded-full backdrop-blur-sm z-30"
+              style={{
+                background: "rgba(0,0,0,0.5)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
               ↓ {Math.round(scrollProgress)}%
             </div>
           )}
         </div>
 
-        {/* Card Body with Frosted Glass Effect */}
-        <div className="flex flex-col flex-1 px-4 py-5 bg-white/5 backdrop-blur-sm border-t border-white/10">
-          <h3 className="text-white text-lg font-semibold mb-1 leading-tight line-clamp-1">
+        {/* Card Body - Matching About styling */}
+        <div className="flex flex-col flex-1 px-4 py-5">
+          <h3 className="text-white/90 text-lg font-medium mb-1 leading-tight line-clamp-1 transition-colors group-hover:text-white/100">
             {title}
           </h3>
-          <p className="text-slate-300 text-sm mb-3 line-clamp-3">
+          <p className="text-white/50 text-sm mb-3 line-clamp-3">
             {description}
           </p>
 
@@ -223,15 +237,21 @@ export default function ProjectCard({
             {tags.map((tag, i) => (
               <span
                 key={i}
-                className="bg-white/10 text-white/90 text-xs px-3 py-1 rounded-full backdrop-blur-sm"
+                className="text-white/60 text-xs px-3 py-1 rounded-full transition-colors group-hover:text-white/80"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(8px)",
+                }}
               >
                 {tag}
               </span>
             ))}
           </div>
 
-          <div className="mt-4 text-pink-400 flex items-center gap-1 text-sm font-medium group-hover:text-pink-300 transition-colors">
-            View Project <ExternalLink size={14} className="opacity-80" />
+          <div className="mt-4 flex items-center gap-1 text-sm font-medium transition-colors group-hover:text-white/80">
+            <span style={{ color: "var(--accent)" }}>View Project</span>
+            <ExternalLink size={14} className="opacity-70" />
           </div>
         </div>
       </motion.div>

@@ -36,7 +36,7 @@ export default function LayoutWrapper({ children }) {
     ) {
       // root.classList.add("test-theme");
     } else {
-      root.classList.add("app-theme");
+      //root.classList.add("app-theme");
     }
   }, [pathname]);
 
@@ -50,14 +50,14 @@ export default function LayoutWrapper({ children }) {
         className={
           isFullScreen
             ? "h-screen w-screen overflow-y-auto"
-            : "relative pt-20 z-10"
+            : "relative pt-0 z-10"
         }
       >
         {/* Glowing radial blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <motion.div
-            className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-blue-500 opacity-20 blur-3xl rounded-full"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
+            className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-white/5 blur-3xl rounded-full"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
             transition={{
               duration: 12,
               repeat: Infinity,
@@ -65,8 +65,8 @@ export default function LayoutWrapper({ children }) {
             }}
           />
           <motion.div
-            className="absolute bottom-[15%] right-[5%] w-[500px] h-[500px] bg-pink-500 opacity-20 blur-3xl rounded-full"
-            animate={{ scale: [1, 1.3, 1], opacity: [0.12, 0.22, 0.12] }}
+            className="absolute bottom-[15%] right-[5%] w-[500px] h-[500px] bg-white/10 blur-3xl rounded-full"
+            animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.15, 0.08] }}
             transition={{
               duration: 14,
               repeat: Infinity,
@@ -74,8 +74,8 @@ export default function LayoutWrapper({ children }) {
             }}
           />
           <motion.div
-            className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-purple-500 opacity-10 blur-2xl rounded-full"
-            animate={{ scale: [1, 1.1, 1], rotate: [0, 10, -10, 0] }}
+            className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-white/5 blur-2xl rounded-full"
+            animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
             transition={{ duration: 18, repeat: Infinity }}
           />
         </div>
@@ -86,9 +86,9 @@ export default function LayoutWrapper({ children }) {
             className="absolute inset-0 pointer-events-none"
             animate={{
               background: [
-                "radial-gradient(circle at 30% 50%, rgba(29, 78, 216, 0.1) 0%, transparent 60%)",
-                "radial-gradient(circle at 70% 30%, rgba(219, 39, 119, 0.1) 0%, transparent 60%)",
-                "radial-gradient(circle at 30% 50%, rgba(29, 78, 216, 0.1) 0%, transparent 60%)",
+                "radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 60%)",
+                "radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 60%)",
+                "radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 60%)",
               ],
             }}
             transition={{

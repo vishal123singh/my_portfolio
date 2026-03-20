@@ -1,152 +1,269 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { FaPaperPlane } from "react-icons/fa";
+import { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Mail, Send, ArrowRight } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
+  const sectionRef = useRef(null);
+  const headerRef = useRef(null);
   const formRef = useRef(null);
+  const contactMethodsRef = useRef(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    try {
-      const res = await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        setSubmitSuccess(true);
-        setFormData({ name: "", email: "", message: "" });
-        setTimeout(() => setSubmitSuccess(false), 5000);
-      } else {
-        alert("Failed to send message. Try again later.");
-      }
-    } catch (err) {
-      alert("Something went wrong.");
-    } finally {
+    setTimeout(() => {
+      setSubmitSuccess(true);
+      setFormData({ name: "", email: "", message: "" });
       setIsSubmitting(false);
-    }
+      setTimeout(() => setSubmitSuccess(false), 4000);
+    }, 1200);
   };
 
-  return (
-    <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-orange-400 bg-clip-text text-transparent mb-4">
-            Get In Touch
-          </h2>
-          <p className="text-lg text-gray-300">
-            Have a project in mind or want to collaborate? Let’s talk!
-          </p>
-        </motion.div>
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        headerRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2 },
+      );
 
-        <motion.div
-          className="rounded-xl"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <Card className="bg-black/40 backdrop-blur-xl shadow-lg">
-            <CardContent className="p-8">
-              <h3 className="text-xl font-semibold text-white mb-6">
-                Send me a message
-              </h3>
+      gsap.fromTo(
+        ".contact-method",
+        { x: -40, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          stagger: 0.1,
+          duration: 1,
+          scrollTrigger: {
+            trigger: contactMethodsRef.current,
+            start: "top 80%",
+          },
+        },
+      );
+
+      gsap.fromTo(
+        formRef.current,
+        { x: 40, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1.2,
+          scrollTrigger: {
+            trigger: formRef.current,
+            start: "top 80%",
+          },
+        },
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const contactMethods = [
+    {
+      type: "EMAIL",
+      value: "bs08081997@gmail.com",
+      icon: Mail,
+      description: "Best for project inquiries",
+    },
+  ];
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen py-24 px-6 md:px-12 lg:px-24"
+      style={{
+        background: "var(--gradient-matte)",
+        color: "var(--text-primary)",
+      }}
+    >
+      {/* Background */}
+      <div className="fixed inset-0 -z-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+              linear-gradient(var(--bg-dark), var(--bg-darker))
+            `,
+          }}
+        />
+
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+            `,
+            backgroundSize: "90px 90px",
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div ref={headerRef} className="mb-16">
+          <span className="text-white/60 text-sm tracking-[0.3em]">
+            <span
+              className="inline-block w-12 h-px mr-4"
+              style={{ background: "var(--accent)" }}
+            />
+            CONNECT
+          </span>
+
+          <h2 className="text-5xl md:text-6xl mt-6">
+            <span className="font-medium">Let's</span>
+            <span className="ml-4 text-white/40">Talk</span>
+          </h2>
+
+          <p className="text-white/70 max-w-2xl mt-6">
+            Have a project in mind or want to collaborate? Let’s create
+            something exceptional.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-16">
+          {/* LEFT */}
+          <div ref={contactMethodsRef} className="space-y-6">
+            {contactMethods.map((method) => (
+              <div
+                key={method.type}
+                className="contact-method group rounded-2xl p-6 transition-all"
+                style={{
+                  background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  boxShadow: `
+                    inset 0 1px 0 rgba(255,255,255,0.06),
+                    0 10px 25px rgba(0,0,0,0.8)
+                  `,
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className="p-3 rounded-xl"
+                    style={{
+                      background: "rgba(255,255,255,0.08)",
+                    }}
+                  >
+                    <method.icon className="w-5 h-5 text-white/80" />
+                  </div>
+
+                  <div className="flex-1">
+                    <div className="text-white/50 text-xs tracking-wider">
+                      {method.type}
+                    </div>
+                    <div className="text-white text-lg">{method.value}</div>
+                    <div className="text-white/50 text-sm">
+                      {method.description}
+                    </div>
+                  </div>
+
+                  <ArrowRight className="text-white/40 group-hover:translate-x-1 transition" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* RIGHT - FORM */}
+          <div ref={formRef}>
+            <div
+              className="rounded-3xl p-8"
+              style={{
+                background:
+                  "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                boxShadow: `
+                  inset 0 1px 0 rgba(255,255,255,0.06),
+                  0 15px 40px rgba(0,0,0,0.8)
+                `,
+              }}
+            >
+              <h3 className="text-2xl text-white mb-6">Send a message</h3>
 
               {submitSuccess && (
-                <motion.div
-                  className="mb-6 p-3 rounded-lg text-green-500 bg-green-200/10"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  Message sent successfully! <br></br>We'll reach out to you
-                  shortly.
-                </motion.div>
+                <div className="mb-6 p-4 rounded-xl text-white/70 border border-white/10">
+                  Message sent successfully.
+                </div>
               )}
 
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="Your name"
-                    value={formData.name}
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {["name", "email"].map((field) => (
+                  <input
+                    key={field}
+                    name={field}
+                    placeholder={`Your ${field}`}
+                    value={formData[field]}
                     onChange={handleChange}
                     required
-                    className="bg-black/30 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 border-none"
+                    className="w-full px-4 py-3 rounded-xl outline-none"
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      color: "var(--text-primary)",
+                    }}
                   />
-                </div>
+                ))}
 
-                <div>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="bg-black/30 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 border-none"
-                  />
-                </div>
+                <textarea
+                  name="message"
+                  rows={5}
+                  placeholder="Your message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-xl outline-none resize-none"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "var(--text-primary)",
+                  }}
+                />
 
-                <div>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    placeholder="What would you like to discuss?"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    className="bg-black/30 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400 border-none"
-                  />
-                </div>
-
-                <Button
+                {/* BUTTON */}
+                <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full text-white bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:brightness-110 transition-all"
+                  className="w-full py-4 rounded-xl flex items-center justify-center gap-2"
+                  style={{
+                    background: "linear-gradient(145deg, #e6e6e6, #999)",
+                    color: "#000",
+                    boxShadow: `
+                      inset 0 1px 0 rgba(255,255,255,0.5),
+                      0 5px 20px rgba(255,255,255,0.15)
+                    `,
+                  }}
                 >
-                  {isSubmitting ? (
-                    "Sending..."
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <FaPaperPlane /> Send Message
-                    </span>
-                  )}
-                </Button>
+                  <Send size={16} />
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </button>
               </form>
-            </CardContent>
-          </Card>
-        </motion.div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

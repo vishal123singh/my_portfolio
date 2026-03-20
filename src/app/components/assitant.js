@@ -76,7 +76,7 @@ export default function AssistantModal({ onClose }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[transparent] bg-opacity-50 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
@@ -85,13 +85,24 @@ export default function AssistantModal({ onClose }) {
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/90 border border-slate-700 shadow-xl rounded-2xl w-full max-w-xl mx-4 h-[70vh] flex flex-col overflow-hidden"
+        className="relative rounded-2xl w-full max-w-xl mx-4 h-[70vh] flex flex-col overflow-hidden"
+        style={{
+          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.06), 0 25px 50px -12px rgba(0,0,0,0.5)",
+        }}
       >
-        <div className="flex justify-between items-center p-4 border-b border-slate-700">
-          <h2 className="text-slate-200 font-semibold">Chat with ViVA</h2>
+        <div
+          className="flex justify-between items-center p-4"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <h2 className="text-white/80 font-light tracking-wide">
+            Chat with ViVA
+          </h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-white/40 hover:text-white/60 transition-colors"
           >
             <X size={20} />
           </button>
@@ -103,14 +114,14 @@ export default function AssistantModal({ onClose }) {
           ))}
           {loading && (
             <motion.div
-              className="flex items-center gap-2 text-slate-400 italic"
+              className="flex items-center gap-2 text-white/40 italic"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
               <div className="flex space-x-1">
-                <div className="w-2 h-2 rounded-full bg-slate-500 animate-bounce"></div>
-                <div className="w-2 h-2 rounded-full bg-slate-500 animate-bounce delay-75"></div>
-                <div className="w-2 h-2 rounded-full bg-slate-500 animate-bounce delay-150"></div>
+                <div className="w-2 h-2 rounded-full bg-white/30 animate-bounce"></div>
+                <div className="w-2 h-2 rounded-full bg-white/30 animate-bounce delay-75"></div>
+                <div className="w-2 h-2 rounded-full bg-white/30 animate-bounce delay-150"></div>
               </div>
               <span>ViVA is typing...</span>
             </motion.div>
@@ -118,15 +129,24 @@ export default function AssistantModal({ onClose }) {
           <div ref={chatEndRef} />
         </div>
 
-        <div className="p-4 border-t border-slate-700 bg-slate-900/60 backdrop-blur-md">
-          <div className="flex items-center rounded-xl bg-slate-800/60 px-4 py-2 ring-1 ring-slate-700 focus-within:ring-2 focus-within:ring-purple-500 transition">
+        <div
+          className="p-4"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <div
+            className="flex items-center rounded-xl px-4 py-2 transition-all focus-within:ring-2 focus-within:ring-white/20"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAsk()}
               placeholder="Ask something..."
-              className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-slate-500"
+              className="flex-1 bg-transparent text-white/80 text-sm outline-none placeholder:text-white/30"
               disabled={loading}
             />
             <button
@@ -134,9 +154,10 @@ export default function AssistantModal({ onClose }) {
               disabled={loading || !input.trim()}
               className={`p-2 rounded-md transition-all ${
                 loading || !input.trim()
-                  ? "text-slate-500"
-                  : "text-purple-300 hover:text-white"
+                  ? "text-white/30"
+                  : "hover:text-white/80 transition-colors"
               }`}
+              style={{ color: "var(--accent)" }}
             >
               <FaPaperPlane className="w-4 h-4" />
             </button>
@@ -159,13 +180,20 @@ function ChatMessage({ msg }) {
       )}
       <div
         className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm shadow-md ${
-          isUser
-            ? "bg-indigo-600 text-white rounded-br-none"
-            : "bg-slate-700 text-white rounded-bl-none"
+          isUser ? "rounded-br-none" : "rounded-bl-none"
         }`}
+        style={{
+          background: isUser
+            ? "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)"
+            : "rgba(255,255,255,0.05)",
+          border: isUser
+            ? "1px solid rgba(255,255,255,0.08)"
+            : "1px solid rgba(255,255,255,0.08)",
+          color: isUser ? "var(--accent)" : "rgba(255,255,255,0.8)",
+        }}
       >
         {isUser ? (
-          <p>{msg.text}</p>
+          <p className="text-sm">{msg.text}</p>
         ) : (
           <div className="prose prose-sm prose-invert max-w-none overflow-auto">
             <ReactMarkdown>{msg.text}</ReactMarkdown>

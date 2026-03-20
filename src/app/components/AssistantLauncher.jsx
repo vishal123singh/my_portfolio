@@ -25,7 +25,17 @@ export default function AssistantLauncher() {
           <ChatBotIcon size={128} />
         </motion.div>
 
-        <span className="mt-2 text-xs font-semibold text-pink-200 bg-indigo-900 rounded-full px-3 py-1 shadow-md group-hover:opacity-100 opacity-0 group-hover:translate-y-[-4px] transition-all duration-300">
+        <span
+          className="mt-2 text-xs font-medium rounded-full px-3 py-1 shadow-md group-hover:opacity-100 opacity-0 group-hover:translate-y-[-4px] transition-all duration-300"
+          style={{
+            background:
+              "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            color: "var(--accent)",
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+          }}
+        >
           Ask ViVA
         </span>
       </motion.div>

@@ -1,199 +1,273 @@
 "use client";
-import { FaLock, FaUnlock } from "react-icons/fa";
+
+import { useRef, useEffect } from "react";
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { experiences } from "../../../../data.js";
-import gsap from "gsap";
+import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Briefcase } from "lucide-react";
+import { experiences } from "../../../../data.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SecretProfile = () => {
-  return (
-    <div className="relative group">
-      <div className="relative w-40 h-40 mx-auto rounded-full overflow-hidden border-2 border-white/20">
-        {/* First Image (Professional) */}
-        <motion.div
-          initial={{ opacity: 0.5 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0"
-        >
-          <Image
-            src="/personal/image.webp"
-            alt="Professional"
-            fill
-            className="object-cover rounded-full"
-          />
-        </motion.div>
-      </div>
-    </div>
-  );
-};
+const skills = [
+  { skill: "Frontend Development", level: "95%" },
+  { skill: "UI/UX Design", level: "88%" },
+  { skill: "Performance Optimization", level: "92%" },
+  { skill: "3D Web Experiences", level: "85%" },
+  { skill: "Backend Integration", level: "90%" },
+];
 
 export default function About() {
-  return (
-    <section className="relative py-24 px-4 sm:px-6 overflow-hidden">
-      <div className="relative max-w-5xl mx-auto">
-        {/* Profile */}
-        <motion.div
-          className="mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <SecretProfile />
-        </motion.div>
-
-        {/* Introduction */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-pink-500 bg-clip-text text-transparent">
-            About Me
-          </h2>
-          <p className="text-white/80 max-w-2xl mx-auto">
-            I'm a{" "}
-            <span className="text-pink-400 font-medium">
-              full-stack developer{" "}
-            </span>
-            with 4+ years of experience building dynamic apps across mobile and
-            web. My work focuses on performance, usability, and integrating
-            modern tech like LLMs, microservices, and real-time communication.
-          </p>
-        </motion.div>
-
-        <ExperienceSection />
-      </div>
-    </section>
-  );
-}
-
-function ExperienceSection() {
   const sectionRef = useRef(null);
-  const cardsRef = useRef([]);
-  const lineRef = useRef(null);
+  const aboutRef = useRef(null);
+  const skillsRef = useRef(null);
+  const timelineRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Timeline line grow animation
       gsap.fromTo(
-        lineRef.current,
-        { height: 0 },
+        ".about-word",
+        { y: 100, opacity: 0 },
         {
-          height: "100%",
-          ease: "none",
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.05,
+          ease: "power4.out",
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            scrub: true,
+            trigger: aboutRef.current,
+            start: "top 70%",
           },
         },
       );
 
-      // Cards animation
-      cardsRef.current.forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          {
-            opacity: 0,
-            x: i % 2 === 0 ? -80 : 80,
-            y: 40,
-          },
-          {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            duration: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            },
-          },
-        );
+      gsap.to(".skill-bar-fill", {
+        width: (i, target) => target.dataset.width || "0%",
+        duration: 1.5,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: skillsRef.current,
+          start: "top 70%",
+        },
       });
 
-      // Stagger tech tags
-      gsap.utils.toArray(".tech-tag").forEach((tag) => {
-        gsap.from(tag, {
-          scale: 0,
-          opacity: 0,
-          duration: 0.4,
-          ease: "back.out(1.7)",
+      gsap.fromTo(
+        ".timeline-item",
+        { x: -50, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          stagger: 0.2,
+          duration: 1,
+          ease: "power4.out",
           scrollTrigger: {
-            trigger: tag,
-            start: "top 90%",
+            trigger: timelineRef.current,
+            start: "top 70%",
           },
-        });
-      });
+        },
+      );
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  return (
-    <section ref={sectionRef} className="relative py-24 px-6">
-      <div className="max-w-5xl mx-auto relative">
-        <h2 className="text-4xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-          Professional Journey
-        </h2>
+  const aboutText = [
+    "With over 4 years of experience crafting digital solutions",
+    "for global brands and innovative startups, I blend technical",
+    "excellence with creative vision.",
+  ];
 
-        {/* Timeline line */}
-        <div className="absolute left-6 top-0 bottom-0 w-[2px] bg-white/10">
-          <div
-            ref={lineRef}
-            className="w-full bg-gradient-to-b from-blue-400 to-purple-500"
-            style={{ height: 0 }}
-          />
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen py-24 px-6 md:px-12 lg:px-24 overflow-hidden"
+      style={{
+        background: "var(--gradient-matte)",
+        color: "var(--text-primary)",
+      }}
+    >
+      {/* Background */}
+      <div className="fixed inset-0 -z-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+              linear-gradient(var(--bg-dark), var(--bg-darker))
+            `,
+          }}
+        />
+
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+            `,
+            backgroundSize: "90px 90px",
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header */}
+        <div ref={aboutRef} className="mb-16">
+          <span className="text-sm tracking-[0.3em] text-white/60">
+            <span
+              className="inline-block w-12 h-px mr-4"
+              style={{ background: "var(--accent)" }}
+            />
+            ABOUT
+          </span>
+
+          <h2 className="text-5xl md:text-6xl mt-6">
+            <span className="font-medium">Behind</span>
+            <span className="ml-4 text-white/40">the Code</span>
+          </h2>
         </div>
 
-        <div className="space-y-16 pl-16">
-          {experiences.map((exp, i) => (
-            <div
-              key={i}
-              ref={(el) => (cardsRef.current[i] = el)}
-              className="relative"
-            >
-              {/* Dot */}
-              <div className="absolute -left-10 top-2 w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 shadow-lg" />
+        <div className="grid lg:grid-cols-2 gap-16">
+          {/* LEFT */}
+          <div>
+            {/* Profile */}
+            <div className="relative w-32 h-32 mb-8 group">
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: `
+                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    0 10px 25px rgba(0,0,0,0.8)
+                  `,
+                }}
+              />
 
-              {/* Card */}
-              <div className="bg-white/5 border border-white/10 p-6 rounded-xl backdrop-blur-md hover:scale-[1.02] transition-transform duration-300">
-                <div className="flex justify-between mb-2">
-                  <h3 className="text-lg font-semibold">
-                    {exp.title}{" "}
-                    <span className="text-purple-300">@ {exp.company}</span>
-                  </h3>
-                  <span className="text-xs bg-white/10 px-2 py-1 rounded-full">
-                    {exp.duration}
-                  </span>
-                </div>
-
-                <p className="text-white/70 text-sm mb-4">{exp.description}</p>
-
-                <div className="flex flex-wrap gap-2">
-                  {exp.tech.split(" • ").map((t, idx) => (
-                    <span
-                      key={idx}
-                      className="tech-tag text-xs px-3 py-1 bg-white/10 rounded-full"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
+              <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10">
+                <Image
+                  src="/personal/image.webp"
+                  alt="Profile"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
-          ))}
+
+            {/* Text */}
+            <div className="space-y-4 text-lg mb-12 text-white/80">
+              {aboutText.map((line, i) => (
+                <p key={i}>
+                  {line.split(" ").map((word, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-block mr-2 overflow-hidden"
+                    >
+                      <span className="about-word inline-block translate-y-full">
+                        {word}
+                      </span>
+                    </span>
+                  ))}
+                </p>
+              ))}
+            </div>
+
+            {/* Skills */}
+            <div ref={skillsRef} className="space-y-6">
+              <h3 className="text-xl mb-6 text-white/90">Expertise</h3>
+
+              {skills.map((s) => (
+                <div key={s.skill}>
+                  <div className="flex justify-between text-sm mb-2 text-white/70">
+                    <span>{s.skill}</span>
+                    <span>{s.level}</span>
+                  </div>
+
+                  {/* Track */}
+                  <div
+                    className="h-[2px] rounded-full overflow-hidden"
+                    style={{
+                      background: "rgba(255,255,255,0.08)",
+                    }}
+                  >
+                    {/* Fill */}
+                    <div
+                      className="skill-bar-fill h-full"
+                      data-width={s.level}
+                      style={{
+                        width: "0%",
+                        background: "linear-gradient(90deg, #e6e6e6, #999)",
+                        boxShadow: "0 0 10px rgba(255,255,255,0.2)",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* TIMELINE */}
+          <div ref={timelineRef}>
+            <h3 className="text-xl mb-8 flex items-center gap-2 text-white/80">
+              <Briefcase size={18} style={{ color: "var(--accent)" }} />
+              Journey
+            </h3>
+
+            <div className="relative">
+              <div
+                className="absolute left-4 top-0 bottom-0 w-px"
+                style={{ background: "rgba(255,255,255,0.08)" }}
+              />
+
+              <div className="space-y-8">
+                {experiences.map((exp, i) => (
+                  <div key={i} className="timeline-item pl-12 opacity-0">
+                    <div
+                      className="absolute left-2 top-2 w-4 h-4 rounded-full"
+                      style={{
+                        background: "var(--accent)",
+                        boxShadow: "0 0 10px rgba(255,255,255,0.4)",
+                      }}
+                    />
+
+                    {/* Card */}
+                    <div
+                      className="rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02]"
+                      style={{
+                        background:
+                          "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
+                        border: "1px solid rgba(255,255,255,0.06)",
+                        boxShadow: `
+                          inset 0 1px 0 rgba(255,255,255,0.06),
+                          0 10px 25px rgba(0,0,0,0.8)
+                        `,
+                      }}
+                    >
+                      <h4 className="text-white/90">{exp.title}</h4>
+                      <p className="text-white/60 text-sm">{exp.company}</p>
+                      <p className="text-white/50 text-sm mt-2">
+                        {exp.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Decor */}
+        <div
+          className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-10"
+          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+        />
       </div>
+
+      <style jsx>{`
+        .about-word {
+          transform: translateY(100%);
+        }
+      `}</style>
     </section>
   );
 }

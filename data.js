@@ -970,7 +970,7 @@ const keyProjects = [
     title: "Aadvico",
     category: "Web Application",
     description:
-      "AI-powered financial analysis platform with LLM integration and voice assistant.",
+      "Aadvico’s website is an e-commerce platform for buying healthy roasted makhana snacks, with product browsing, shopping cart, account login, order management, health benefit details, and support contact info.",
     tech: "Next.js • AWS • AI Agents",
     image: "/projects/screenshots/aadvico/aadvico_1.webp",
     color: "from-blue-600 to-cyan-600",

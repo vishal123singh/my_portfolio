@@ -17,6 +17,5 @@ export default function AssistantWrapper() {
     return null;
   }
 
-  useEffect(() => console.log("pathname", pathname), []);
   return <AssistantLauncher />;
 }
