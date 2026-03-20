@@ -32,11 +32,10 @@ export async function POST(req) {
 
     // Step 1: Optimize prompt
     const optimized = await promptOptimizerAgent(userQuery);
-    console.log("Optimized prompt", optimized);
     if (!optimized || !optimized.prompt) {
       return NextResponse.json(
         { error: "Failed to optimize prompt" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -45,7 +44,7 @@ export async function POST(req) {
     if (!toolPlan || toolPlan.length === 0) {
       return NextResponse.json(
         { error: "Failed to generate tool plan" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -68,7 +67,7 @@ export async function POST(req) {
       const args = resolveArguments(
         step.tool_arguments,
         userQuery,
-        resultsSoFar
+        resultsSoFar,
       );
       const output = await toolFn(args.query || args.videoId || args);
 

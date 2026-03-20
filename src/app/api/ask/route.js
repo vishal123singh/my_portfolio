@@ -268,13 +268,13 @@ export async function POST(req) {
       content: `Here are all data blocks:\n---\n${JSON.stringify(
         dataPayload,
         null,
-        2
+        2,
       )}\n---\nQ: ${question}`,
     };
 
     // Stream from OpenAI
     const completion = await openai.chat.completions.create({
-      model: "openai/gpt-oss-20b:free",
+      model: "nvidia/nemotron-3-nano-30b-a3b:free",
       messages: [systemMessage, userMessage],
       stream: true,
     });
@@ -291,7 +291,7 @@ export async function POST(req) {
           controller.close();
         },
       }),
-      { headers: { "Content-Type": "text/plain; charset=utf-8" } }
+      { headers: { "Content-Type": "text/plain; charset=utf-8" } },
     );
   } catch (error) {
     console.error("Handler error:", error);

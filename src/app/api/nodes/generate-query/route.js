@@ -14,7 +14,7 @@ export async function POST(request) {
     if (!dbType || !operation || !prompt) {
       return NextResponse.json(
         { error: "Missing required fields (dbType, operation, prompt)" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -24,7 +24,7 @@ export async function POST(request) {
       systemPrompt += `\n\nDatabase Schema:\n${JSON.stringify(
         { schema, tables },
         null,
-        2
+        2,
       )}`;
     }
 
@@ -50,7 +50,7 @@ MongoDB:
 `;
 
     const completion = await openai.chat.completions.create({
-      model: "openai/gpt-oss-20b:free",
+      model: "nvidia/nemotron-3-nano-30b-a3b:free",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt },
@@ -88,7 +88,7 @@ MongoDB:
     console.error("Error generating query:", error);
     return NextResponse.json(
       { error: "Failed to generate query", details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

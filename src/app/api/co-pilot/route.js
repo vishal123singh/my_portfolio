@@ -19,13 +19,11 @@ export async function POST(req) {
   });
 
   const stream = await openai.chat.completions.create({
-    model: "openai/gpt-oss-20b:free",
+    model: "nvidia/nemotron-3-nano-30b-a3b:free",
     stream: true,
     messages: prompt,
     temperature: 0.4,
   });
-
-  console.log("stream", stream);
 
   const encoder = new TextEncoder();
 
