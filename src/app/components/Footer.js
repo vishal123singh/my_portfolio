@@ -314,9 +314,9 @@ export default function Footer() {
               </h3>
 
               {[
-                { label: "YEARS OF CODE", value: "8+" },
-                { label: "PROJECTS", value: "50+" },
-                { label: "CLIENTS", value: "30+" },
+                { label: "YEARS OF CODE", value: "4+" },
+                { label: "PROJECTS", value: "16+" },
+                { label: "CLIENTS", value: "16+" },
               ].map((stat, i) => (
                 <div key={i}>
                   <div className="text-xl font-light">{stat.value}</div>
