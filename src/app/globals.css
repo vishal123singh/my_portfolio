@@ -234,7 +234,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 90vh;
+  /* min-height: 90vh; */
   text-align: center;
   background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
   padding: 2rem;

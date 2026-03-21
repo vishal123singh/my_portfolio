@@ -1,35 +1,23 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Mail, Send, ArrowRight } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const sectionRef = useRef(null);
-  const headerRef = useRef(null);
-  const formRef = useRef(null);
-  const contactMethodsRef = useRef(null);
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const handleChange = (e) =>
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -41,47 +29,6 @@ export default function Contact() {
     }, 1200);
   };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        headerRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2 },
-      );
-
-      gsap.fromTo(
-        ".contact-method",
-        { x: -40, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          stagger: 0.1,
-          duration: 1,
-          scrollTrigger: {
-            trigger: contactMethodsRef.current,
-            start: "top 80%",
-          },
-        },
-      );
-
-      gsap.fromTo(
-        formRef.current,
-        { x: 40, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 1.2,
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: "top 80%",
-          },
-        },
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   const contactMethods = [
     {
       type: "EMAIL",
@@ -91,43 +38,85 @@ export default function Contact() {
     },
   ];
 
+  // Motion variants
+  const containerVariant = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.1 } },
+  };
+
+  const fadeInLeft = {
+    hidden: { x: -40, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
+  };
+  const fadeInRight = {
+    hidden: { x: 40, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
+  };
+  const fadeInUp = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
+  };
+
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24"
+      className="relative min-h-screen py-12 sm:py-20 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24"
       style={{
         background: "var(--gradient-matte)",
         color: "var(--text-primary)",
       }}
     >
-      {/* Background */}
       <div className="fixed inset-0 -z-10">
         <div
           className="absolute inset-0"
           style={{
             background: `
-          radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
-          linear-gradient(var(--bg-dark), var(--bg-darker))
-        `,
+              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+              linear-gradient(var(--bg-dark), var(--bg-darker))
+            `,
           }}
         />
-
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-10 hidden sm:block"
           style={{
             backgroundImage: `
-          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
-        `,
-            backgroundSize: "70px 70px", // smaller for mobile
+              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+            `,
+            backgroundSize: "70px 70px",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-30 sm:hidden"
+          style={{
+            background:
+              "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%)",
           }}
         />
       </div>
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div ref={headerRef} className="mb-12 sm:mb-16">
-          <span className="text-white/60 text-xs sm:text-sm tracking-[0.25em] sm:tracking-[0.3em]">
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="mb-12 sm:mb-16"
+        >
+          <span className="text-white/60 text-[11px] sm:text-sm tracking-[0.25em] sm:tracking-[0.3em]">
             <span
               className="inline-block w-8 sm:w-12 h-px mr-3 sm:mr-4"
               style={{ background: "var(--accent)" }}
@@ -141,34 +130,36 @@ export default function Contact() {
           </h2>
 
           <p className="text-white/70 max-w-xl sm:max-w-2xl mt-4 sm:mt-6 text-sm sm:text-base">
-            Have a project in mind or want to collaborate? Let’s create
+            Have a project in mind or want to collaborate? Let's create
             something exceptional.
           </p>
-        </div>
+        </motion.div>
 
         {/* GRID */}
-        <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 md:gap-16">
-          {/* LEFT */}
-          <div ref={contactMethodsRef} className="space-y-4 sm:space-y-6">
+        <motion.div
+          className="grid lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16"
+          variants={containerVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {/* LEFT - Contact Methods */}
+          <motion.div variants={fadeInLeft} className="space-y-4 sm:space-y-6">
             {contactMethods.map((method) => (
-              <div
+              <motion.div
                 key={method.type}
-                className="contact-method group rounded-2xl p-4 sm:p-6 transition-all"
+                className="contact-method group rounded-2xl p-4 sm:p-6 transition-all duration-300"
                 style={{
                   background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
                   border: "1px solid rgba(255,255,255,0.06)",
-                  boxShadow: `
-                inset 0 1px 0 rgba(255,255,255,0.06),
-                0 10px 25px rgba(0,0,0,0.8)
-              `,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)`,
                 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div
-                    className="p-2 sm:p-3 rounded-xl"
-                    style={{
-                      background: "rgba(255,255,255,0.08)",
-                    }}
+                    className="p-2 sm:p-3 rounded-xl shrink-0"
+                    style={{ background: "rgba(255,255,255,0.08)" }}
                   >
                     <method.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
                   </div>
@@ -180,29 +171,26 @@ export default function Contact() {
                     <div className="text-white text-sm sm:text-lg truncate">
                       {method.value}
                     </div>
-                    <div className="text-white/50 text-xs sm:text-sm">
+                    <div className="text-white/50 text-xs sm:text-sm hidden sm:block">
                       {method.description}
                     </div>
                   </div>
 
-                  <ArrowRight className="text-white/40 group-hover:translate-x-1 transition w-4 h-4 sm:w-5 sm:h-5" />
+                  <ArrowRight className="text-white/40 group-active:translate-x-1 transition-transform duration-200 w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          {/* RIGHT - FORM */}
-          <div ref={formRef}>
+          {/* RIGHT - Form */}
+          <motion.div variants={fadeInRight}>
             <div
               className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8"
               style={{
                 background:
                   "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
                 border: "1px solid rgba(255,255,255,0.06)",
-                boxShadow: `
-              inset 0 1px 0 rgba(255,255,255,0.06),
-              0 15px 40px rgba(0,0,0,0.8)
-            `,
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06), 0 15px 40px rgba(0,0,0,0.8)`,
               }}
             >
               <h3 className="text-xl sm:text-2xl text-white mb-4 sm:mb-6">
@@ -210,9 +198,14 @@ export default function Contact() {
               </h3>
 
               {submitSuccess && (
-                <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl text-white/70 border border-white/10 text-sm">
+                <motion.div
+                  className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl text-white/70 border border-white/10 text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
                   Message sent successfully.
-                </div>
+                </motion.div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
@@ -229,6 +222,7 @@ export default function Contact() {
                       background: "rgba(255,255,255,0.04)",
                       border: "1px solid rgba(255,255,255,0.08)",
                       color: "var(--text-primary)",
+                      borderRadius: "12px",
                     }}
                   />
                 ))}
@@ -245,20 +239,18 @@ export default function Contact() {
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
                     color: "var(--text-primary)",
+                    borderRadius: "12px",
                   }}
                 />
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 text-sm sm:text-base"
+                  className="w-full py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 text-sm sm:text-base font-medium transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
                   style={{
                     background: "linear-gradient(145deg, #e6e6e6, #999)",
                     color: "#000",
-                    boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.5),
-                  0 5px 20px rgba(255,255,255,0.15)
-                `,
+                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.5), 0 5px 20px rgba(255,255,255,0.15)`,
                   }}
                 >
                   <Send size={16} />
@@ -266,8 +258,8 @@ export default function Contact() {
                 </button>
               </form>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

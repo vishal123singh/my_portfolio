@@ -28,6 +28,7 @@ export default function HomeHero() {
   const loaderRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
   const [activeTech, setActiveTech] = useState(null);
+  const animationFrameRef = useRef(null);
 
   // Memoize the navigation handler
   const handleLaunch = useCallback(() => {
@@ -39,12 +40,20 @@ export default function HomeHero() {
     const loaderElement = loaderRef.current;
     if (!loaderElement) return;
 
+    // Store original overflow styles
+    const originalOverflow = document.body.style.overflow;
+    const originalPointerEvents = document.body.style.pointerEvents;
+
+    // Prevent scrolling during loader
+    document.body.style.overflow = "hidden";
+    document.body.style.pointerEvents = "none";
+
     const loaderCtx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
           setIsReady(true);
-          document.body.style.overflow = "auto";
-          document.body.style.pointerEvents = "auto";
+          document.body.style.overflow = originalOverflow;
+          document.body.style.pointerEvents = originalPointerEvents;
         },
       });
 
@@ -64,14 +73,10 @@ export default function HomeHero() {
       );
     });
 
-    // Prevent scrolling during loader
-    document.body.style.overflow = "hidden";
-    document.body.style.pointerEvents = "none";
-
     return () => {
       loaderCtx.revert();
-      document.body.style.overflow = "";
-      document.body.style.pointerEvents = "";
+      document.body.style.overflow = originalOverflow;
+      document.body.style.pointerEvents = originalPointerEvents;
     };
   }, []);
 
@@ -79,46 +84,49 @@ export default function HomeHero() {
   useEffect(() => {
     if (!isReady || !containerRef.current) return;
 
+    let mouseMoveHandler = null;
+    let mouseLeaveHandler = null;
+
     const ctx = gsap.context(() => {
       // Setup magnetic effect for CTA
       const cta = document.querySelector(".magnetic-cta");
-      let animationFrameId;
 
-      const handleMouseMove = (e) => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
+      if (cta) {
+        mouseMoveHandler = (e) => {
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
 
-        animationFrameId = requestAnimationFrame(() => {
-          const rect = cta.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
+          animationFrameRef.current = requestAnimationFrame(() => {
+            const rect = cta.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            gsap.to(cta, {
+              x: x * 0.3,
+              y: y * 0.3,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          });
+        };
+
+        mouseLeaveHandler = () => {
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+          }
 
           gsap.to(cta, {
-            x: x * 0.3,
-            y: y * 0.3,
+            x: 0,
+            y: 0,
             duration: 0.4,
             ease: "power2.out",
           });
-        });
-      };
+        };
 
-      const handleMouseLeave = () => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-
-        gsap.to(cta, {
-          x: 0,
-          y: 0,
-          duration: 0.4,
-          ease: "power2.out",
-        });
-      };
-
-      if (cta) {
-        cta.addEventListener("mousemove", handleMouseMove);
-        cta.addEventListener("mouseleave", handleMouseLeave);
+        cta.addEventListener("mousemove", mouseMoveHandler);
+        cta.addEventListener("mouseleave", mouseLeaveHandler);
       }
 
       // Main title animation
@@ -189,28 +197,35 @@ export default function HomeHero() {
         );
 
       // Tech stack animation with ScrollTrigger
-      gsap.fromTo(
-        ".tech-item",
-        {
-          y: 30,
-          opacity: 0,
-          scale: 0.8,
+      ScrollTrigger.create({
+        trigger: ".tech-stack",
+        start: "top bottom-=50",
+        onEnter: () => {
+          gsap.fromTo(
+            ".tech-item",
+            {
+              y: 30,
+              opacity: 0,
+              scale: 0.8,
+            },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 1,
+              stagger: 0.03,
+              ease: "back.out(1.7)",
+            },
+          );
         },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          stagger: 0.03,
-          delay: 1.2,
-          ease: "back.out(1.7)",
-          scrollTrigger: {
-            trigger: ".tech-stack",
-            start: "top bottom-=50",
-            toggleActions: "play none none reverse",
-          },
+        onLeaveBack: () => {
+          gsap.set(".tech-item", {
+            y: 30,
+            opacity: 0,
+            scale: 0.8,
+          });
         },
-      );
+      });
 
       // Parallax layers - only on desktop
       const isDesktop = window.innerWidth >= 768;
@@ -234,14 +249,19 @@ export default function HomeHero() {
               ...(scale && { scale }),
               ...(opacity && { opacity }),
             };
-            gsap.to(selector, {
-              ...target,
-              ease: "none",
-              scrollTrigger: {
-                trigger: containerRef.current,
-                start: "top top",
-                end: "bottom top",
-                scrub,
+            ScrollTrigger.create({
+              trigger: containerRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub,
+              onUpdate: (self) => {
+                gsap.to(selector, {
+                  ...target,
+                  duration: 0,
+                  overwrite: true,
+                  ease: "none",
+                  yPercent: target.yPercent * self.progress,
+                });
               },
             });
           },
@@ -265,24 +285,25 @@ export default function HomeHero() {
           ease: "sine.inOut",
         });
       });
-
-      // Cleanup function
-      return () => {
-        if (cta) {
-          cta.removeEventListener("mousemove", handleMouseMove);
-          cta.removeEventListener("mouseleave", handleMouseLeave);
-        }
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      };
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      if (mouseMoveHandler && mouseLeaveHandler) {
+        const cta = document.querySelector(".magnetic-cta");
+        if (cta) {
+          cta.removeEventListener("mousemove", mouseMoveHandler);
+          cta.removeEventListener("mouseleave", mouseLeaveHandler);
+        }
+      }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, [isReady]);
 
-  // Handle resize to cleanup and reinitialize parallax
+  // Handle resize to refresh ScrollTrigger
   useEffect(() => {
     const handleResize = () => {
       ScrollTrigger.refresh();
@@ -297,7 +318,7 @@ export default function HomeHero() {
       {/* Loading Screen */}
       <div
         ref={loaderRef}
-        className="fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center pointer-events-none"
+        className="fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center"
         style={{ transformOrigin: "top" }}
         aria-label="Loading screen"
         role="status"
@@ -390,7 +411,7 @@ export default function HomeHero() {
               VISHAL SINGH - FULL-STACK DEVELOPER
             </span>
 
-            {/* Main Title - Improved for mobile */}
+            {/* Main Title */}
             <h1 className="mb-6 sm:mb-8">
               <div className="sr-only">Digital Craftsmanship</div>
               <div aria-hidden="true">
@@ -411,7 +432,7 @@ export default function HomeHero() {
               </div>
             </h1>
 
-            {/* Description - Better text sizing */}
+            {/* Description */}
             <div className="hero-description max-w-xl sm:max-w-2xl opacity-0">
               <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-white/60 leading-relaxed">
                 Building performant, scalable systems with obsessive attention
@@ -419,7 +440,7 @@ export default function HomeHero() {
               </p>
             </div>
 
-            {/* CTA Button - Better touch targets */}
+            {/* CTA Button */}
             <div className="hero-cta mt-8 sm:mt-10 md:mt-12 opacity-0">
               <button
                 onClick={handleLaunch}
@@ -444,7 +465,7 @@ export default function HomeHero() {
                   aria-hidden="true"
                 />
                 <div
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
                   aria-hidden="true"
                 >
                   <div className="w-0 h-0 group-hover:w-full group-hover:h-full transition-all duration-500 bg-white/10 rounded-full" />
@@ -454,7 +475,7 @@ export default function HomeHero() {
           </div>
         </div>
 
-        {/* Tech Stack - Improved positioning and wrapping */}
+        {/* Tech Stack */}
         <div className="tech-stack absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-12 left-0 right-0 px-3 sm:px-4 md:px-6 lg:px-12 xl:px-24">
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-10 max-w-7xl mx-auto">
             {techStack.map((tech, index) => (
@@ -493,7 +514,7 @@ export default function HomeHero() {
           </div>
         </div>
 
-        {/* Scroll Indicator - Hide on mobile, adjust positioning */}
+        {/* Scroll Indicator */}
         <div
           className="absolute bottom-16 sm:bottom-20 md:bottom-24 left-1/2 transform -translate-x-1/2 hidden sm:block pointer-events-none"
           aria-label="Scroll down indicator"
@@ -511,21 +532,7 @@ export default function HomeHero() {
           </div>
         </div>
 
-        {/* Floating Orbs - Hide or reduce opacity on mobile */}
-        <div
-          className="floating-orb-1 absolute top-20 left-20 w-32 sm:w-48 md:w-64 lg:w-72 xl:w-96 h-32 sm:h-48 md:h-64 lg:h-72 xl:h-96 bg-gradient-to-br from-gray-800/5 to-gray-900/5 rounded-full blur-3xl hidden sm:block"
-          aria-hidden="true"
-        />
-        <div
-          className="floating-orb-2 absolute bottom-40 right-20 w-48 sm:w-64 md:w-80 lg:w-96 xl:w-[500px] h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[500px] bg-gradient-to-br from-gray-800/5 to-gray-900/5 rounded-full blur-3xl hidden sm:block"
-          aria-hidden="true"
-        />
-        <div
-          className="floating-orb-3 absolute top-1/2 left-1/2 w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 h-32 sm:h-40 md:h-48 lg:h-64 xl:h-80 bg-gradient-to-br from-gray-800/5 to-gray-900/5 rounded-full blur-3xl hidden md:block"
-          aria-hidden="true"
-        />
-
-        {/* Stats Section - Better responsive positioning */}
+        {/* Stats Section */}
         <div className="absolute top-1/2 right-2 lg:right-4 xl:right-8 transform -translate-y-1/2 hidden lg:block">
           <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
             {[
@@ -545,7 +552,7 @@ export default function HomeHero() {
           </div>
         </div>
 
-        {/* Decorative elements - Hide on very small screens */}
+        {/* Decorative elements */}
         <div
           className="absolute -bottom-16 sm:-bottom-24 md:-bottom-32 -right-16 sm:-right-24 md:-right-32 w-48 sm:w-64 md:w-80 lg:w-96 h-48 sm:h-64 md:h-80 lg:h-96 border border-gray-800 rounded-full opacity-5 hidden xs:block"
           aria-hidden="true"

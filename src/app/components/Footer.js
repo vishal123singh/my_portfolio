@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import {
   FaGithub,
   FaLinkedin,
@@ -13,12 +12,8 @@ import {
 import { FiArrowUpRight } from "react-icons/fi";
 import Link from "next/link";
 
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
-
 export default function Footer() {
   const footerRef = useRef(null);
-  const marqueeRef = useRef(null);
 
   const socialLinks = [
     {
@@ -61,132 +56,60 @@ export default function Footer() {
     { name: "CONTACT", href: "/contact" },
   ];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Footer entrance animation
-      gsap.fromTo(
-        ".footer-content",
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top bottom-=50",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
+  // Animation variants
+  const containerVariant = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { staggerChildren: 0.05, when: "beforeChildren" },
+    },
+  };
 
-      // Links stagger animation
-      gsap.fromTo(
-        ".footer-link-item",
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.05,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top bottom-=50",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
+  const itemVariant = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 100, damping: 12 },
+    },
+  };
 
-      // Social icons stagger animation
-      gsap.fromTo(
-        ".social-icon-item",
-        { scale: 0, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.05,
-          delay: 0.3,
-          ease: "back.out(1.7)",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top bottom-=50",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
-
-      // Magnetic effect for social icons
-      const socialIcons = document.querySelectorAll(".social-icon");
-      socialIcons.forEach((icon) => {
-        icon.addEventListener("mousemove", (e) => {
-          const rect = icon.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-
-          gsap.to(icon, {
-            x: x * 0.3,
-            y: y * 0.3,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        });
-
-        icon.addEventListener("mouseleave", () => {
-          gsap.to(icon, {
-            x: 0,
-            y: 0,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        });
-      });
-
-      // Infinite marquee
-      if (marqueeRef.current) {
-        const marqueeTl = gsap.timeline({ repeat: -1 });
-        marqueeTl.to(marqueeRef.current, {
-          x: "-50%",
-          duration: 40,
-          ease: "none",
-        });
-
-        marqueeRef.current.addEventListener("mouseenter", () =>
-          marqueeTl.pause(),
-        );
-        marqueeRef.current.addEventListener("mouseleave", () =>
-          marqueeTl.resume(),
-        );
-      }
-    }, footerRef);
-
-    return () => ctx.revert();
-  }, []);
+  const socialVariant = {
+    hidden: { scale: 0, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 200, damping: 15 },
+    },
+  };
 
   return (
     <footer
       ref={footerRef}
       className="relative overflow-hidden"
-      style={{
-        background: "var(--bg-dark)",
-        color: "var(--text-primary)",
-      }}
+      style={{ background: "var(--bg-dark)", color: "var(--text-primary)" }}
     >
       <div className="relative px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-16 md:py-20">
-        {/* Background stays same */}
-
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="footer-content grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 mb-12 sm:mb-16">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 mb-12 sm:mb-16"
+            variants={containerVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
             {/* Brand */}
-            <div className="lg:col-span-4 space-y-3 sm:space-y-4">
+            <motion.div
+              className="lg:col-span-4 space-y-3 sm:space-y-4"
+              variants={itemVariant}
+            >
               <Link
                 href="/"
                 className="inline-block text-2xl sm:text-3xl font-light tracking-tight relative group"
               >
                 <span className="relative z-10">
-                  <span style={{ color: "var(--text-muted)" }}>{"<"}</span>
-                  VS
+                  <span style={{ color: "var(--text-muted)" }}>{"<"}</span>VS
                   <span style={{ color: "var(--text-muted)" }}>{"/>"}</span>
                 </span>
               </Link>
@@ -209,20 +132,23 @@ export default function Footer() {
                 </span>
                 Available for collaborations
               </div>
-            </div>
+            </motion.div>
 
             {/* Navigation */}
-            <div className="lg:col-span-3">
+            <motion.div className="lg:col-span-3" variants={itemVariant}>
               <h3
                 className="text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] mb-4 sm:mb-6"
                 style={{ color: "var(--text-muted)" }}
               >
                 NAVIGATION
               </h3>
-
               <ul className="space-y-2 sm:space-y-3">
                 {footerLinks.map((link, index) => (
-                  <li key={index} className="footer-link-item">
+                  <motion.li
+                    key={index}
+                    className="footer-link-item"
+                    variants={itemVariant}
+                  >
                     <Link
                       href={link.href}
                       className="group flex items-center gap-2 text-xs sm:text-sm transition"
@@ -235,16 +161,15 @@ export default function Footer() {
                           style={{ background: "var(--accent)" }}
                         />
                       </span>
-
                       <FiArrowUpRight className="opacity-0 group-hover:opacity-100 transition text-xs sm:text-sm" />
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
 
             {/* Contact */}
-            <div className="lg:col-span-3">
+            <motion.div className="lg:col-span-3" variants={itemVariant}>
               <h3
                 className="text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] mb-4 sm:mb-6"
                 style={{ color: "var(--text-muted)" }}
@@ -266,13 +191,15 @@ export default function Footer() {
                     />
                   </span>
                 </a>
-
                 <div style={{ color: "var(--text-muted)" }}>Ranchi, India</div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Stats */}
-            <div className="lg:col-span-2 space-y-3 sm:space-y-4">
+            <motion.div
+              className="lg:col-span-2 space-y-3 sm:space-y-4"
+              variants={itemVariant}
+            >
               <h3
                 className="text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em]"
                 style={{ color: "var(--text-muted)" }}
@@ -297,15 +224,17 @@ export default function Footer() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Bottom */}
-          <div
+          <motion.div
             className="pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 text-center md:text-left"
-            style={{
-              borderTop: "1px solid rgba(255,255,255,0.06)",
-            }}
+            style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+            variants={containerVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
           >
             <div
               className="text-[10px] sm:text-xs"
@@ -317,7 +246,14 @@ export default function Footer() {
             {/* Socials */}
             <div className="flex gap-2 sm:gap-3">
               {socialLinks.map((social, index) => (
-                <a key={index} href={social.href} target="_blank">
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  variants={socialVariant}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
                   <div
                     className="p-2.5 sm:p-3 rounded-full transition-all duration-300"
                     style={{
@@ -332,7 +268,7 @@ export default function Footer() {
                       {social.icon}
                     </div>
                   </div>
-                </a>
+                </motion.a>
               ))}
             </div>
 
@@ -344,7 +280,7 @@ export default function Footer() {
             >
               BACK TO TOP
             </button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </footer>

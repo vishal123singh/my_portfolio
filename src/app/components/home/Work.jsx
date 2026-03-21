@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
@@ -12,77 +12,140 @@ export default function Work() {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
   const projectsRef = useRef([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Adjust animations for mobile
-      const isMobile = window.innerWidth < 768;
+    // Detect device capabilities once
+    const checkDevice = () => {
+      const mobile = window.innerWidth < 768;
+      const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      setIsMobile(mobile);
+      setIsTouchDevice(touch);
+    };
 
+    checkDevice();
+
+    const handleResize = () => {
+      checkDevice();
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile === null) return;
+
+    const ctx = gsap.context(() => {
+      // Use simpler animations on mobile
+      const duration = isMobile ? 0.6 : 1.5;
+      const yOffset = isMobile ? 30 : 100;
+
+      // Header animation - simpler on mobile
       gsap.fromTo(
         ".work-header",
-        { y: isMobile ? 50 : 100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.5, ease: "power4.out" },
+        { y: yOffset, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration,
+          ease: "power2.out",
+          clearProps: isMobile ? "all" : undefined, // Clean up on mobile
+        },
       );
 
+      // Animate projects with reduced complexity on mobile
       projectsRef.current.forEach((card, index) => {
         if (!card) return;
 
+        const cardDuration = isMobile ? 0.5 : 1.2;
+        const cardDelay = isMobile ? 0.05 * index : index * 0.2;
+
         gsap.fromTo(
           card,
-          { y: isMobile ? 50 : 100, opacity: 0, rotateX: isMobile ? 0 : 15 },
+          { y: yOffset, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            rotateX: 0,
-            duration: isMobile ? 0.8 : 1.2,
-            delay: isMobile ? 0.1 : index * 0.2,
-            ease: "power4.out",
+            duration: cardDuration,
+            delay: cardDelay,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: card,
               start: "top 85%",
+              toggleActions: "play none none reverse",
+              // Optimize ScrollTrigger for mobile
+              fastScrollEnd: isMobile ? true : false,
+              markers: false,
             },
           },
         );
+      });
 
-        // Only add 3D effects on non-touch devices
-        const imageCard = card.querySelector(".project-image-card");
-        const isTouchDevice =
-          "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      // Only add 3D effects on non-touch devices and desktop
+      if (!isTouchDevice && !isMobile) {
+        projectsRef.current.forEach((card) => {
+          if (!card) return;
 
-        if (imageCard && !isTouchDevice) {
-          const handleMouseMoveCard = (e) => {
+          const imageCard = card.querySelector(".project-image-card");
+          if (!imageCard) return;
+
+          // Use requestAnimationFrame for smoother performance
+          let rafId = null;
+          let targetRotateX = 0;
+          let targetRotateY = 0;
+          let currentRotateX = 0;
+          let currentRotateY = 0;
+          let currentScale = 1;
+
+          const animate = () => {
+            // Smooth interpolation
+            currentRotateX += (targetRotateX - currentRotateX) * 0.15;
+            currentRotateY += (targetRotateY - currentRotateY) * 0.15;
+            currentScale +=
+              (targetRotateX !== 0 ? 1.02 - currentScale : 1 - currentScale) *
+              0.15;
+
+            gsap.set(imageCard, {
+              rotateX: currentRotateX,
+              rotateY: currentRotateY,
+              scale: currentScale,
+              overwrite: true,
+            });
+
+            rafId = requestAnimationFrame(animate);
+          };
+
+          animate();
+
+          const handleMouseMove = (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            const rotateX = (y - rect.height / 2) / 20;
-            const rotateY = (rect.width / 2 - x) / 20;
-
-            gsap.to(imageCard, {
-              rotateX,
-              rotateY,
-              scale: 1.02,
-              duration: 0.5,
-              ease: "power2.out",
-            });
+            targetRotateX = (y - rect.height / 2) / 25;
+            targetRotateY = (rect.width / 2 - x) / 25;
           };
 
-          const handleMouseLeaveCard = () => {
-            gsap.to(imageCard, {
-              rotateX: 0,
-              rotateY: 0,
-              scale: 1,
-              duration: 0.7,
-              ease: "elastic.out(1, 0.3)",
-            });
+          const handleMouseLeave = () => {
+            targetRotateX = 0;
+            targetRotateY = 0;
           };
 
-          card.addEventListener("mousemove", handleMouseMoveCard);
-          card.addEventListener("mouseleave", handleMouseLeaveCard);
-        }
-      });
+          card.addEventListener("mousemove", handleMouseMove);
+          card.addEventListener("mouseleave", handleMouseLeave);
 
-      // Adjust parallax for mobile
+          return () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            card.removeEventListener("mousemove", handleMouseMove);
+            card.removeEventListener("mouseleave", handleMouseLeave);
+          };
+        });
+      }
+
+      // Disable parallax completely on mobile for better performance
       if (!isMobile) {
         gsap.to(".parallax-blob", {
           y: 200,
@@ -91,38 +154,37 @@ export default function Work() {
             trigger: sectionRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 1.5,
+            scrub: 1,
+            invalidateOnRefresh: true,
           },
         });
       }
     }, sectionRef);
 
-    // Handle resize to reinitialize animations
-    const handleResize = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener("resize", handleResize);
-
     return () => {
       ctx.revert();
-      window.removeEventListener("resize", handleResize);
+      // Kill all ScrollTriggers to prevent memory leaks
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [isMobile, isTouchDevice]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 overflow-hidden"
+      className="relative min-h-screen py-12 sm:py-20 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 overflow-hidden"
       style={{
         background: "var(--gradient-matte)",
         color: "var(--text-primary)",
+        // Enable hardware acceleration
+        transform: "translate3d(0,0,0)",
+        WebkitBackfaceVisibility: "hidden",
+        backfaceVisibility: "hidden",
       }}
     >
-      {/* Background */}
-      <div className="fixed inset-0 -z-10">
+      {/* Background - Optimized for performance */}
+      <div className="fixed inset-0 -z-10 pointer-events-none">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 will-change-transform"
           style={{
             background: `
               radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
@@ -142,7 +204,14 @@ export default function Work() {
           }}
         />
 
-        <div className="parallax-blob absolute top-1/2 right-0 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[500px] h-[300px] sm:h-[400px] md:h-[500px] bg-white/5 rounded-full blur-3xl" />
+        {/* Reduced blur radius on mobile for performance */}
+        <div
+          className="parallax-blob absolute top-1/2 right-0 -translate-y-1/2 w-[200px] sm:w-[400px] md:w-[500px] h-[200px] sm:h-[400px] md:h-[500px] bg-white/5 rounded-full"
+          style={{
+            filter: `blur(${isMobile ? "40px" : "80px"})`,
+            transform: "translate3d(0,0,0)",
+          }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -167,22 +236,24 @@ export default function Work() {
         {/* Projects */}
         <div
           ref={containerRef}
-          className="space-y-20 sm:space-y-24 md:space-y-32"
+          className="space-y-16 sm:space-y-24 md:space-y-32"
         >
           {keyProjects.map((project, index) => (
             <div
               key={project.id}
-              ref={(el) => (projectsRef.current[index] = el)}
-              className="group relative opacity-0"
+              ref={(el) => {
+                if (el) projectsRef.current[index] = el;
+              }}
+              className="group relative opacity-0 will-change-transform"
             >
               <div
-                className={`grid lg:grid-cols-2 gap-8 sm:gap-12 items-start lg:items-center ${
+                className={`grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-start lg:items-center ${
                   index % 2 !== 0 ? "lg:grid-flow-dense" : ""
                 }`}
               >
                 {/* Content */}
                 <div
-                  className={`space-y-4 sm:space-y-6 ${index % 2 !== 0 ? "lg:order-last" : ""}`}
+                  className={`space-y-3 sm:space-y-4 md:space-y-6 ${index % 2 !== 0 ? "lg:order-last" : ""}`}
                 >
                   <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/50">
                     <span>0{index + 1}</span>
@@ -190,7 +261,7 @@ export default function Work() {
                     <span>{project.year}</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight">
+                  <h3 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight">
                     {project.title}
                   </h3>
 
@@ -198,7 +269,7 @@ export default function Work() {
                     {project.category}
                   </span>
 
-                  <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-md">
+                  <p className="text-white/70 text-sm sm:text-base md:text-lg leading-relaxed max-w-md">
                     {project.description}
                   </p>
 
@@ -211,38 +282,35 @@ export default function Work() {
                     </span>
                     <ArrowRight
                       size={16}
-                      className="group-hover/link:translate-x-1 transition"
+                      className="group-hover/link:translate-x-1 transition-transform duration-300"
                     />
                   </a>
                 </div>
 
-                {/* Image Card */}
+                {/* Image Card - Simplified shadows on mobile */}
                 <div className="mt-6 sm:mt-8 lg:mt-0">
                   <div
-                    className="project-image-card relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500"
+                    className="project-image-card relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-300 will-change-transform"
                     style={{
                       background:
                         "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
                       border: "1px solid rgba(255,255,255,0.06)",
-                      boxShadow: `
-                        inset 0 1px 0 rgba(255,255,255,0.06),
-                        0 15px 40px rgba(0,0,0,0.8)
-                      `,
+                      boxShadow: isMobile
+                        ? "0 10px 30px rgba(0,0,0,0.5)"
+                        : "inset 0 1px 0 rgba(255,255,255,0.06), 0 15px 40px rgba(0,0,0,0.8)",
+                      transform: "translate3d(0,0,0)",
                     }}
                   >
-                    {/* Top reflection */}
-                    <div
-                      className="absolute inset-0 pointer-events-none"
-                      style={{
-                        background: `
-                          linear-gradient(
-                            to bottom,
-                            rgba(255,255,255,0.06),
-                            transparent 40%
-                          )
-                        `,
-                      }}
-                    />
+                    {/* Top reflection - disabled on mobile for performance */}
+                    {!isMobile && (
+                      <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                          background:
+                            "linear-gradient(to bottom, rgba(255,255,255,0.06), transparent 40%)",
+                        }}
+                      />
+                    )}
 
                     <div className="relative aspect-[4/3] overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10" />
@@ -255,8 +323,10 @@ export default function Work() {
                         <img
                           src={project.image}
                           alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform"
                           loading="lazy"
+                          // Add decoding async for better performance
+                          decoding="async"
                         />
                       )}
                     </div>
@@ -267,9 +337,9 @@ export default function Work() {
           ))}
         </div>
 
-        {/* Decor */}
+        {/* Decor - Reduced opacity and size on mobile */}
         <div
-          className="absolute -bottom-20 sm:-bottom-32 -right-20 sm:-right-32 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 rounded-full opacity-10 pointer-events-none"
+          className="absolute -bottom-20 sm:-bottom-32 -right-20 sm:-right-32 w-48 sm:w-80 md:w-96 h-48 sm:h-80 md:h-96 rounded-full opacity-5 sm:opacity-10 pointer-events-none"
           style={{ border: "1px solid rgba(255,255,255,0.08)" }}
         />
       </div>
