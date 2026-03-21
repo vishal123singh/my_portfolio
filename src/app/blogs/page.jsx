@@ -238,7 +238,7 @@ export default function MyBlogsPage() {
       {/* Main Container */}
       <main
         ref={containerRef}
-        className="relative min-h-screen overflow-x-hidden"
+        className="relative min-h-screen overflow-x-hidden pt-24"
         style={{
           background: "var(--gradient-matte)",
           color: "var(--text-primary)",
@@ -380,11 +380,11 @@ export default function MyBlogsPage() {
         {showEditor && (
           <div
             ref={editorRef}
-            className="relative px-6 md:px-12 lg:px-24 mb-24"
+            className="relative px-4 sm:px-6 md:px-12 lg:px-24 mb-16 md:mb-24"
           >
             <div className="max-w-4xl mx-auto">
               <div
-                className="rounded-3xl p-8"
+                className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8"
                 style={{
                   background:
                     "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
@@ -393,26 +393,30 @@ export default function MyBlogsPage() {
                     "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                 }}
               >
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl text-white/90 font-light">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                  <h3 className="text-lg sm:text-xl md:text-2xl text-white/90 font-light">
                     {form.title ? "Continue Writing" : "New Entry"}
                   </h3>
+
                   <button
                     onClick={() => setShowEditor(false)}
-                    className="p-2 rounded-full transition-colors hover:bg-white/10"
+                    className="self-end sm:self-auto p-2 rounded-full transition-colors hover:bg-white/10"
                   >
                     <X size={20} className="text-white/40" />
                   </button>
                 </div>
 
+                {/* Title Input */}
                 <input
                   placeholder="Cosmic Title..."
-                  className="w-full mb-6 p-4 bg-white/5 border border-white/10 text-white/90 rounded-xl focus:outline-none focus:border-white/30 transition-colors text-xl"
+                  className="w-full mb-4 sm:mb-6 p-3 sm:p-4 bg-white/5 border border-white/10 text-white/90 rounded-lg sm:rounded-xl focus:outline-none focus:border-white/30 transition-colors text-base sm:text-lg md:text-xl"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                 />
 
-                <div className="h-[50vh] mb-6">
+                {/* Editor */}
+                <div className="min-h-[250px] sm:min-h-[350px] md:min-h-[50vh] mb-6">
                   <TiptapEditor
                     immediatelyRender={false}
                     value={form.content}
@@ -421,7 +425,9 @@ export default function MyBlogsPage() {
                   />
                 </div>
 
-                <div className="flex justify-end gap-4 mt-8">
+                {/* Actions */}
+                <div className="flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4 mt-6 sm:mt-8">
+                  {/* Share Button */}
                   <button
                     onClick={() => {
                       const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
@@ -431,22 +437,23 @@ export default function MyBlogsPage() {
                       )}`;
                       window.open(url, "_blank");
                     }}
-                    className="magnetic-button group relative px-6 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                    className="w-full sm:w-auto magnetic-button group relative px-5 sm:px-6 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
                         "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
                       border: "1px solid rgba(255,255,255,0.08)",
                     }}
                   >
-                    <span className="relative z-10 text-white/60 text-sm font-medium flex items-center gap-2 group-hover:text-white/80 transition-colors">
+                    <span className="relative z-10 text-white/60 text-sm font-medium flex items-center justify-center gap-2 group-hover:text-white/80 transition-colors">
                       <Share2 size={16} />
                       SHARE
                     </span>
                   </button>
 
+                  {/* Submit Button */}
                   <button
                     onClick={handlePost}
-                    className="magnetic-button group relative px-8 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                    className="w-full sm:w-auto magnetic-button group relative px-6 sm:px-8 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
                         "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
@@ -455,9 +462,13 @@ export default function MyBlogsPage() {
                         "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                     }}
                   >
-                    <span className="relative z-10 text-sm font-medium flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
+                    <span className="relative z-10 text-sm font-medium flex items-center justify-center gap-2 text-white/80 group-hover:text-white transition-colors">
                       <Send size={16} />
-                      LAUNCH INTO ORBIT
+                      <span className="hidden sm:inline">
+                        LAUNCH INTO ORBIT
+                      </span>
+                      <span className="sm:hidden">POST</span>
+
                       <svg
                         className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
                         fill="none"

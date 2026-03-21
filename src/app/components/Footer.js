@@ -19,7 +19,6 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Footer() {
   const footerRef = useRef(null);
   const marqueeRef = useRef(null);
-  const linksRef = useRef([]);
 
   const socialLinks = [
     {
@@ -174,58 +173,26 @@ export default function Footer() {
         color: "var(--text-primary)",
       }}
     >
-      <div className="relative px-6 md:px-12 lg:px-24 py-16 md:py-20">
-        {/* Background */}
-        <div className="absolute inset-0 -z-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `
-            linear-gradient(to bottom, transparent, rgba(255,255,255,0.02)),
-            radial-gradient(circle at 20% 0%, rgba(255,255,255,0.03), transparent 60%)
-          `,
-            }}
-          />
-
-          {/* Subtle grid */}
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
-          `,
-              backgroundSize: "70px 70px",
-            }}
-          />
-
-          {/* Matte orbs */}
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-white/[0.02] blur-3xl" />
-          <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-white/[0.02] blur-3xl" />
-        </div>
+      <div className="relative px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-16 md:py-20">
+        {/* Background stays same */}
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="footer-content grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+          <div className="footer-content grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 mb-12 sm:mb-16">
             {/* Brand */}
-            <div className="lg:col-span-4 space-y-4">
+            <div className="lg:col-span-4 space-y-3 sm:space-y-4">
               <Link
                 href="/"
-                className="inline-block text-3xl font-light tracking-tight relative group"
+                className="inline-block text-2xl sm:text-3xl font-light tracking-tight relative group"
               >
                 <span className="relative z-10">
                   <span style={{ color: "var(--text-muted)" }}>{"<"}</span>
                   VS
                   <span style={{ color: "var(--text-muted)" }}>{"/>"}</span>
                 </span>
-
-                <div
-                  className="absolute -inset-2 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
-                />
               </Link>
 
               <p
-                className="text-sm leading-relaxed max-w-md"
+                className="text-xs sm:text-sm leading-relaxed max-w-md"
                 style={{ color: "var(--text-secondary)" }}
               >
                 Crafting digital experiences where precision meets poetry, and
@@ -233,7 +200,7 @@ export default function Footer() {
               </p>
 
               <div
-                className="flex items-center gap-2 text-sm"
+                className="flex items-center gap-2 text-xs sm:text-sm"
                 style={{ color: "var(--text-secondary)" }}
               >
                 <span className="relative flex h-2 w-2">
@@ -247,18 +214,18 @@ export default function Footer() {
             {/* Navigation */}
             <div className="lg:col-span-3">
               <h3
-                className="text-xs tracking-[0.3em] mb-6"
+                className="text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] mb-4 sm:mb-6"
                 style={{ color: "var(--text-muted)" }}
               >
                 NAVIGATION
               </h3>
 
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {footerLinks.map((link, index) => (
                   <li key={index} className="footer-link-item">
                     <Link
                       href={link.href}
-                      className="group flex items-center gap-2 text-sm transition"
+                      className="group flex items-center gap-2 text-xs sm:text-sm transition"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       <span className="relative overflow-hidden">
@@ -269,7 +236,7 @@ export default function Footer() {
                         />
                       </span>
 
-                      <FiArrowUpRight className="opacity-0 group-hover:opacity-100 transition" />
+                      <FiArrowUpRight className="opacity-0 group-hover:opacity-100 transition text-xs sm:text-sm" />
                     </Link>
                   </li>
                 ))}
@@ -279,16 +246,16 @@ export default function Footer() {
             {/* Contact */}
             <div className="lg:col-span-3">
               <h3
-                className="text-xs tracking-[0.3em] mb-6"
+                className="text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] mb-4 sm:mb-6"
                 style={{ color: "var(--text-muted)" }}
               >
                 CONTACT
               </h3>
 
-              <div className="space-y-4 text-sm">
+              <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
                 <a
                   href="mailto:bs08081996@gmail.com"
-                  className="group flex items-center gap-2 transition"
+                  className="group flex items-center gap-2 transition break-all"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   <span className="relative overflow-hidden">
@@ -305,9 +272,9 @@ export default function Footer() {
             </div>
 
             {/* Stats */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-3 sm:space-y-4">
               <h3
-                className="text-xs tracking-[0.3em]"
+                className="text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em]"
                 style={{ color: "var(--text-muted)" }}
               >
                 STATS
@@ -319,9 +286,11 @@ export default function Footer() {
                 { label: "CLIENTS", value: "16+" },
               ].map((stat, i) => (
                 <div key={i}>
-                  <div className="text-xl font-light">{stat.value}</div>
+                  <div className="text-lg sm:text-xl font-light">
+                    {stat.value}
+                  </div>
                   <div
-                    className="text-[10px] tracking-wider"
+                    className="text-[9px] sm:text-[10px] tracking-wider"
                     style={{ color: "var(--text-muted)" }}
                   >
                     {stat.label}
@@ -333,27 +302,33 @@ export default function Footer() {
 
           {/* Bottom */}
           <div
-            className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6"
+            className="pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 text-center md:text-left"
             style={{
               borderTop: "1px solid rgba(255,255,255,0.06)",
             }}
           >
-            <div className="text-xs" style={{ color: "var(--text-muted)" }}>
+            <div
+              className="text-[10px] sm:text-xs"
+              style={{ color: "var(--text-muted)" }}
+            >
               © {new Date().getFullYear()} VISHAL SINGH
             </div>
 
             {/* Socials */}
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {socialLinks.map((social, index) => (
                 <a key={index} href={social.href} target="_blank">
                   <div
-                    className="p-3 rounded-full transition-all duration-300"
+                    className="p-2.5 sm:p-3 rounded-full transition-all duration-300"
                     style={{
                       background: "linear-gradient(145deg, #161616, #0e0e0e)",
                       border: "1px solid rgba(255,255,255,0.06)",
                     }}
                   >
-                    <div style={{ color: "var(--text-secondary)" }}>
+                    <div
+                      className="text-xs sm:text-sm"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {social.icon}
                     </div>
                   </div>
@@ -364,7 +339,7 @@ export default function Footer() {
             {/* Back to top */}
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="flex items-center gap-2 text-xs transition"
+              className="text-[10px] sm:text-xs transition"
               style={{ color: "var(--text-muted)" }}
             >
               BACK TO TOP

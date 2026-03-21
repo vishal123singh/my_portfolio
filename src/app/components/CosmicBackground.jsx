@@ -8,7 +8,7 @@ const techIcons = [Code, Cpu, Smartphone];
 export default function CosmicBackground() {
   return (
     <>
-      {/* 🔴 Top-left blob */}
+      {/*  Top-left blob */}
       <motion.div
         className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] rounded-full opacity-[0.12] blur-3xl z-0"
         style={{ backgroundColor: "var(--accent)" }}
@@ -16,7 +16,7 @@ export default function CosmicBackground() {
         transition={{ duration: 10, repeat: Infinity, repeatType: "mirror" }}
       />
 
-      {/* 🟣 Bottom-right blob */}
+      {/*  Bottom-right blob */}
       <motion.div
         className="absolute bottom-[-100px] right-[-100px] w-[350px] h-[350px] rounded-full opacity-[0.12] blur-3xl z-0"
         style={{ backgroundColor: "var(--accent)" }}
@@ -24,7 +24,7 @@ export default function CosmicBackground() {
         transition={{ duration: 12, repeat: Infinity, repeatType: "mirror" }}
       />
 
-      {/* ✨ Floating tech icons */}
+      {/*  Floating tech icons */}
       {Array.from({ length: 5 }).map((_, i) => {
         const Icon = techIcons[i % techIcons.length];
 

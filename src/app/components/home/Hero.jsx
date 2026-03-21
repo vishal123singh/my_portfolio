@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
-import { ArrowRight, Code2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
@@ -25,64 +25,71 @@ export default function HomeHero() {
   const router = useRouter();
   const containerRef = useRef(null);
   const heroRef = useRef(null);
-  const codeRef = useRef(null);
   const loaderRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const [activeTech, setActiveTech] = useState(null);
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
+  // Memoize the navigation handler
+  const handleLaunch = useCallback(() => {
+    router.push("/projects");
+  }, [router]);
+
+  // Loader animation effect
   useEffect(() => {
-    // Handle window resize
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
+    const loaderElement = loaderRef.current;
+    if (!loaderElement) return;
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    // Initial loader animation
     const loaderCtx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
           setIsReady(true);
           document.body.style.overflow = "auto";
+          document.body.style.pointerEvents = "auto";
         },
       });
 
-      tl.to(loaderRef.current, {
+      tl.to(loaderElement, {
         scaleY: 0,
         transformOrigin: "top",
         duration: 1.8,
         ease: "power4.inOut",
         delay: 1,
       }).to(
-        loaderRef.current,
+        loaderElement,
         {
           display: "none",
+          duration: 0,
         },
         "-=1.3",
       );
     });
 
+    // Prevent scrolling during loader
+    document.body.style.overflow = "hidden";
+    document.body.style.pointerEvents = "none";
+
     return () => {
       loaderCtx.revert();
-      window.removeEventListener("resize", handleResize);
+      document.body.style.overflow = "";
+      document.body.style.pointerEvents = "";
     };
   }, []);
 
+  // Main animations effect
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || !containerRef.current) return;
 
-    // Main animations
     const ctx = gsap.context(() => {
-      // Magnetic effect for CTA
+      // Setup magnetic effect for CTA
       const cta = document.querySelector(".magnetic-cta");
-      if (cta) {
-        cta.addEventListener("mousemove", (e) => {
+      let animationFrameId;
+
+      const handleMouseMove = (e) => {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+
+        animationFrameId = requestAnimationFrame(() => {
           const rect = cta.getBoundingClientRect();
           const x = e.clientX - rect.left - rect.width / 2;
           const y = e.clientY - rect.top - rect.height / 2;
@@ -94,18 +101,27 @@ export default function HomeHero() {
             ease: "power2.out",
           });
         });
+      };
 
-        cta.addEventListener("mouseleave", () => {
-          gsap.to(cta, {
-            x: 0,
-            y: 0,
-            duration: 0.4,
-            ease: "power2.out",
-          });
+      const handleMouseLeave = () => {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+
+        gsap.to(cta, {
+          x: 0,
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out",
         });
+      };
+
+      if (cta) {
+        cta.addEventListener("mousemove", handleMouseMove);
+        cta.addEventListener("mouseleave", handleMouseLeave);
       }
 
-      // Main title animation with 3D effect
+      // Main title animation
       const heroTl = gsap.timeline();
 
       heroTl
@@ -172,7 +188,7 @@ export default function HomeHero() {
           "-=0.5",
         );
 
-      // Tech stack items with staggered animation
+      // Tech stack animation with ScrollTrigger
       gsap.fromTo(
         ".tech-item",
         {
@@ -196,75 +212,69 @@ export default function HomeHero() {
         },
       );
 
-      // Parallax layers with smooth scroll - only on larger screens
-      if (window.innerWidth >= 768) {
-        gsap.to(".parallax-layer-1", {
-          yPercent: 20,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.5,
-          },
-        });
-
-        gsap.to(".parallax-layer-2", {
-          yPercent: 30,
-          scale: 1.1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 2,
-          },
-        });
-
-        gsap.to(".parallax-layer-3", {
-          yPercent: 40,
-          opacity: 0.2,
-          scale: 1.2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom top",
+      // Parallax layers - only on desktop
+      const isDesktop = window.innerWidth >= 768;
+      if (isDesktop) {
+        const parallaxElements = [
+          { selector: ".parallax-layer-1", yPercent: 20, scrub: 1.5 },
+          { selector: ".parallax-layer-2", yPercent: 30, scale: 1.1, scrub: 2 },
+          {
+            selector: ".parallax-layer-3",
+            yPercent: 40,
+            opacity: 0.2,
+            scale: 1.2,
             scrub: 2.5,
           },
-        });
+        ];
+
+        parallaxElements.forEach(
+          ({ selector, yPercent, scale, opacity, scrub }) => {
+            const target = {
+              yPercent,
+              ...(scale && { scale }),
+              ...(opacity && { opacity }),
+            };
+            gsap.to(selector, {
+              ...target,
+              ease: "none",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top top",
+                end: "bottom top",
+                scrub,
+              },
+            });
+          },
+        );
       }
 
       // Floating orbs animation
-      gsap.to(".floating-orb-1", {
-        x: 100,
-        y: 50,
-        duration: 20,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
+      const orbs = [
+        { selector: ".floating-orb-1", x: 100, y: 50, duration: 20 },
+        { selector: ".floating-orb-2", x: -80, y: -30, duration: 15 },
+        { selector: ".floating-orb-3", x: 60, y: -80, duration: 18 },
+      ];
+
+      orbs.forEach(({ selector, x, y, duration }) => {
+        gsap.to(selector, {
+          x,
+          y,
+          duration,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
       });
 
-      gsap.to(".floating-orb-2", {
-        x: -80,
-        y: -30,
-        duration: 15,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      gsap.to(".floating-orb-3", {
-        x: 60,
-        y: -80,
-        duration: 18,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      // Cleanup
+      // Cleanup function
       return () => {
+        if (cta) {
+          cta.removeEventListener("mousemove", handleMouseMove);
+          cta.removeEventListener("mouseleave", handleMouseLeave);
+        }
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
         ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
       };
     }, containerRef);
@@ -272,33 +282,38 @@ export default function HomeHero() {
     return () => ctx.revert();
   }, [isReady]);
 
-  const handleLaunch = () => {
-    router.push("/projects");
-  };
+  // Handle resize to cleanup and reinitialize parallax
+  useEffect(() => {
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className="overflow-hidden">
-      {/* Loading Screen - Matching About theme */}
+    <div className="overflow-hidden border">
+      {/* Loading Screen */}
       <div
         ref={loaderRef}
-        className="fixed inset-0 z-[100] flex items-center justify-center"
-        style={{
-          background: "var(--bg-darker)",
-          transformOrigin: "top",
-        }}
+        className="border fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center pointer-events-none"
+        style={{ transformOrigin: "top" }}
+        aria-label="Loading screen"
+        role="status"
       >
         <div className="text-center relative px-4">
           <div className="relative">
-            <span className="text-6xl sm:text-8xl font-light tracking-tight relative z-10 text-white/90">
-              V<span className="text-white/20">S</span>
+            <span className="text-6xl sm:text-8xl text-white font-light tracking-tight relative z-10">
+              V<span className="text-white/40">S</span>
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-3xl animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/20 to-transparent blur-3xl animate-pulse" />
           </div>
           <div className="mt-8 relative">
-            <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto" />
-            <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mx-auto mt-1 animate-pulse" />
+            <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent mx-auto" />
+            <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto mt-1 animate-pulse" />
           </div>
-          <div className="mt-8 text-white/30 text-xs sm:text-sm tracking-[0.3em] animate-pulse">
+          <div className="mt-8 text-white/40 text-xs sm:text-sm tracking-[0.3em] animate-pulse">
             CRAFTING DIGITAL EXPERIENCES
           </div>
         </div>
@@ -306,192 +321,239 @@ export default function HomeHero() {
 
       <section
         ref={containerRef}
-        className="relative min-h-screen px-4 sm:px-6 md:px-12 lg:px-24 py-20 overflow-hidden"
+        className="border relative min-h-screen"
         style={{
-          background: "var(--gradient-matte)",
-          color: "var(--text-primary)",
+          background: "var(--gradient-matte, #0a0a0a)",
+          color: "var(--text-primary, #ffffff)",
         }}
+        aria-label="Hero section"
       >
-        {/* Parallax Background - Matching About styling */}
+        {/* Parallax Background */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
-          <div className="parallax-layer-1 absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0f0f0f] to-[#0a0a0a]" />
-          <div className="parallax-layer-2 absolute inset-0 opacity-30">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03)_0%,transparent_60%)]" />
+          <div
+            className="parallax-layer-1 absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+                linear-gradient(var(--bg-dark, #0f0f0f), var(--bg-darker, #050505))
+              `,
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="parallax-layer-2 absolute inset-0 opacity-30"
+            aria-hidden="true"
+          >
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
           </div>
-          <div className="parallax-layer-3 absolute inset-0">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl" />
+          <div className="parallax-layer-3 absolute inset-0" aria-hidden="true">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gray-800/5 rounded-full blur-3xl" />
           </div>
 
-          {/* Floating Orbs - Subtle like About */}
-          <div className="floating-orb-1 absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-full blur-3xl" />
-          <div className="floating-orb-2 absolute bottom-40 right-20 w-96 h-96 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-full blur-3xl" />
-          <div className="floating-orb-3 absolute top-1/2 left-1/2 w-48 h-48 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-full blur-3xl" />
+          {/* Floating Orbs */}
+          <div
+            className="floating-orb-1 absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-gray-800/10 to-gray-900/10 rounded-full blur-3xl"
+            aria-hidden="true"
+          />
+          <div
+            className="floating-orb-2 absolute bottom-40 right-20 w-96 h-96 bg-gradient-to-br from-gray-800/10 to-gray-900/10 rounded-full blur-3xl"
+            aria-hidden="true"
+          />
+          <div
+            className="floating-orb-3 absolute top-1/2 left-1/2 w-48 h-48 bg-gradient-to-br from-gray-800/10 to-gray-900/10 rounded-full blur-3xl"
+            aria-hidden="true"
+          />
 
-          {/* Grid overlay - Matching About grid */}
+          {/* Grid overlay */}
           <div
             className="absolute inset-0 opacity-20"
             style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
-              `,
-              backgroundSize: "90px 90px",
+              backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
+              backgroundSize: "50px 50px",
             }}
+            aria-hidden="true"
           />
         </div>
 
         <div
           ref={heroRef}
-          className="relative min-h-[calc(100vh-10rem)] flex items-center"
+          className="relative min-h-screen flex items-center px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-20"
         >
           <div className="max-w-7xl mx-auto w-full relative z-10">
-            {/* Pre-title - Matching About styling */}
-            <span className="hero-pre-title inline-block text-white/40 text-xs sm:text-sm tracking-[0.3em] mb-4 sm:mb-6 opacity-0">
+            {/* Pre-title */}
+            <span className="hero-pre-title inline-block text-white/50 text-[10px] sm:text-xs md:text-sm tracking-[0.3em] mb-3 sm:mb-4 md:mb-6 opacity-0">
               <span
-                className="inline-block w-8 sm:w-12 h-px mr-3 sm:mr-4 align-middle"
-                style={{ background: "var(--accent)" }}
+                className="inline-block w-6 sm:w-8 md:w-12 h-px mr-2 sm:mr-3 md:mr-4 align-middle"
+                style={{ background: "var(--accent, #ffffff)" }}
+                aria-hidden="true"
               />
-              FULL-STACK DEVELOPER
+              VISHAL SINGH - FULL-STACK DEVELOPER
             </span>
 
-            {/* Main Title - Matching About color scheme */}
+            {/* Main Title - Improved for mobile */}
             <h1 className="mb-6 sm:mb-8">
-              <div className="overflow-hidden">
-                <span className="hero-line block text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-light tracking-tight text-white/90 opacity-0 leading-[0.9] relative">
+              <div className="sr-only">Digital Craftsmanship</div>
+              <div aria-hidden="true">
+                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-white opacity-0 leading-[1.1] sm:leading-[0.9]">
                   DIGITAL
-                  <span className="absolute -top-2 sm:-top-4 -right-2 sm:-right-4 text-[8px] sm:text-xs text-white/30 tracking-widest rotate-12 hidden lg:inline-block">
-                    ✦ SINCE 2016
-                  </span>
                 </span>
               </div>
-              <div className="overflow-hidden">
-                <span className="hero-line block text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-light tracking-tight text-white/90 opacity-0 leading-[0.9]">
-                  <span className="text-white/50 relative">
+              <div aria-hidden="true" className="mt-1 sm:mt-0">
+                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-white opacity-0 leading-[1.1] sm:leading-[0.9]">
+                  <span className="text-white/60 relative inline-block">
                     CRAFTSMANSHIP
-                    <span className="absolute -bottom-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    <span
+                      className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent"
+                      aria-hidden="true"
+                    />
                   </span>
                 </span>
               </div>
             </h1>
 
-            {/* Description - Matching About text opacity */}
+            {/* Description - Better text sizing */}
             <div className="hero-description max-w-xl sm:max-w-2xl opacity-0">
-              <p className="text-base sm:text-xl md:text-2xl text-white/60 leading-relaxed">
+              <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-white/60 leading-relaxed">
                 Building performant, scalable systems with obsessive attention
                 to detail and user experience through first principles thinking.
               </p>
             </div>
 
-            {/* CTA Button - Styled like About cards */}
-            <div className="hero-cta mt-8 sm:mt-12 opacity-0">
+            {/* CTA Button - Better touch targets */}
+            <div className="hero-cta mt-8 sm:mt-10 md:mt-12 opacity-0">
               <button
                 onClick={handleLaunch}
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-                className="magnetic-cta group relative px-6 sm:px-8 py-3 sm:py-4 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                className="magnetic-cta group relative px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 rounded-full overflow-hidden transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent min-h-[44px]"
                 style={{
-                  background:
-                    "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                  background: "var(--accent, #ffffff)",
+                  color: "#000",
+                  boxShadow: "0 0 20px rgba(255,255,255,0.2)",
                 }}
                 aria-label="Explore my work"
               >
-                <span className="relative z-10 tracking-wider text-xs sm:text-sm font-medium flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
+                <span className="relative z-10 tracking-wider text-xs sm:text-sm font-medium flex items-center gap-2">
                   EXPLORE MY WORK
                   <ArrowRight
                     size={16}
-                    className={`transform transition-all duration-300 ${
-                      isHovering ? "translate-x-1 rotate-0" : ""
-                    }`}
+                    className="transform transition-transform duration-300 group-hover:translate-x-1"
                     aria-hidden="true"
                   />
                 </span>
                 <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                  style={{
-                    background:
-                      "linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
-                  }}
+                  className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                  aria-hidden="true"
                 />
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  aria-hidden="true"
+                >
+                  <div className="w-0 h-0 group-hover:w-full group-hover:h-full transition-all duration-500 bg-white/10 rounded-full" />
+                </div>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Tech Stack - Bottom - Matching About styling */}
-        <div className="tech-stack absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 w-full px-4 sm:px-6 md:px-12 lg:px-24">
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10">
+        {/* Tech Stack - Improved positioning and wrapping */}
+        <div className="tech-stack absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-12 left-0 right-0 px-3 sm:px-4 md:px-6 lg:px-12 xl:px-24">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-10 max-w-7xl mx-auto">
             {techStack.map((tech, index) => (
               <div
                 key={tech.name}
                 className="tech-item group relative opacity-0 cursor-pointer"
                 onMouseEnter={() => setActiveTech(index)}
                 onMouseLeave={() => setActiveTech(null)}
+                aria-label={`${tech.name} - ${tech.category}`}
               >
                 <div className="flex flex-col items-center">
-                  <span className="text-base sm:text-lg mb-1 opacity-40 group-hover:opacity-80 transition-opacity duration-300">
+                  <span
+                    className="text-sm sm:text-base md:text-lg mb-0.5 sm:mb-1 opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+                    aria-hidden="true"
+                  >
                     {tech.icon}
                   </span>
-                  <span className="text-[10px] sm:text-xs md:text-sm text-white/30 group-hover:text-white/60 transition-colors duration-500 tracking-wider">
+                  <span className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-white/40 group-hover:text-white/60 transition-colors duration-500 tracking-wider whitespace-nowrap">
                     {tech.name}
                   </span>
                   <span
-                    className={`absolute -top-5 sm:-top-6 left-1/2 -translate-x-1/2 text-[8px] sm:text-[10px] text-white/20 whitespace-nowrap transition-opacity duration-300 ${
+                    className={`absolute -top-4 sm:-top-5 md:-top-6 left-1/2 -translate-x-1/2 text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] text-white/30 whitespace-nowrap transition-opacity duration-300 ${
                       activeTech === index ? "opacity-100" : "opacity-0"
                     }`}
+                    aria-hidden="true"
                   >
                     {tech.category}
                   </span>
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:w-full transition-all duration-500" />
+                  <span
+                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent group-hover:w-full transition-all duration-500"
+                    aria-hidden="true"
+                  />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Scroll Indicator - Matching About styling */}
-        <div className="absolute bottom-20 sm:bottom-24 left-1/2 transform -translate-x-1/2 hidden sm:block">
+        {/* Scroll Indicator - Hide on mobile, adjust positioning */}
+        <div
+          className="absolute bottom-16 sm:bottom-20 md:bottom-24 left-1/2 transform -translate-x-1/2 hidden sm:block pointer-events-none"
+          aria-label="Scroll down indicator"
+        >
           <div className="relative">
-            <div className="w-px h-12 sm:h-16 bg-gradient-to-b from-white/30 via-white/20 to-transparent mx-auto animate-scroll" />
-            <div className="absolute top-8 sm:top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-              <span className="text-[8px] sm:text-[10px] text-white/20 tracking-[0.3em] rotate-90 block">
+            <div
+              className="w-px h-10 sm:h-12 md:h-16 bg-gradient-to-b from-gray-600 via-gray-600/50 to-transparent mx-auto animate-scroll"
+              aria-hidden="true"
+            />
+            <div className="absolute top-6 sm:top-7 md:top-8 lg:top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+              <span className="text-[6px] sm:text-[7px] md:text-[8px] lg:text-[10px] text-white/30 tracking-[0.3em] rotate-90 block">
                 SCROLL
               </span>
             </div>
           </div>
         </div>
 
-        {/* Floating Elements - Matching About decorative borders */}
+        {/* Floating Orbs - Hide or reduce opacity on mobile */}
         <div
-          className="absolute -bottom-32 -right-32 w-64 sm:w-96 h-64 sm:h-96 rounded-full opacity-5"
-          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+          className="floating-orb-1 absolute top-20 left-20 w-32 sm:w-48 md:w-64 lg:w-72 xl:w-96 h-32 sm:h-48 md:h-64 lg:h-72 xl:h-96 bg-gradient-to-br from-gray-800/5 to-gray-900/5 rounded-full blur-3xl hidden sm:block"
+          aria-hidden="true"
         />
         <div
-          className="absolute top-1/2 -left-32 w-64 sm:w-96 h-64 sm:h-96 rounded-full opacity-5"
-          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+          className="floating-orb-2 absolute bottom-40 right-20 w-48 sm:w-64 md:w-80 lg:w-96 xl:w-[500px] h-48 sm:h-64 md:h-80 lg:h-96 xl:h-[500px] bg-gradient-to-br from-gray-800/5 to-gray-900/5 rounded-full blur-3xl hidden sm:block"
+          aria-hidden="true"
+        />
+        <div
+          className="floating-orb-3 absolute top-1/2 left-1/2 w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 h-32 sm:h-40 md:h-48 lg:h-64 xl:h-80 bg-gradient-to-br from-gray-800/5 to-gray-900/5 rounded-full blur-3xl hidden md:block"
+          aria-hidden="true"
         />
 
-        {/* Mini Stats - Matching About styling */}
-        <div className="absolute top-1/2 right-4 lg:right-8 transform -translate-y-1/2 hidden 2xl:block">
-          <div className="space-y-4 sm:space-y-6">
+        {/* Stats Section - Better responsive positioning */}
+        <div className="absolute top-1/2 right-2 lg:right-4 xl:right-8 transform -translate-y-1/2 hidden lg:block">
+          <div className="space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6">
             {[
-              { label: "YEARS", value: "8+" },
-              { label: "PROJECTS", value: "50+" },
-              { label: "CLIENTS", value: "30+" },
+              { label: "YEARS", value: "4+" },
+              { label: "PROJECTS", value: "15+" },
+              { label: "CLIENTS", value: "15+" },
             ].map((stat) => (
               <div key={stat.label} className="text-right">
-                <div className="text-xl sm:text-2xl text-white/60 font-light">
+                <div className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 font-light">
                   {stat.value}
                 </div>
-                <div className="text-[10px] sm:text-xs text-white/30 tracking-wider">
+                <div className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs text-white/30 tracking-wider">
                   {stat.label}
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Decorative elements - Hide on very small screens */}
+        <div
+          className="absolute -bottom-16 sm:-bottom-24 md:-bottom-32 -right-16 sm:-right-24 md:-right-32 w-48 sm:w-64 md:w-80 lg:w-96 h-48 sm:h-64 md:h-80 lg:h-96 border border-gray-800 rounded-full opacity-5 hidden xs:block"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute top-1/2 -left-16 sm:-left-20 md:-left-24 lg:-left-32 w-48 sm:w-64 md:w-80 lg:w-96 h-48 sm:h-64 md:h-80 lg:h-96 border border-gray-800 rounded-full opacity-5 hidden xs:block"
+          aria-hidden="true"
+        />
       </section>
 
       <style jsx>{`
@@ -517,19 +579,22 @@ export default function HomeHero() {
           will-change: transform;
         }
 
-        .perspective {
-          perspective: 2000px;
-        }
-
         .floating-orb-1,
         .floating-orb-2,
         .floating-orb-3 {
           will-change: transform;
         }
 
-        @media (max-width: 640px) {
-          .animate-scroll {
+        @media (prefers-reduced-motion: reduce) {
+          .animate-scroll,
+          .floating-orb-1,
+          .floating-orb-2,
+          .floating-orb-3,
+          .parallax-layer-1,
+          .parallax-layer-2,
+          .parallax-layer-3 {
             animation: none;
+            transform: none;
           }
         }
       `}</style>

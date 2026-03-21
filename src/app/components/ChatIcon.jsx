@@ -1,18 +1,22 @@
-export const ChatBotIcon = ({
-  size = 64,
-  color = "#f472b6" /* pink-400 */,
-}) => (
-  <div className="group w-fit">
+export const ChatBotIcon = ({ size = 64, color = "var(--accent)" }) => (
+  <div className="group w-fit relative">
+    {/* Subtle halo */}
+    <div
+      className="absolute inset-0 rounded-full blur-xl opacity-20 group-hover:opacity-35 transition duration-500"
+      style={{
+        background: `radial-gradient(circle, ${color}25, transparent 70%)`,
+      }}
+    />
+
     <svg
       width={size}
       height={size}
       viewBox="0 0 64 64"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      className="relative z-10"
     >
-      {/* Robot head */}
       <g transform="translate(12, 14)">
-        <path d="M8 8H32V32H24L20 36V32H8V8Z" fill="white" />
+        {/* Head */}
         <rect
           x="8"
           y="8"
@@ -20,96 +24,110 @@ export const ChatBotIcon = ({
           height="24"
           rx="8"
           fill="url(#headGradient)"
-          className="transition-all group-hover:drop-shadow-[0_0_12px_#f472b6]"
+          stroke="rgba(255,255,255,0.06)"
+          className="transition-all duration-500 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.12)]"
         />
-        {/* Eyes */}
+
+        {/* Eyes track */}
         <rect
           x="12"
           y="16"
           width="16"
           height="4"
           rx="2"
-          fill="#1E293B"
-          opacity="0.2"
+          fill="rgba(0,0,0,0.25)"
         />
-        <rect x="12" y="16" width="16" height="4" rx="2" fill="#1E293B">
+
+        {/* Scan (ONLY accent usage here) */}
+        <rect
+          x="12"
+          y="16"
+          width="16"
+          height="4"
+          rx="2"
+          fill="rgba(255,255,255,0.6)"
+        >
           <animate
             attributeName="width"
             values="0;16;0"
-            dur="2s"
+            dur="2.6s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values="0;0.9;0"
+            dur="2.6s"
             repeatCount="indefinite"
           />
         </rect>
+
         {/* Mouth */}
         <path
           d="M16 26 Q20 30 24 26"
-          stroke="#1E293B"
+          stroke="rgba(255,255,255,0.35)"
           strokeWidth="2"
           fill="none"
           strokeLinecap="round"
         />
-        {/* Antenna */}
-        <circle cx="20" cy="4" r="2" fill={color}>
+
+        {/* Antenna (no accent now, just neutral) */}
+        <circle cx="20" cy="4" r="2" fill="rgba(255,255,255,0.6)">
           <animate
             attributeName="opacity"
-            values="1;0.5;1"
-            dur="1.5s"
+            values="1;0.6;1"
+            dur="2s"
             repeatCount="indefinite"
           />
         </circle>
+
         <line
           x1="20"
           y1="6"
           x2="20"
           y2="10"
-          stroke={color}
+          stroke="rgba(255,255,255,0.4)"
           strokeWidth="2"
           strokeLinecap="round"
         />
       </g>
 
-      {/* Speech bubble */}
+      {/* Bubble (no border, softer glass) */}
       <g transform="translate(38, 6)">
         <path
-          d="M16 6H4C1.79086 6 0 7.79086 0 10V16C0 18.2091 1.79086 20 4 20H12L16 24V20H20C22.2091 20 24 18.2091 24 16V10C24 7.79086 22.2091 6 20 6H16Z"
-          fill="#f472b6"
+          d="M16 6H4C1.8 6 0 7.8 0 10V16C0 18.2 1.8 20 4 20H12L16 24V20H20C22.2 20 24 18.2 24 16V10C24 7.8 22.2 6 20 6H16Z"
+          fill="url(#bubbleGradient)"
         >
           <animateTransform
             attributeName="transform"
             type="translate"
             values="0 0; 0 -2; 0 0"
-            dur="3s"
+            dur="3.2s"
             repeatCount="indefinite"
           />
         </path>
+
         <text
           x="12"
           y="14"
           textAnchor="middle"
-          fill="white"
+          fill="rgba(255,255,255,0.85)"
           fontSize="6"
-          fontWeight="bold"
-          fontFamily="Arial, sans-serif"
+          fontWeight="600"
+          fontFamily="Inter, sans-serif"
         >
-          HI!
+          Hi
         </text>
       </g>
 
-      {/* Gradients */}
       <defs>
-        <linearGradient id="bgGradient" x1="0" y1="0" x2="0" y2="64">
-          <stop offset="0%" stopColor="#ec4899" stopOpacity="0.08" />
-          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.2" />
-        </linearGradient>
-
-        <linearGradient id="borderGradient" x1="0" y1="0" x2="0" y2="64">
-          <stop offset="0%" stopColor="#f472b6" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#ec4899" stopOpacity="1" />
-        </linearGradient>
-
         <linearGradient id="headGradient" x1="0" y1="0" x2="0" y2="32">
-          <stop offset="0%" stopColor="white" />
-          <stop offset="100%" stopColor="#f8fafc" />
+          <stop offset="0%" stopColor="#2a2a2a" />
+          <stop offset="100%" stopColor="#141414" />
+        </linearGradient>
+
+        <linearGradient id="bubbleGradient" x1="0" y1="0" x2="0" y2="24">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0.04)" />
         </linearGradient>
       </defs>
     </svg>

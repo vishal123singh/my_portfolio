@@ -3,7 +3,6 @@
 
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 // Dynamically import with SSR disabled
 const AssistantLauncher = dynamic(() => import("./AssistantLauncher"), {

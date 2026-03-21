@@ -94,7 +94,7 @@ export default function Contact() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen py-24 px-6 md:px-12 lg:px-24"
+      className="relative min-h-screen py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24"
       style={{
         background: "var(--gradient-matte)",
         color: "var(--text-primary)",
@@ -106,9 +106,9 @@ export default function Contact() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
-              linear-gradient(var(--bg-dark), var(--bg-darker))
-            `,
+          radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+          linear-gradient(var(--bg-dark), var(--bg-darker))
+        `,
           }}
         />
 
@@ -116,73 +116,76 @@ export default function Contact() {
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
-            `,
-            backgroundSize: "90px 90px",
+          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+        `,
+            backgroundSize: "70px 70px", // smaller for mobile
           }}
         />
       </div>
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div ref={headerRef} className="mb-16">
-          <span className="text-white/60 text-sm tracking-[0.3em]">
+        <div ref={headerRef} className="mb-12 sm:mb-16">
+          <span className="text-white/60 text-xs sm:text-sm tracking-[0.25em] sm:tracking-[0.3em]">
             <span
-              className="inline-block w-12 h-px mr-4"
+              className="inline-block w-8 sm:w-12 h-px mr-3 sm:mr-4"
               style={{ background: "var(--accent)" }}
             />
             CONNECT
           </span>
 
-          <h2 className="text-5xl md:text-6xl mt-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-4 sm:mt-6 leading-tight">
             <span className="font-medium">Let's</span>
-            <span className="ml-4 text-white/40">Talk</span>
+            <span className="ml-2 sm:ml-4 text-white/40">Talk</span>
           </h2>
 
-          <p className="text-white/70 max-w-2xl mt-6">
+          <p className="text-white/70 max-w-xl sm:max-w-2xl mt-4 sm:mt-6 text-sm sm:text-base">
             Have a project in mind or want to collaborate? Let’s create
             something exceptional.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16">
+        {/* GRID */}
+        <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 md:gap-16">
           {/* LEFT */}
-          <div ref={contactMethodsRef} className="space-y-6">
+          <div ref={contactMethodsRef} className="space-y-4 sm:space-y-6">
             {contactMethods.map((method) => (
               <div
                 key={method.type}
-                className="contact-method group rounded-2xl p-6 transition-all"
+                className="contact-method group rounded-2xl p-4 sm:p-6 transition-all"
                 style={{
                   background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
                   border: "1px solid rgba(255,255,255,0.06)",
                   boxShadow: `
-                    inset 0 1px 0 rgba(255,255,255,0.06),
-                    0 10px 25px rgba(0,0,0,0.8)
-                  `,
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 10px 25px rgba(0,0,0,0.8)
+              `,
                 }}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <div
-                    className="p-3 rounded-xl"
+                    className="p-2 sm:p-3 rounded-xl"
                     style={{
                       background: "rgba(255,255,255,0.08)",
                     }}
                   >
-                    <method.icon className="w-5 h-5 text-white/80" />
+                    <method.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
                   </div>
 
-                  <div className="flex-1">
-                    <div className="text-white/50 text-xs tracking-wider">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white/50 text-[10px] sm:text-xs tracking-wider">
                       {method.type}
                     </div>
-                    <div className="text-white text-lg">{method.value}</div>
-                    <div className="text-white/50 text-sm">
+                    <div className="text-white text-sm sm:text-lg truncate">
+                      {method.value}
+                    </div>
+                    <div className="text-white/50 text-xs sm:text-sm">
                       {method.description}
                     </div>
                   </div>
 
-                  <ArrowRight className="text-white/40 group-hover:translate-x-1 transition" />
+                  <ArrowRight className="text-white/40 group-hover:translate-x-1 transition w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
             ))}
@@ -191,26 +194,28 @@ export default function Contact() {
           {/* RIGHT - FORM */}
           <div ref={formRef}>
             <div
-              className="rounded-3xl p-8"
+              className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8"
               style={{
                 background:
                   "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
                 border: "1px solid rgba(255,255,255,0.06)",
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.06),
-                  0 15px 40px rgba(0,0,0,0.8)
-                `,
+              inset 0 1px 0 rgba(255,255,255,0.06),
+              0 15px 40px rgba(0,0,0,0.8)
+            `,
               }}
             >
-              <h3 className="text-2xl text-white mb-6">Send a message</h3>
+              <h3 className="text-xl sm:text-2xl text-white mb-4 sm:mb-6">
+                Send a message
+              </h3>
 
               {submitSuccess && (
-                <div className="mb-6 p-4 rounded-xl text-white/70 border border-white/10">
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl text-white/70 border border-white/10 text-sm">
                   Message sent successfully.
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {["name", "email"].map((field) => (
                   <input
                     key={field}
@@ -219,7 +224,7 @@ export default function Contact() {
                     value={formData[field]}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl outline-none"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl outline-none text-sm sm:text-base"
                     style={{
                       background: "rgba(255,255,255,0.04)",
                       border: "1px solid rgba(255,255,255,0.08)",
@@ -230,12 +235,12 @@ export default function Contact() {
 
                 <textarea
                   name="message"
-                  rows={5}
+                  rows={4}
                   placeholder="Your message"
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-xl outline-none resize-none"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl outline-none resize-none text-sm sm:text-base"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -243,18 +248,17 @@ export default function Contact() {
                   }}
                 />
 
-                {/* BUTTON */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 rounded-xl flex items-center justify-center gap-2"
+                  className="w-full py-3 sm:py-4 rounded-xl flex items-center justify-center gap-2 text-sm sm:text-base"
                   style={{
                     background: "linear-gradient(145deg, #e6e6e6, #999)",
                     color: "#000",
                     boxShadow: `
-                      inset 0 1px 0 rgba(255,255,255,0.5),
-                      0 5px 20px rgba(255,255,255,0.15)
-                    `,
+                  inset 0 1px 0 rgba(255,255,255,0.5),
+                  0 5px 20px rgba(255,255,255,0.15)
+                `,
                   }}
                 >
                   <Send size={16} />
