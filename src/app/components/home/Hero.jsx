@@ -293,11 +293,11 @@ export default function HomeHero() {
   }, []);
 
   return (
-    <div className="overflow-hidden border">
+    <div className="overflow-hidden">
       {/* Loading Screen */}
       <div
         ref={loaderRef}
-        className="border fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center pointer-events-none"
+        className="fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center pointer-events-none"
         style={{ transformOrigin: "top" }}
         aria-label="Loading screen"
         role="status"
@@ -321,7 +321,7 @@ export default function HomeHero() {
 
       <section
         ref={containerRef}
-        className="border relative min-h-screen"
+        className="relative min-h-screen"
         style={{
           background: "var(--gradient-matte, #0a0a0a)",
           color: "var(--text-primary, #ffffff)",
