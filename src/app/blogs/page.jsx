@@ -1,7 +1,7 @@
 // pages/blogs/page.jsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { gsap } from "gsap";
@@ -10,7 +10,6 @@ import { TextPlugin } from "gsap/TextPlugin";
 import LoginModal from "../components/Modals/LoginModal";
 import { Trash, FilePenLineIcon, Send, Share2, PenLine, X } from "lucide-react";
 
-// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 const TiptapEditor = dynamic(() => import("../components/Editor"), {
@@ -25,7 +24,6 @@ export default function MyBlogsPage() {
   const [showLogin, setShowLogin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Refs for animations
   const containerRef = useRef(null);
   const heroRef = useRef(null);
   const blogsRef = useRef(null);
@@ -33,51 +31,38 @@ export default function MyBlogsPage() {
   const loaderRef = useRef(null);
   const blogCardsRef = useRef([]);
 
+  // Fetch blogs
   useEffect(() => {
-    // Initial loader animation
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          document.body.style.overflow = "auto";
-        },
-      });
-
-      tl.to(loaderRef.current, {
-        scaleY: 0,
-        transformOrigin: "top",
-        duration: 1.8,
-        ease: "power4.inOut",
-        delay: 1,
-      }).to(
-        loaderRef.current,
-        {
-          display: "none",
-        },
-        "-=1.3",
-      );
+      gsap
+        .timeline({
+          onComplete: () => (document.body.style.overflow = "auto"),
+        })
+        .to(loaderRef.current, {
+          scaleY: 0,
+          transformOrigin: "top",
+          duration: 1.8,
+          ease: "power4.inOut",
+          delay: 1,
+        })
+        .to(loaderRef.current, { display: "none" }, "-=1.3");
     });
 
-    // Fetch blogs
     fetch("/api/blogs")
       .then((res) => res.json())
-      .then((data) => {
-        setBlogs(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load blogs", err);
-        setLoading(false);
-      });
+      .then((data) => setBlogs(data))
+      .catch((err) => console.error("Failed to load blogs", err))
+      .finally(() => setLoading(false));
 
     return () => ctx.revert();
   }, []);
 
+  // Animate hero & blog cards
   useEffect(() => {
     if (loading || !blogs.length) return;
 
-    // Animate blog cards after they're loaded
     const ctx = gsap.context(() => {
-      // Hero section animation
+      // Hero animations
       gsap.fromTo(
         ".hero-line",
         { y: 100, opacity: 0, rotateX: -45 },
@@ -96,13 +81,11 @@ export default function MyBlogsPage() {
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.8 },
       );
-
       gsap.fromTo(
         ".hero-description",
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 1 },
       );
-
       gsap.fromTo(
         ".hero-cta",
         { scale: 0.8, opacity: 0 },
@@ -115,10 +98,9 @@ export default function MyBlogsPage() {
         },
       );
 
-      // Animate blog cards with 3D effect
+      // Blog card animations
       blogCardsRef.current.forEach((card, index) => {
         if (!card) return;
-
         gsap.fromTo(
           card,
           { y: 100, opacity: 0, rotateX: 15 },
@@ -138,85 +120,92 @@ export default function MyBlogsPage() {
         );
       });
 
-      // Magnetic effect for buttons
-      const buttons = document.querySelectorAll(".magnetic-button");
-      buttons.forEach((button) => {
-        button.addEventListener("mousemove", (e) => {
-          const rect = button.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
+      // Magnetic buttons
+      const buttons =
+        containerRef.current?.querySelectorAll(".magnetic-button");
+      if (buttons) {
+        buttons.forEach((button) => {
+          const onMouseMove = (e) => {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            gsap.to(button, {
+              x: x * 0.3,
+              y: y * 0.3,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          };
+          const onMouseLeave = () =>
+            gsap.to(button, { x: 0, y: 0, duration: 0.4, ease: "power2.out" });
 
-          gsap.to(button, {
-            x: x * 0.3,
-            y: y * 0.3,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        });
+          button.addEventListener("mousemove", onMouseMove);
+          button.addEventListener("mouseleave", onMouseLeave);
 
-        button.addEventListener("mouseleave", () => {
-          gsap.to(button, {
-            x: 0,
-            y: 0,
-            duration: 0.4,
-            ease: "power2.out",
-          });
+          // Cleanup
+          button._cleanup = () => {
+            button.removeEventListener("mousemove", onMouseMove);
+            button.removeEventListener("mouseleave", onMouseLeave);
+          };
         });
-      });
+      }
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      blogCardsRef.current.forEach((card) => card?._cleanup?.());
+      ctx.revert();
+    };
   }, [loading, blogs]);
 
-  const handlePost = async () => {
+  // Post or update a blog
+  const handlePost = useCallback(async () => {
     try {
       const existing = blogs.find((b) => b.title === form.title);
       const isEdit = !!existing;
-      const method = isEdit ? "PUT" : "POST";
       const url = isEdit ? `/api/blogs/${existing._id}` : "/api/blogs";
 
       const res = await fetch(url, {
-        method,
+        method: isEdit ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
       const data = await res.json();
 
-      if (res.ok) {
-        const updatedList = isEdit
-          ? blogs.map((b) => (b._id === data.blog._id ? data.blog : b))
-          : [data.blog, ...blogs];
-        setBlogs(updatedList);
-        setForm({ title: "", content: "" });
-        setShowEditor(false);
+      if (!res.ok) return alert(data.error || "Something went wrong");
 
-        // Animate editor closing
-        gsap.to(editorRef.current, {
-          opacity: 0,
-          y: 30,
-          duration: 0.5,
-          onComplete: () => setShowEditor(false),
-        });
-      } else {
-        alert(data.error || "Something went wrong");
-      }
+      setBlogs((prev) =>
+        isEdit
+          ? prev.map((b) => (b._id === data.blog._id ? data.blog : b))
+          : [data.blog, ...prev],
+      );
+      setForm({ title: "", content: "" });
+
+      gsap.to(editorRef.current, {
+        opacity: 0,
+        y: 30,
+        duration: 0.5,
+        onComplete: () => setShowEditor(false),
+      });
     } catch (err) {
       console.error(err);
       alert("Network error");
     }
+  }, [blogs, form]);
+
+  // Helper: Extract first image from content safely
+  const extractImage = (content) => {
+    const match = content?.match(/<img[^>]+src=["']([^"'>]+)["']/);
+    return match?.[1] || null;
   };
 
   return (
     <>
-      {/* Loading Screen */}
+      {/* Loader */}
       <div
         ref={loaderRef}
         className="fixed inset-0 z-[100] flex items-center justify-center"
-        style={{
-          background: "var(--bg-darker)",
-          transformOrigin: "top",
-        }}
+        style={{ background: "var(--bg-darker)", transformOrigin: "top" }}
       >
         <div className="text-center relative">
           <div className="relative">
@@ -244,29 +233,6 @@ export default function MyBlogsPage() {
           color: "var(--text-primary)",
         }}
       >
-        {/* Parallax Background Layers */}
-        <div className="fixed inset-0 -z-10 overflow-hidden">
-          <div className="parallax-layer-1 absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0f0f0f] to-[#0a0a0a]" />
-          <div className="parallax-layer-2 absolute inset-0 opacity-30">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.03)_0%,transparent_60%)]" />
-          </div>
-          <div className="parallax-layer-3 absolute inset-0">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl" />
-          </div>
-
-          {/* Grid overlay */}
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
-              `,
-              backgroundSize: "90px 90px",
-            }}
-          />
-        </div>
-
         {showLogin && (
           <LoginModal
             onClose={() => setShowLogin(false)}
@@ -291,15 +257,14 @@ export default function MyBlogsPage() {
               />
               BUILDER'S LOG
             </span>
-
             <h1 className="mb-8">
               <div className="overflow-hidden">
-                <span className="hero-line block text-7xl md:text-7xl lg:text-[6rem] font-light tracking-tight text-white/90 opacity-0 leading-[0.9]">
+                <span className="hero-line block text-7xl font-light tracking-tight text-white/90 opacity-0 leading-[0.9]">
                   THOUGHTS
                 </span>
               </div>
               <div className="overflow-hidden">
-                <span className="hero-line block text-7xl md:text-7xl lg:text-[6rem] font-light tracking-tight text-white/90 opacity-0 leading-[0.9]">
+                <span className="hero-line block text-7xl font-light tracking-tight text-white/90 opacity-0 leading-[0.9]">
                   <span className="text-white/50 relative">
                     & INSIGHTS
                     <span className="absolute -top-4 -right-4 text-xs text-white/30 tracking-widest rotate-12">
@@ -309,7 +274,6 @@ export default function MyBlogsPage() {
                 </span>
               </div>
             </h1>
-
             <div className="hero-description max-w-2xl opacity-0">
               <p className="text-xl md:text-2xl text-white/60 leading-relaxed">
                 Practical insights, real-world experiments, and lessons learned
@@ -319,13 +283,9 @@ export default function MyBlogsPage() {
 
             <div className="hero-cta mt-12 opacity-0">
               <button
-                onClick={() => {
-                  if (!isLoggedIn) {
-                    setShowLogin(true);
-                  } else {
-                    setShowEditor(!showEditor);
-                  }
-                }}
+                onClick={() =>
+                  !isLoggedIn ? setShowLogin(true) : setShowEditor(!showEditor)
+                }
                 className="magnetic-button group relative px-8 py-4 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                 style={{
                   background:
@@ -398,7 +358,6 @@ export default function MyBlogsPage() {
                   <h3 className="text-lg sm:text-xl md:text-2xl text-white/90 font-light">
                     {form.title ? "Continue Writing" : "New Entry"}
                   </h3>
-
                   <button
                     onClick={() => setShowEditor(false)}
                     className="self-end sm:self-auto p-2 rounded-full transition-colors hover:bg-white/10"
@@ -427,16 +386,14 @@ export default function MyBlogsPage() {
 
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4 mt-6 sm:mt-8">
-                  {/* Share Button */}
+                  {/* Share */}
                   <button
-                    onClick={() => {
-                      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                        `https://yourdomain.com/blogs/${form.title
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")}`,
-                      )}`;
-                      window.open(url, "_blank");
-                    }}
+                    onClick={() =>
+                      window.open(
+                        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://yourdomain.com/blogs/${form.title.toLowerCase().replace(/\s+/g, "-")}`)}`,
+                        "_blank",
+                      )
+                    }
                     className="w-full sm:w-auto magnetic-button group relative px-5 sm:px-6 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
@@ -450,7 +407,7 @@ export default function MyBlogsPage() {
                     </span>
                   </button>
 
-                  {/* Submit Button */}
+                  {/* Submit */}
                   <button
                     onClick={handlePost}
                     className="w-full sm:w-auto magnetic-button group relative px-6 sm:px-8 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
@@ -468,7 +425,6 @@ export default function MyBlogsPage() {
                         LAUNCH INTO ORBIT
                       </span>
                       <span className="sm:hidden">POST</span>
-
                       <svg
                         className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
                         fill="none"
@@ -490,7 +446,7 @@ export default function MyBlogsPage() {
           </div>
         )}
 
-        {/* Blogs Grid Section */}
+        {/* Blogs Grid */}
         <section
           ref={blogsRef}
           className="relative px-6 md:px-12 lg:px-24 py-24"
@@ -519,11 +475,7 @@ export default function MyBlogsPage() {
             ) : (
               <div className="grid lg:grid-cols-3 gap-8 perspective">
                 {blogs.map((blog, index) => {
-                  const imgMatch = blog.content.match(
-                    /<img[^>]+src=\"([^">]+)\"/,
-                  );
-                  const imageUrl = imgMatch?.[1];
-
+                  const imageUrl = extractImage(blog.content);
                   return (
                     <div
                       key={blog._id}
@@ -538,13 +490,8 @@ export default function MyBlogsPage() {
                         transformStyle: "preserve-3d",
                       }}
                     >
-                      {/* Background gradient */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                      {/* Animated overlay */}
                       <div className="card-overlay absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                      {/* Content */}
                       <Link
                         href={`/blogs/${blog._id}`}
                         className="block relative p-6"
@@ -563,7 +510,6 @@ export default function MyBlogsPage() {
                             {new Date(blog.date).getFullYear()}
                           </span>
                         </div>
-
                         {imageUrl ? (
                           <div className="w-full h-48 overflow-hidden rounded-xl mb-4">
                             <img
@@ -589,15 +535,12 @@ export default function MyBlogsPage() {
                             </svg>
                           </div>
                         )}
-
                         <h3 className="text-xl text-white/90 mb-2 font-light line-clamp-2">
                           {blog.title}
                         </h3>
-
                         <p className="text-white/50 text-sm mb-4 line-clamp-2">
                           {blog.summary}
                         </p>
-
                         <div className="flex items-center gap-2 text-white/40 group-hover:text-white/60 transition-colors">
                           <span className="text-xs tracking-wider">
                             READ MORE
@@ -618,7 +561,6 @@ export default function MyBlogsPage() {
                         </div>
                       </Link>
 
-                      {/* Admin actions */}
                       {isLoggedIn && (
                         <div className="absolute top-4 right-4 flex gap-2 z-10">
                           <button
@@ -644,17 +586,18 @@ export default function MyBlogsPage() {
                           <button
                             onClick={async (e) => {
                               e.preventDefault();
-                              const confirmed = confirm(
-                                "Are you sure you want to delete this cosmic entry?",
+                              if (
+                                !confirm(
+                                  "Are you sure you want to delete this cosmic entry?",
+                                )
+                              )
+                                return;
+                              await fetch(`/api/blogs/${blog._id}`, {
+                                method: "DELETE",
+                              });
+                              setBlogs((prev) =>
+                                prev.filter((b) => b._id !== blog._id),
                               );
-                              if (confirmed) {
-                                await fetch(`/api/blogs/${blog._id}`, {
-                                  method: "DELETE",
-                                });
-                                setBlogs(
-                                  blogs.filter((b) => b._id !== blog._id),
-                                );
-                              }
                             }}
                             className="p-2 rounded-full transition-colors hover:bg-white/10 backdrop-blur-sm"
                             style={{
@@ -667,7 +610,6 @@ export default function MyBlogsPage() {
                         </div>
                       )}
 
-                      {/* Decorative elements */}
                       <div
                         className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-700"
                         style={{ border: "1px solid rgba(255,255,255,0.08)" }}
@@ -690,7 +632,6 @@ export default function MyBlogsPage() {
             transform: translateY(0);
           }
         }
-
         @keyframes scroll {
           0% {
             transform: translateY(-100%);
@@ -702,23 +643,18 @@ export default function MyBlogsPage() {
             transform: translateY(-100%);
           }
         }
-
         .animate-slide-up {
           animation: slideUp 1s ease-out forwards;
         }
-
         .delay-100 {
           animation-delay: 0.1s;
         }
-
         .animate-scroll {
           animation: scroll 3s ease-in-out infinite;
         }
-
         .perspective {
           perspective: 2000px;
         }
-
         .parallax-layer-1,
         .parallax-layer-2,
         .parallax-layer-3 {

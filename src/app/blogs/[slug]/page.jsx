@@ -4,6 +4,9 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+// Highlight.js for code
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
 
@@ -12,39 +15,72 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-export default function BlogDetailPage() {
+const BlogDetailPage = () => {
   const { slug } = useParams();
   const [blog, setBlog] = useState(null);
+  const [processedContent, setProcessedContent] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [processedContent, setProcessedContent] = useState(null);
+
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState("");
   const [replyName, setReplyName] = useState("");
   const [replyEmail, setReplyEmail] = useState("");
 
+  // Fetch blog and comments
   useEffect(() => {
-    if (slug) {
-      fetch(`/api/blogs/${slug}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.error) setBlog(data);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
+    if (!slug) return;
 
-      fetch(`/api/blogs/${slug}/comments`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.error) setComments(data);
-        });
-    }
+    const fetchBlog = async () => {
+      try {
+        const res = await fetch(`/api/blogs/${slug}`);
+        const data = await res.json();
+        if (!data.error) setBlog(data);
+      } catch (err) {
+        console.error("Failed to fetch blog:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchComments = async () => {
+      try {
+        const res = await fetch(`/api/blogs/${slug}/comments`);
+        const data = await res.json();
+        if (!data.error) setComments(data);
+      } catch (err) {
+        console.error("Failed to fetch comments:", err);
+      }
+    };
+
+    fetchBlog();
+    fetchComments();
   }, [slug]);
 
+  // Process blog content (wrap images)
+  useEffect(() => {
+    if (!blog?.content) return;
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(blog.content, "text/html");
+
+    doc.querySelectorAll("img").forEach((img) => {
+      if (img.closest(".img-container-blog")) return;
+      const wrapper = document.createElement("div");
+      wrapper.className = "img-container-blog";
+      img.replaceWith(wrapper);
+      wrapper.appendChild(img);
+    });
+
+    setProcessedContent(doc.body.innerHTML);
+  }, [blog?.content]);
+
+  // Highlight code after content is set
   useEffect(() => {
     if (!processedContent) return;
     document.querySelectorAll("pre code").forEach((block) => {
@@ -52,44 +88,32 @@ export default function BlogDetailPage() {
     });
   }, [processedContent]);
 
-  useEffect(() => {
-    if (!blog?.content) return;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(blog.content, "text/html");
-    doc.querySelectorAll("img").forEach((img) => {
-      if (img.parentElement?.classList.contains("img-container")) return;
-      const wrapper = document.createElement("div");
-      wrapper.className = "img-container-blog";
-      img.replaceWith(wrapper);
-      wrapper.appendChild(img);
-    });
-    setProcessedContent(doc.body.innerHTML);
-    hljs.highlightAll();
-  }, [blog?.content]);
-
+  // Handle posting new comment
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/blogs/${slug}/comments`, {
+      const res = await fetch(`/api/blogs/${slug}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, content: newComment }),
       });
-      if (response.ok) {
-        const data = await response.json();
-        setComments([...comments, data]);
+
+      if (res.ok) {
+        const data = await res.json();
+        setComments((prev) => [...prev, data]);
         setNewComment("");
         setName("");
         setEmail("");
       }
-    } catch (error) {
-      console.error("Error submitting comment:", error);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Start reply
   const handleReply = (commentId) => {
     setReplyingTo(commentId);
     setReplyContent("");
@@ -97,11 +121,12 @@ export default function BlogDetailPage() {
     setReplyEmail("");
   };
 
+  // Submit reply
   const handleSubmitReply = async (e, parentId) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/blogs/${slug}/comments`, {
+      const res = await fetch(`/api/blogs/${slug}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -111,21 +136,26 @@ export default function BlogDetailPage() {
           parentId,
         }),
       });
-      if (response.ok) {
-        const updated = await response.json();
+      if (res.ok) {
+        const newReply = await res.json();
         setComments((prev) =>
-          prev.map((c) => (c._id === updated._id ? updated : c)),
+          prev.map((c) =>
+            c._id === parentId
+              ? { ...c, replies: [...(c.replies || []), newReply] }
+              : c,
+          ),
         );
         setReplyingTo(null);
       }
-    } catch (error) {
-      console.error("Error submitting reply:", error);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (loading) {
+  // Loading screen
+  if (loading)
     return (
       <div
         className="flex items-center justify-center h-screen"
@@ -137,11 +167,9 @@ export default function BlogDetailPage() {
         </div>
       </div>
     );
-  }
 
-  if (!processedContent) return null;
-
-  if (!blog) {
+  // 404 if no blog
+  if (!blog)
     return (
       <div
         className="flex flex-col items-center justify-center h-screen text-center px-4"
@@ -170,7 +198,6 @@ export default function BlogDetailPage() {
         </Link>
       </div>
     );
-  }
 
   return (
     <motion.div
@@ -198,7 +225,6 @@ export default function BlogDetailPage() {
       <h1 className="text-2xl sm:text-4xl font-light mb-2 break-words text-white/90">
         {blog.title}
       </h1>
-
       <p
         className="text-sm text-white/40 italic border-l-4 pl-3 mb-6"
         style={{ borderLeftColor: "var(--accent)" }}
@@ -217,25 +243,7 @@ export default function BlogDetailPage() {
         }}
       >
         <article
-          className="prose max-w-none 
-            prose-pre:overflow-x-auto 
-            prose-pre:whitespace-pre 
-            prose-pre:bg-[#0f0f0f]
-            prose-pre:text-white/90 
-            prose-pre:rounded-xl 
-            prose-pre:p-4 
-            prose-pre:shadow 
-            prose-code:text-sm 
-            prose-code:text-white/80
-            prose-a:text-[var(--accent)]
-            prose-a:no-underline
-            prose-a:hover:underline
-            prose-strong:text-white/90
-            prose-blockquote:text-white/60
-            prose-blockquote:border-l-white/20
-            prose-img:rounded-xl
-            prose-img:shadow-lg
-            break-words"
+          className="prose max-w-none prose-pre:overflow-x-auto prose-pre:bg-[#0f0f0f] prose-pre:text-white/90 prose-pre:rounded-xl prose-pre:p-4 prose-img:rounded-xl break-words"
           dangerouslySetInnerHTML={{ __html: processedContent }}
         />
       </div>
@@ -328,8 +336,8 @@ export default function BlogDetailPage() {
                         className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30"
                       />
                       <Input
-                        type="email"
                         required
+                        type="email"
                         placeholder="your@email.com"
                         value={replyEmail}
                         onChange={(e) => setReplyEmail(e.target.value)}
@@ -345,28 +353,20 @@ export default function BlogDetailPage() {
                       className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30"
                     />
                     <div className="flex flex-col sm:flex-row gap-2">
-                      <button
+                      <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="relative px-4 py-2 rounded-full transition-all duration-300 hover:scale-[1.02] text-sm font-medium disabled:opacity-50"
-                        style={{
-                          background:
-                            "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                          boxShadow:
-                            "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
-                          color: "var(--accent)",
-                        }}
+                        className="w-full sm:w-auto"
                       >
                         {isSubmitting ? "Replying..." : "Post Reply"}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="ghost"
                         onClick={() => setReplyingTo(null)}
-                        className="px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium text-white/60 hover:text-white/80"
                       >
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </form>
                 )}
@@ -403,7 +403,7 @@ export default function BlogDetailPage() {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Your name"
-              className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30 focus:border-white/30"
+              className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30"
             />
             <Input
               type="email"
@@ -411,7 +411,7 @@ export default function BlogDetailPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="your@email.com"
-              className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30 focus:border-white/30"
+              className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30"
             />
           </div>
           <Textarea
@@ -420,25 +420,15 @@ export default function BlogDetailPage() {
             onChange={(e) => setNewComment(e.target.value)}
             required
             placeholder="Share your thoughts..."
-            className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30 focus:border-white/30"
+            className="bg-white/5 border-white/10 text-white/90 placeholder:text-white/30"
           />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="relative px-6 py-3 rounded-full transition-all duration-300 hover:scale-[1.02] text-sm font-medium disabled:opacity-50"
-            style={{
-              background:
-                "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
-              color: "var(--accent)",
-            }}
-          >
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Posting..." : "Post Comment"}
-          </button>
+          </Button>
         </form>
       </div>
     </motion.div>
   );
-}
+};
+
+export default BlogDetailPage;
