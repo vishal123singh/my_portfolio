@@ -14,7 +14,8 @@ const skills = [
   { skill: "UI/UX Design", level: "88%" },
   { skill: "Performance Optimization", level: "92%" },
   { skill: "3D Web Experiences", level: "85%" },
-  { skill: "Backend Integration", level: "90%" },
+  { skill: "Backend Development", level: "95%" },
+  { skill: "DevOps", level: "95%" },
 ];
 
 export default function About() {
@@ -23,8 +24,18 @@ export default function About() {
   const skillsRef = useRef(null);
   const timelineRef = useRef(null);
 
+  const aboutText = [
+    "With over 4 years of experience crafting digital solutions",
+    "for global brands and innovative startups, I blend technical",
+    "excellence with creative vision.",
+  ];
+
   useEffect(() => {
+    // Respect prefers-reduced-motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const ctx = gsap.context(() => {
+      // Animate paragraphs (instead of per word for performance)
       gsap.fromTo(
         ".about-word",
         { y: 100, opacity: 0 },
@@ -37,10 +48,12 @@ export default function About() {
           scrollTrigger: {
             trigger: aboutRef.current,
             start: "top 70%",
+            once: true, // only run once
           },
         },
       );
 
+      // Animate skill bars
       gsap.to(".skill-bar-fill", {
         width: (i, target) => target.dataset.width || "0%",
         duration: 1.5,
@@ -48,9 +61,11 @@ export default function About() {
         scrollTrigger: {
           trigger: skillsRef.current,
           start: "top 70%",
+          once: true,
         },
       });
 
+      // Timeline items
       gsap.fromTo(
         ".timeline-item",
         { x: -50, opacity: 0 },
@@ -63,6 +78,7 @@ export default function About() {
           scrollTrigger: {
             trigger: timelineRef.current,
             start: "top 70%",
+            once: true,
           },
         },
       );
@@ -70,12 +86,6 @@ export default function About() {
 
     return () => ctx.revert();
   }, []);
-
-  const aboutText = [
-    "With over 4 years of experience crafting digital solutions",
-    "for global brands and innovative startups, I blend technical",
-    "excellence with creative vision.",
-  ];
 
   return (
     <section
@@ -87,7 +97,7 @@ export default function About() {
       }}
     >
       {/* Background */}
-      <div className="fixed inset-0 -z-10">
+      <div className="fixed inset-0 -z-10" aria-hidden="true">
         <div
           className="absolute inset-0"
           style={{
@@ -112,7 +122,7 @@ export default function About() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div ref={aboutRef} className="mb-16">
+        <header ref={aboutRef} className="mb-16">
           <span className="text-sm tracking-[0.3em] text-white/60">
             <span
               className="inline-block w-12 h-px mr-4"
@@ -125,13 +135,13 @@ export default function About() {
             <span className="font-medium">Behind</span>
             <span className="ml-4 text-white/40">the Code</span>
           </h2>
-        </div>
+        </header>
 
         <div className="grid lg:grid-cols-2 gap-16">
           {/* LEFT */}
           <div>
             {/* Profile */}
-            <div className="relative w-32 h-32 mb-8 group">
+            <figure className="relative w-32 h-32 mb-8 group">
               <div
                 className="absolute inset-0 rounded-full"
                 style={{
@@ -147,12 +157,13 @@ export default function About() {
               <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10">
                 <Image
                   src="/personal/image.webp"
-                  alt="Profile"
+                  alt="Profile photo of Vishal Singh"
                   fill
                   className="object-cover"
+                  priority
                 />
               </div>
-            </div>
+            </figure>
 
             {/* Text */}
             <div className="space-y-4 text-lg mb-12 text-white/80">
@@ -219,9 +230,9 @@ export default function About() {
                 style={{ background: "rgba(255,255,255,0.08)" }}
               />
 
-              <div className="space-y-8">
+              <ul className="space-y-8">
                 {experiences.map((exp, i) => (
-                  <div key={i} className="timeline-item pl-12 opacity-0">
+                  <li key={i} className="timeline-item pl-12 opacity-0">
                     <div
                       className="absolute left-2 top-2 w-4 h-4 rounded-full"
                       style={{
@@ -231,7 +242,7 @@ export default function About() {
                     />
 
                     {/* Card */}
-                    <div
+                    <article
                       className="rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02]"
                       style={{
                         background:
@@ -248,10 +259,10 @@ export default function About() {
                       <p className="text-white/50 text-sm mt-2">
                         {exp.description}
                       </p>
-                    </div>
-                  </div>
+                    </article>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ export default function AssistantLauncher() {
   return (
     <>
       <motion.div
-        className="fixed bottom-4 right-4 z-[9999] group flex flex-col items-center"
+        className="fixed bottom-4 right-2 z-[9999] group flex flex-col items-center"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4, duration: 0.4 }}
@@ -22,7 +22,7 @@ export default function AssistantLauncher() {
           whileTap={{ scale: 0.95 }}
           className="cursor-pointer"
         >
-          <ChatBotIcon size={128} />
+          <ChatBotIcon size={100} />
         </motion.div>
 
         <span

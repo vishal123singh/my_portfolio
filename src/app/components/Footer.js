@@ -274,8 +274,10 @@ export default function Footer() {
 
             {/* Back to top */}
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-[10px] sm:text-xs transition"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="cursor-pointer text-[10px] sm:text-xs transition"
               style={{ color: "var(--text-muted)" }}
             >
               BACK TO TOP

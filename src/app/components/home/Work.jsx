@@ -171,7 +171,7 @@ export default function Work() {
         >
           {keyProjects.map((project, index) => (
             <div
-              key={project.id}
+              key={project.title}
               ref={(el) => (projectsRef.current[index] = el)}
               className="group relative opacity-0"
             >
