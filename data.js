@@ -512,7 +512,7 @@ const projects = [
       "Enabled AI agents to dynamically chain tool calls through MCP servers to enrich user conversations and deliver personalized, context-aware responses.",
       "Collaborated on integration with cloud services for scalable deployment and real-time system performance.",
     ],
-    displayImage: "/projects/screenshots/koodums-chat/koodums_11.webp",
+    displayImage: "/projects/screenshots/koodums-chat/koodums.webp",
   },
 
   {
@@ -955,7 +955,7 @@ const keyProjects = [
     tech: "React • Node.js • TypeScript • Firebase • MongoDB • GCP • Express.js",
     image: "/projects/screenshots/velotransact/velo.webp",
     color: "from-purple-600 to-pink-600",
-    link: "https://velotransact.com/",
+    link: "https://www.velotransact.com/",
   },
   {
     title: "Koodums Chat",
