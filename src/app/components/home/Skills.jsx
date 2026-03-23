@@ -99,6 +99,7 @@ export default function TechStack() {
 
     return () => ctx.revert();
   }, [isMobile, isReducedMotion]);
+
   return (
     <section
       ref={sectionRef}
@@ -114,7 +115,7 @@ export default function TechStack() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+              radial-gradient(circle at top, var(--accent-muted), transparent 60%),
               linear-gradient(var(--bg-dark), var(--bg-darker))
             `,
           }}
@@ -123,8 +124,8 @@ export default function TechStack() {
           className="absolute inset-0 opacity-10 hidden md:block"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+              linear-gradient(var(--border-light) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border-light) 1px, transparent 1px)
             `,
             backgroundSize: "90px 90px",
           }}
@@ -134,7 +135,7 @@ export default function TechStack() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div ref={headerRef} className="mb-12 md:mb-16">
-          <span className="text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] text-white/60">
+          <span className="text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] text-muted">
             <span
               className="inline-block w-8 md:w-12 h-px mr-3 md:mr-4 align-middle"
               style={{ background: "var(--accent)" }}
@@ -142,10 +143,10 @@ export default function TechStack() {
             EXPERTISE
           </span>
           <h2 className="text-3xl md:text-5xl lg:text-6xl mt-4 md:mt-6">
-            <span className="font-medium">Tech</span>
-            <span className="ml-2 md:ml-4 text-white/40">Stack</span>
+            <span className="font-medium text-primary">Tech</span>
+            <span className="ml-2 md:ml-4 text-secondary">Stack</span>
           </h2>
-          <p className="max-w-2xl mt-4 md:mt-6 text-sm md:text-base leading-relaxed text-white/70">
+          <p className="max-w-2xl mt-4 md:mt-6 text-sm md:text-base leading-relaxed text-secondary">
             My curated collection of technologies and tools I use to build
             exceptional digital experiences.
           </p>
@@ -162,11 +163,10 @@ export default function TechStack() {
               key={`${category.title}-${idx}`}
               className="tech-category group relative rounded-xl md:rounded-2xl p-4 md:p-6"
               style={{
-                background:
-                  "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "var(--gradient-metal)",
+                border: "1px solid var(--border-light)",
                 boxShadow: `
-                  inset 0 1px 0 rgba(255,255,255,0.06),
+                  inset 0 1px 0 var(--border-light),
                   0 8px 20px rgba(0,0,0,0.6)
                 `,
                 transform: isMobile ? "none" : undefined,
@@ -179,10 +179,10 @@ export default function TechStack() {
                 <div
                   className="p-1.5 md:p-2 rounded-lg md:rounded-xl"
                   style={{
-                    background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    background: "var(--gradient-metal)",
+                    border: "1px solid var(--border-light)",
                     boxShadow: `
-                      inset 0 1px 0 rgba(255,255,255,0.08),
+                      inset 0 1px 0 var(--border-light),
                       0 4px 12px rgba(0,0,0,0.6)
                     `,
                   }}
@@ -192,7 +192,7 @@ export default function TechStack() {
                     style={{ color: "var(--accent)" }}
                   />
                 </div>
-                <h3 className="text-sm md:text-base font-medium tracking-wide">
+                <h3 className="text-sm md:text-base font-medium tracking-wide text-primary">
                   {category.title}
                 </h3>
               </div>
@@ -204,10 +204,10 @@ export default function TechStack() {
                     <div
                       className="relative flex flex-col items-center gap-1.5 md:gap-2 p-1.5 md:p-2 rounded-lg md:rounded-xl transition-all duration-200"
                       style={{
-                        background: "linear-gradient(145deg, #232323, #151515)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        background: "var(--gradient-metal)",
+                        border: "1px solid var(--border-light)",
                         boxShadow: `
-                          inset 0 1px 0 rgba(255,255,255,0.06),
+                          inset 0 1px 0 var(--border-light),
                           0 4px 8px rgba(0,0,0,0.6)
                         `,
                       }}
@@ -222,7 +222,7 @@ export default function TechStack() {
                           background: `
                             linear-gradient(
                               to bottom,
-                              rgba(255,255,255,0.08),
+                              var(--accent-muted),
                               transparent 50%
                             )
                           `,
@@ -230,13 +230,13 @@ export default function TechStack() {
                       />
                       <div
                         className="text-xl md:text-2xl transition-all duration-200"
-                        style={{ color: "rgba(255,255,255,0.85)" }}
+                        style={{ color: "var(--text-secondary)" }}
                       >
                         {skill.icon}
                       </div>
                       <span
                         className="text-[10px] md:text-xs text-center transition-colors duration-200"
-                        style={{ color: "rgba(255,255,255,0.75)" }}
+                        style={{ color: "var(--text-muted)" }}
                       >
                         {skill.name}
                       </span>
@@ -258,7 +258,7 @@ export default function TechStack() {
                 <div
                   className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-10 group-hover:opacity-20 transition"
                   style={{
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    border: "1px solid var(--border-light)",
                   }}
                 />
               )}
@@ -268,7 +268,7 @@ export default function TechStack() {
 
         {/* Footer */}
         <div className="mt-12 md:mt-16 text-center">
-          <p className="text-xs md:text-sm max-w-2xl mx-auto text-white/60">
+          <p className="text-xs md:text-sm max-w-2xl mx-auto text-muted">
             Continuously expanding my toolkit with modern technologies and best
             practices.
           </p>
@@ -287,7 +287,7 @@ export default function TechStack() {
           }
         }
         .group\\/skill:hover > div {
-          border-color: rgba(255, 255, 255, 0.15);
+          border-color: var(--border-medium);
         }
         .group\\/skill:hover .text-xl,
         .group\\/skill:hover .text-2xl,

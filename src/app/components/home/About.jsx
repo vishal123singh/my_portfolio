@@ -102,7 +102,7 @@ export default function About() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+              radial-gradient(circle at top, var(--accent-muted), transparent 60%),
               linear-gradient(var(--bg-dark), var(--bg-darker))
             `,
           }}
@@ -112,8 +112,8 @@ export default function About() {
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+              linear-gradient(var(--border-light) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border-light) 1px, transparent 1px)
             `,
             backgroundSize: "90px 90px",
           }}
@@ -123,7 +123,7 @@ export default function About() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <header ref={aboutRef} className="mb-16">
-          <span className="text-sm tracking-[0.3em] text-white/60">
+          <span className="text-sm tracking-[0.3em] text-muted">
             <span
               className="inline-block w-12 h-px mr-4"
               style={{ background: "var(--accent)" }}
@@ -132,8 +132,8 @@ export default function About() {
           </span>
 
           <h2 className="text-5xl md:text-6xl mt-6">
-            <span className="font-medium">Behind</span>
-            <span className="ml-4 text-white/40">the Code</span>
+            <span className="font-medium text-primary">Behind</span>
+            <span className="ml-4 text-secondary">the Code</span>
           </h2>
         </header>
 
@@ -145,16 +145,16 @@ export default function About() {
               <div
                 className="absolute inset-0 rounded-full"
                 style={{
-                  background: "linear-gradient(145deg, #2a2a2a, #1a1a1a)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "var(--gradient-metal)",
+                  border: "1px solid var(--border-light)",
                   boxShadow: `
-                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    inset 0 1px 0 var(--border-light),
                     0 10px 25px rgba(0,0,0,0.8)
                   `,
                 }}
               />
 
-              <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10">
+              <div className="relative w-full h-full rounded-full overflow-hidden border border-border-light">
                 <Image
                   src="/personal/image.webp"
                   alt="Profile photo of Vishal Singh"
@@ -166,7 +166,7 @@ export default function About() {
             </figure>
 
             {/* Text */}
-            <div className="space-y-4 text-lg mb-12 text-white/80">
+            <div className="space-y-4 text-lg mb-12 text-secondary">
               {aboutText.map((line, i) => (
                 <p key={i}>
                   {line.split(" ").map((word, idx) => (
@@ -185,11 +185,11 @@ export default function About() {
 
             {/* Skills */}
             <div ref={skillsRef} className="space-y-6">
-              <h3 className="text-xl mb-6 text-white/90">Expertise</h3>
+              <h3 className="text-xl mb-6 text-primary">Expertise</h3>
 
               {skills.map((s) => (
                 <div key={s.skill}>
-                  <div className="flex justify-between text-sm mb-2 text-white/70">
+                  <div className="flex justify-between text-sm mb-2 text-muted">
                     <span>{s.skill}</span>
                     <span>{s.level}</span>
                   </div>
@@ -198,7 +198,7 @@ export default function About() {
                   <div
                     className="h-[2px] rounded-full overflow-hidden"
                     style={{
-                      background: "rgba(255,255,255,0.08)",
+                      background: "var(--border-light)",
                     }}
                   >
                     {/* Fill */}
@@ -207,8 +207,9 @@ export default function About() {
                       data-width={s.level}
                       style={{
                         width: "0%",
-                        background: "linear-gradient(90deg, #e6e6e6, #999)",
-                        boxShadow: "0 0 10px rgba(255,255,255,0.2)",
+                        background:
+                          "linear-gradient(90deg, var(--accent), var(--text-muted))",
+                        boxShadow: "0 0 10px var(--accent-muted)",
                       }}
                     />
                   </div>
@@ -219,7 +220,7 @@ export default function About() {
 
           {/* TIMELINE */}
           <div ref={timelineRef}>
-            <h3 className="text-xl mb-8 flex items-center gap-2 text-white/80">
+            <h3 className="text-xl mb-8 flex items-center gap-2 text-secondary">
               <Briefcase size={18} style={{ color: "var(--accent)" }} />
               Journey
             </h3>
@@ -227,7 +228,7 @@ export default function About() {
             <div className="relative">
               <div
                 className="absolute left-4 top-0 bottom-0 w-px"
-                style={{ background: "rgba(255,255,255,0.08)" }}
+                style={{ background: "var(--border-light)" }}
               />
 
               <ul className="space-y-8">
@@ -237,7 +238,7 @@ export default function About() {
                       className="absolute left-2 top-2 w-4 h-4 rounded-full"
                       style={{
                         background: "var(--accent)",
-                        boxShadow: "0 0 10px rgba(255,255,255,0.4)",
+                        boxShadow: "0 0 10px var(--accent-muted)",
                       }}
                     />
 
@@ -245,18 +246,17 @@ export default function About() {
                     <article
                       className="rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02]"
                       style={{
-                        background:
-                          "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                        border: "1px solid rgba(255,255,255,0.06)",
+                        background: "var(--gradient-metal)",
+                        border: "1px solid var(--border-light)",
                         boxShadow: `
-                          inset 0 1px 0 rgba(255,255,255,0.06),
+                          inset 0 1px 0 var(--border-light),
                           0 10px 25px rgba(0,0,0,0.8)
                         `,
                       }}
                     >
-                      <h4 className="text-white/90">{exp.title}</h4>
-                      <p className="text-white/60 text-sm">{exp.company}</p>
-                      <p className="text-white/50 text-sm mt-2">
+                      <h4 className="text-primary">{exp.title}</h4>
+                      <p className="text-muted text-sm">{exp.company}</p>
+                      <p className="text-muted/70 text-sm mt-2">
                         {exp.description}
                       </p>
                     </article>
@@ -270,7 +270,7 @@ export default function About() {
         {/* Decor */}
         <div
           className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-10"
-          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ border: "1px solid var(--border-light)" }}
         />
       </div>
 

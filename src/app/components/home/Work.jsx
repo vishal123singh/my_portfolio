@@ -15,36 +15,40 @@ export default function Work() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Adjust animations for mobile
       const isMobile = window.innerWidth < 768;
 
+      // Header animation
       gsap.fromTo(
         ".work-header",
-        { y: isMobile ? 50 : 100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.5, ease: "power4.out" },
+        { y: isMobile ? 40 : 80, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
       );
 
-      projectsRef.current.forEach((card, index) => {
+      gsap.fromTo(
+        projectsRef.current,
+        {
+          y: isMobile ? 40 : 80,
+          opacity: 0,
+          rotateX: isMobile ? 0 : 10,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          rotateX: 0,
+          duration: isMobile ? 0.7 : 0.9,
+          stagger: isMobile ? 0.06 : 0.08, //  smooth spacing
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 90%", //  earlier = feels faster
+          },
+        },
+      );
+
+      // 3D hover (unchanged)
+      projectsRef.current.forEach((card) => {
         if (!card) return;
 
-        gsap.fromTo(
-          card,
-          { y: isMobile ? 50 : 100, opacity: 0, rotateX: isMobile ? 0 : 15 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateX: 0,
-            duration: isMobile ? 0.8 : 1.2,
-            delay: isMobile ? 0.1 : index * 0.2,
-            ease: "power4.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            },
-          },
-        );
-
-        // Only add 3D effects on non-touch devices
         const imageCard = card.querySelector(".project-image-card");
         const isTouchDevice =
           "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -62,7 +66,7 @@ export default function Work() {
               rotateX,
               rotateY,
               scale: 1.02,
-              duration: 0.5,
+              duration: 0.4,
               ease: "power2.out",
             });
           };
@@ -72,8 +76,8 @@ export default function Work() {
               rotateX: 0,
               rotateY: 0,
               scale: 1,
-              duration: 0.7,
-              ease: "elastic.out(1, 0.3)",
+              duration: 0.6,
+              ease: "power3.out",
             });
           };
 
@@ -82,7 +86,7 @@ export default function Work() {
         }
       });
 
-      // Adjust parallax for mobile
+      // Parallax
       if (!isMobile) {
         gsap.to(".parallax-blob", {
           y: 200,
@@ -91,17 +95,13 @@ export default function Work() {
             trigger: sectionRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 1.5,
+            scrub: 1.2, // slightly tighter
           },
         });
       }
     }, sectionRef);
 
-    // Handle resize to reinitialize animations
-    const handleResize = () => {
-      ScrollTrigger.refresh();
-    };
-
+    const handleResize = () => ScrollTrigger.refresh();
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -125,7 +125,7 @@ export default function Work() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 60%),
+              radial-gradient(circle at top, var(--accent-muted), transparent 60%),
               linear-gradient(var(--bg-dark), var(--bg-darker))
             `,
           }}
@@ -135,20 +135,20 @@ export default function Work() {
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+              linear-gradient(var(--border-light) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border-light) 1px, transparent 1px)
             `,
             backgroundSize: "clamp(30px, 8vw, 90px) clamp(30px, 8vw, 90px)",
           }}
         />
 
-        <div className="parallax-blob absolute top-1/2 right-0 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[500px] h-[300px] sm:h-[400px] md:h-[500px] bg-white/5 rounded-full blur-3xl" />
+        <div className="parallax-blob absolute top-1/2 right-0 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[500px] h-[300px] sm:h-[400px] md:h-[500px] bg-accent-muted rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="work-header mb-12 sm:mb-16 md:mb-20">
-          <span className="text-white/60 text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6 inline-block">
+          <span className="text-muted text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6 inline-block">
             <span
               className="inline-block w-8 sm:w-12 h-px mr-2 sm:mr-4"
               style={{ background: "var(--accent)" }}
@@ -157,8 +157,8 @@ export default function Work() {
           </span>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
-            <span className="font-medium text-white">Featured</span>
-            <span className="block sm:inline ml-0 sm:ml-4 mt-2 sm:mt-0 text-white/40">
+            <span className="font-medium text-primary">Featured</span>
+            <span className="block sm:inline ml-0 sm:ml-4 mt-2 sm:mt-0 text-secondary">
               Projects
             </span>
           </h2>
@@ -184,27 +184,27 @@ export default function Work() {
                 <div
                   className={`space-y-4 sm:space-y-6 ${index % 2 !== 0 ? "lg:order-last" : ""}`}
                 >
-                  <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/50">
+                  <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted">
                     <span>0{index + 1}</span>
-                    <span className="w-6 sm:w-8 h-px bg-white/10" />
+                    <span className="w-6 sm:w-8 h-px bg-border-light" />
                     <span>{project.year}</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-primary leading-tight">
                     {project.title}
                   </h3>
 
-                  <span className="text-white/50 text-xs sm:text-sm block">
+                  <span className="text-muted text-xs sm:text-sm block">
                     {project.category}
                   </span>
 
-                  <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-md">
+                  <p className="text-secondary text-base sm:text-lg leading-relaxed max-w-md">
                     {project.description}
                   </p>
 
                   <a
                     href={project.link}
-                    className="group/link inline-flex items-center gap-2 sm:gap-3 text-white/60 hover:text-white transition pt-2"
+                    className="group/link inline-flex items-center gap-2 sm:gap-3 text-muted hover:text-primary transition pt-2"
                   >
                     <span className="text-xs sm:text-sm tracking-wider">
                       VIEW PROJECT
@@ -221,11 +221,10 @@ export default function Work() {
                   <div
                     className="project-image-card relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500"
                     style={{
-                      background:
-                        "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                      border: "1px solid rgba(255,255,255,0.06)",
+                      background: "var(--gradient-metal)",
+                      border: "1px solid var(--border-light)",
                       boxShadow: `
-                        inset 0 1px 0 rgba(255,255,255,0.06),
+                        inset 0 1px 0 var(--border-light),
                         0 15px 40px rgba(0,0,0,0.8)
                       `,
                     }}
@@ -237,7 +236,7 @@ export default function Work() {
                         background: `
                           linear-gradient(
                             to bottom,
-                            rgba(255,255,255,0.06),
+                            var(--accent-muted),
                             transparent 40%
                           )
                         `,
@@ -248,7 +247,7 @@ export default function Work() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10" />
 
                       {!project.image ? (
-                        <div className="w-full h-full flex items-center justify-center text-white/40 p-4 text-center text-sm sm:text-base">
+                        <div className="w-full h-full flex items-center justify-center text-muted p-4 text-center text-sm sm:text-base">
                           Project Image
                         </div>
                       ) : (
@@ -270,7 +269,7 @@ export default function Work() {
         {/* Decor */}
         <div
           className="absolute -bottom-20 sm:-bottom-32 -right-20 sm:-right-32 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 rounded-full opacity-10 pointer-events-none"
-          style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ border: "1px solid var(--border-light)" }}
         />
       </div>
     </section>

@@ -52,7 +52,7 @@ const techStack = [
 
 // Constants for animations
 const CTA_MAGNETIC_MULTIPLIER = 0.3;
-const HERO_LINE_DURATION = 1.8;
+const HERO_LINE_DURATION = 0.8;
 const HERO_CTA_EASE = "elastic.out(1, 0.5)";
 
 // ------------------- Loader -------------------
@@ -70,8 +70,12 @@ function Loader({ onComplete }) {
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
+        onStart: () => {
+          setTimeout(() => {
+            onComplete(); //
+          }, 1000);
+        },
         onComplete: () => {
-          onComplete();
           document.body.style.overflow = originalOverflow;
           document.body.style.pointerEvents = originalPointerEvents;
         },
@@ -96,23 +100,23 @@ function Loader({ onComplete }) {
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center"
+      className="fixed inset-0 bg-dark z-[100] flex items-center justify-center"
       style={{ transformOrigin: "top" }}
       aria-label="Loading screen"
       role="status"
     >
       <div className="text-center relative px-4">
         <div className="relative">
-          <span className="text-6xl sm:text-8xl text-white font-light tracking-tight relative z-10">
-            V<span className="text-white/40">S</span>
+          <span className="text-6xl sm:text-8xl text-primary font-light tracking-tight relative z-10">
+            V<span className="text-muted">S</span>
           </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/20 to-transparent blur-3xl animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border-light/20 to-transparent blur-3xl animate-pulse" />
         </div>
         <div className="mt-8 relative">
-          <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent mx-auto" />
-          <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto mt-1 animate-pulse" />
+          <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-medium to-transparent mx-auto" />
+          <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-light to-transparent mx-auto mt-1 animate-pulse" />
         </div>
-        <div className="mt-8 text-white/40 text-xs sm:text-sm tracking-[0.3em] animate-pulse">
+        <div className="mt-8 text-muted text-xs sm:text-sm tracking-[0.3em] animate-pulse">
           CRAFTING DIGITAL EXPERIENCES
         </div>
       </div>
@@ -143,11 +147,11 @@ function TechStack({ activeIndex, setActiveIndex }) {
                   }}
                   size={20}
                 />
-                <span className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-white/40 group-hover:text-white/60 transition-colors duration-500 tracking-wider whitespace-nowrap">
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-muted group-hover:text-secondary transition-colors duration-500 tracking-wider whitespace-nowrap">
                   {tech.name}
                 </span>
                 <span
-                  className={`absolute -top-4 sm:-top-5 md:-top-6 left-1/2 -translate-x-1/2 text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] text-white/30 whitespace-nowrap transition-opacity duration-300 ${
+                  className={`absolute -top-4 sm:-top-5 md:-top-6 left-1/2 -translate-x-1/2 text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] text-muted/50 whitespace-nowrap transition-opacity duration-300 ${
                     activeIndex === index ? "opacity-100" : "opacity-0"
                   }`}
                   aria-hidden="true"
@@ -155,7 +159,7 @@ function TechStack({ activeIndex, setActiveIndex }) {
                   {tech.category}
                 </span>
                 <span
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent group-hover:w-full transition-all duration-500"
+                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-border-medium to-transparent group-hover:w-full transition-all duration-500"
                   aria-hidden="true"
                 />
               </div>
@@ -377,11 +381,7 @@ export default function HomeHero() {
 
       <section
         ref={containerRef}
-        className="relative min-h-screen"
-        style={{
-          background: "var(--gradient-matte, #0a0a0a)",
-          color: "var(--text-primary, #ffffff)",
-        }}
+        className="relative min-h-screen bg-gradient-matte text-primary"
         aria-label="Hero section"
       >
         <div
@@ -390,10 +390,10 @@ export default function HomeHero() {
         >
           <div className="max-w-7xl mx-auto w-full relative">
             {/* Pre-title */}
-            <span className="hero-pre-title inline-block text-white/50 text-[10px] sm:text-xs md:text-sm tracking-[0.3em] mb-3 sm:mb-4 md:mb-6 opacity-0">
+            <span className="hero-pre-title inline-block text-muted text-[10px] sm:text-xs md:text-sm tracking-[0.3em] mb-3 sm:mb-4 md:mb-6 opacity-0">
               <span
                 className="inline-block w-6 sm:w-8 md:w-12 h-px mr-2 sm:mr-3 md:mr-4 align-middle"
-                style={{ background: "var(--accent, #ffffff)" }}
+                style={{ background: "var(--accent)" }}
                 aria-hidden="true"
               />
               VISHAL SINGH - FULL-STACK DEVELOPER
@@ -403,16 +403,16 @@ export default function HomeHero() {
             <h1 className="mb-6 sm:mb-8">
               <div className="sr-only">Digital Craftsmanship</div>
               <div aria-hidden="true">
-                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-white opacity-0 leading-[1.1] sm:leading-[0.9]">
+                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-primary opacity-0 leading-[1.1] sm:leading-[0.9]">
                   DIGITAL
                 </span>
               </div>
               <div aria-hidden="true" className="mt-1 sm:mt-0">
-                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-white opacity-0 leading-[1.1] sm:leading-[0.9]">
-                  <span className="text-white/60 relative inline-block">
+                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-primary opacity-0 leading-[1.1] sm:leading-[0.9]">
+                  <span className="text-secondary relative inline-block">
                     CRAFTSMANSHIP
                     <span
-                      className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent"
+                      className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-border-medium to-transparent"
                       aria-hidden="true"
                     />
                   </span>
@@ -422,7 +422,7 @@ export default function HomeHero() {
 
             {/* Description */}
             <div className="hero-description max-w-xl sm:max-w-2xl opacity-0">
-              <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-white/60 leading-relaxed">
+              <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-secondary leading-relaxed">
                 Building performant, scalable systems with obsessive attention
                 to detail and user experience through first principles thinking.
               </p>
@@ -433,11 +433,11 @@ export default function HomeHero() {
               <button
                 ref={ctaRef}
                 onClick={handleLaunch}
-                className="magnetic-cta group relative px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 rounded-full overflow-hidden transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent min-h-[44px]"
+                className="magnetic-cta group relative px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 rounded-full overflow-hidden transition-all focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:ring-offset-transparent min-h-[44px]"
                 style={{
-                  background: "var(--accent, #ffffff)",
-                  color: "#000",
-                  boxShadow: "0 0 20px rgba(255,255,255,0.2)",
+                  background: "var(--accent)",
+                  color: "var(--bg-dark)",
+                  boxShadow: "0 0 20px var(--accent-muted)",
                 }}
                 aria-label="Explore my work"
               >

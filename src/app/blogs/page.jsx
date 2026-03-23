@@ -34,18 +34,56 @@ export default function MyBlogsPage() {
   // Fetch blogs
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap
-        .timeline({
-          onComplete: () => (document.body.style.overflow = "auto"),
-        })
-        .to(loaderRef.current, {
-          scaleY: 0,
-          transformOrigin: "top",
-          duration: 1.8,
-          ease: "power4.inOut",
-          delay: 1,
-        })
-        .to(loaderRef.current, { display: "none" }, "-=1.3");
+      const tl = gsap.timeline({
+        onComplete: () => (document.body.style.overflow = "auto"),
+      });
+
+      tl.to(loaderRef.current, {
+        scaleY: 0,
+        transformOrigin: "top",
+        duration: 1.8,
+        ease: "power4.inOut",
+        delay: 1,
+      })
+        .to(loaderRef.current, { display: "none" }, "-=1.3")
+
+        //  HERO STARTS IMMEDIATELY AFTER LOADER
+        .fromTo(
+          ".hero-line",
+          { y: 100, opacity: 0, rotateX: -45 },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 1.5,
+            stagger: 0.1,
+            ease: "power4.out",
+          },
+          "-=0.3", // overlap slightly → smoother
+        )
+        .fromTo(
+          ".hero-pre-title",
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1 },
+          "-=1",
+        )
+        .fromTo(
+          ".hero-description",
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1 },
+          "-=0.8",
+        )
+        .fromTo(
+          ".hero-cta",
+          { scale: 0.8, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 1,
+            ease: "elastic.out(1, 0.5)",
+          },
+          "-=0.7",
+        );
     });
 
     fetch("/api/blogs")
@@ -57,50 +95,13 @@ export default function MyBlogsPage() {
     return () => ctx.revert();
   }, []);
 
-  // Animate hero & blog cards
   useEffect(() => {
-    if (loading || !blogs.length) return;
+    if (!blogs.length) return;
 
     const ctx = gsap.context(() => {
-      // Hero animations
-      gsap.fromTo(
-        ".hero-line",
-        { y: 100, opacity: 0, rotateX: -45 },
-        {
-          y: 0,
-          opacity: 1,
-          rotateX: 0,
-          duration: 1.5,
-          stagger: 0.1,
-          ease: "power4.out",
-        },
-      );
-
-      gsap.fromTo(
-        ".hero-pre-title",
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.8 },
-      );
-      gsap.fromTo(
-        ".hero-description",
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 1 },
-      );
-      gsap.fromTo(
-        ".hero-cta",
-        { scale: 0.8, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 1,
-          ease: "elastic.out(1, 0.5)",
-          delay: 1.2,
-        },
-      );
-
-      // Blog card animations
       blogCardsRef.current.forEach((card, index) => {
         if (!card) return;
+
         gsap.fromTo(
           card,
           { y: 100, opacity: 0, rotateX: 15 },
@@ -114,48 +115,14 @@ export default function MyBlogsPage() {
             scrollTrigger: {
               trigger: blogsRef.current,
               start: "top 80%",
-              toggleActions: "play none none reverse",
             },
           },
         );
       });
-
-      // Magnetic buttons
-      const buttons =
-        containerRef.current?.querySelectorAll(".magnetic-button");
-      if (buttons) {
-        buttons.forEach((button) => {
-          const onMouseMove = (e) => {
-            const rect = button.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            gsap.to(button, {
-              x: x * 0.3,
-              y: y * 0.3,
-              duration: 0.4,
-              ease: "power2.out",
-            });
-          };
-          const onMouseLeave = () =>
-            gsap.to(button, { x: 0, y: 0, duration: 0.4, ease: "power2.out" });
-
-          button.addEventListener("mousemove", onMouseMove);
-          button.addEventListener("mouseleave", onMouseLeave);
-
-          // Cleanup
-          button._cleanup = () => {
-            button.removeEventListener("mousemove", onMouseMove);
-            button.removeEventListener("mouseleave", onMouseLeave);
-          };
-        });
-      }
     }, containerRef);
 
-    return () => {
-      blogCardsRef.current.forEach((card) => card?._cleanup?.());
-      ctx.revert();
-    };
-  }, [loading, blogs]);
+    return () => ctx.revert();
+  }, [blogs]);
 
   // Post or update a blog
   const handlePost = useCallback(async () => {

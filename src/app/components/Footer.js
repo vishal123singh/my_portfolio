@@ -213,7 +213,7 @@ export default function Footer() {
                 { label: "CLIENTS", value: "16+" },
               ].map((stat, i) => (
                 <div key={i}>
-                  <div className="text-lg sm:text-xl font-light">
+                  <div className="text-lg sm:text-xl font-light text-primary">
                     {stat.value}
                   </div>
                   <div
@@ -230,7 +230,7 @@ export default function Footer() {
           {/* Bottom */}
           <motion.div
             className="pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 text-center md:text-left"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+            style={{ borderTop: "1px solid var(--border-light)" }}
             variants={containerVariant}
             initial="hidden"
             whileInView="visible"
@@ -257,8 +257,8 @@ export default function Footer() {
                   <div
                     className="p-2.5 sm:p-3 rounded-full transition-all duration-300"
                     style={{
-                      background: "linear-gradient(145deg, #161616, #0e0e0e)",
-                      border: "1px solid rgba(255,255,255,0.06)",
+                      background: "var(--gradient-metal)",
+                      border: "1px solid var(--border-light)",
                     }}
                   >
                     <div

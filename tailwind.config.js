@@ -3,25 +3,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        accent: "#00f7ff", // 💡 match your :root --accent value
-        "bg-dark": "#0f172a",
-        "text-light": "#f1f5f9",
-        "btn-hover": "#0ea5e9",
-        panel: "#141627",
-        neon: "#00f5ff",
-        buy: "#00ff88",
-        sell: "#ff4d4d",
-        gold: {
-          500: "#D4AF37",
-          600: "#C49B2F",
-        },
+        primary: "var(--text-primary)",
+        secondary: "var(--text-secondary)",
+        muted: "var(--text-muted)",
+        "border-light": "var(--border-light)",
+        "border-medium": "var(--border-medium)",
+        accent: "var(--accent)",
+        "accent-muted": "var(--accent-muted)",
+      },
+      backgroundColor: {
+        dark: "var(--bg-dark)",
+        darker: "var(--bg-darker)",
+        light: "var(--bg-light)",
+        elevated: "var(--bg-elevated)",
+        metal: "var(--bg-metal)",
+      },
+      backgroundImage: {
+        "gradient-matte": "var(--gradient-matte)",
+        "gradient-metal": "var(--gradient-metal)",
       },
 
       fontFamily: {
         futuristic: ["Orbitron", "sans-serif"],
-      },
-      boxShadow: {
-        neon: "0 0 20px rgba(0, 245, 255, 0.5)",
       },
 
       animation: {
