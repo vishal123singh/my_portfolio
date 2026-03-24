@@ -110,10 +110,9 @@ export default function ProjectCard({
       <motion.div
         className="group rounded-xl overflow-hidden cursor-pointer flex flex-col h-full transition-all duration-300 hover:scale-[1.02]"
         style={{
-          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+          background: "var(--gradient-metal)",
+          border: "1px solid var(--border-light)",
+          boxShadow: "var(--shadow-inset-light), var(--shadow-lg)",
         }}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -143,7 +142,7 @@ export default function ProjectCard({
                     ? `center ${scrollProgress}%`
                     : "center",
                   backgroundRepeat: "no-repeat",
-                  backgroundColor: "#0f0f0f",
+                  backgroundColor: "var(--bg-darker)",
                 }}
               />
 
@@ -165,7 +164,7 @@ export default function ProjectCard({
                 >
                   <div
                     className="absolute inset-0 backdrop-blur-2xl"
-                    style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+                    style={{ backgroundColor: "var(--overlay-dark)" }}
                   />
                 </motion.div>
               )}
@@ -200,10 +199,14 @@ export default function ProjectCard({
                 <div
                   key={index}
                   className={`h-1 rounded-full transition-all duration-300 ${
-                    index === currentImageIndex
-                      ? "w-4 bg-white/90"
-                      : "w-2 bg-white/30"
+                    index === currentImageIndex ? "w-4" : "w-2"
                   }`}
+                  style={{
+                    background:
+                      index === currentImageIndex
+                        ? "var(--text-primary)"
+                        : "var(--text-muted)",
+                  }}
                 />
               ))}
             </div>
@@ -214,9 +217,9 @@ export default function ProjectCard({
             <div
               className="absolute bottom-2 left-2 text-white/50 text-[10px] px-2 py-1 rounded-full backdrop-blur-sm z-30"
               style={{
-                background: "rgba(0,0,0,0.5)",
+                background: "var(--overlay-dark)",
                 backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                border: "1px solid var(--border-light)",
               }}
             >
               ↓ {Math.round(scrollProgress)}%
@@ -226,10 +229,16 @@ export default function ProjectCard({
 
         {/* Card Body - Matching About styling */}
         <div className="flex flex-col flex-1 px-4 py-5">
-          <h3 className="text-white/90 text-lg font-medium mb-1 leading-tight line-clamp-1 transition-colors group-hover:text-white/100">
+          <h3
+            className="text-lg font-medium mb-1 leading-tight line-clamp-1 transition-colors group-hover:opacity-100"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {title}
           </h3>
-          <p className="text-white/50 text-sm mb-3 line-clamp-3">
+          <p
+            className="text-sm mb-3 line-clamp-3"
+            style={{ color: "var(--text-muted)" }}
+          >
             {description}
           </p>
 
@@ -237,10 +246,11 @@ export default function ProjectCard({
             {tags.map((tag, i) => (
               <span
                 key={i}
-                className="text-white/60 text-xs px-3 py-1 rounded-full transition-colors group-hover:text-white/80"
+                className="text-xs px-3 py-1 rounded-full transition-colors group-hover:opacity-80"
                 style={{
-                  background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.05)",
+                  color: "var(--text-secondary)",
+                  background: "var(--accent-muted)",
+                  border: "1px solid var(--border-light)",
                   backdropFilter: "blur(8px)",
                 }}
               >
@@ -249,9 +259,13 @@ export default function ProjectCard({
             ))}
           </div>
 
-          <div className="mt-4 flex items-center gap-1 text-sm font-medium transition-colors group-hover:text-white/80">
+          <div className="mt-4 flex items-center gap-1 text-sm font-medium transition-colors group-hover:opacity-80">
             <span style={{ color: "var(--accent)" }}>View Project</span>
-            <ExternalLink size={14} className="opacity-70" />
+            <ExternalLink
+              size={14}
+              className="opacity-70"
+              style={{ color: "var(--accent)" }}
+            />
           </div>
         </div>
       </motion.div>

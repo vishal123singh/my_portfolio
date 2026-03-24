@@ -149,12 +149,12 @@ export default function About() {
                   border: "1px solid var(--border-light)",
                   boxShadow: `
                     inset 0 1px 0 var(--border-light),
-                    0 10px 25px rgba(0,0,0,0.8)
+                    var(--shadow-lg)
                   `,
                 }}
               />
 
-              <div className="relative w-full h-full rounded-full overflow-hidden border border-border-light">
+              <div className="relative w-full h-full rounded-full overflow-hidden border border-light">
                 <Image
                   src="/personal/image.webp"
                   alt="Profile photo of Vishal Singh"
@@ -207,9 +207,8 @@ export default function About() {
                       data-width={s.level}
                       style={{
                         width: "0%",
-                        background:
-                          "linear-gradient(90deg, var(--accent), var(--text-muted))",
-                        boxShadow: "0 0 10px var(--accent-muted)",
+                        background: `linear-gradient(90deg, var(--accent), var(--text-muted))`,
+                        boxShadow: "var(--shadow-glow)",
                       }}
                     />
                   </div>
@@ -238,7 +237,7 @@ export default function About() {
                       className="absolute left-2 top-2 w-4 h-4 rounded-full"
                       style={{
                         background: "var(--accent)",
-                        boxShadow: "0 0 10px var(--accent-muted)",
+                        boxShadow: "var(--shadow-glow)",
                       }}
                     />
 
@@ -249,8 +248,8 @@ export default function About() {
                         background: "var(--gradient-metal)",
                         border: "1px solid var(--border-light)",
                         boxShadow: `
-                          inset 0 1px 0 var(--border-light),
-                          0 10px 25px rgba(0,0,0,0.8)
+                          var(--shadow-inset-light),
+                          var(--shadow-lg)
                         `,
                       }}
                     >

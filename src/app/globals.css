@@ -23,6 +23,16 @@
 :root {
   /* Border Radius */
   --radius: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+  --spacing-2xl: 6rem;
 
   /* Color Palette - Matte Blacks (Light-Absorbing) */
   --bg-darker: #040404;
@@ -62,6 +72,52 @@
     #101010 75%,
     #0e0e0e
   );
+
+  /* Shadow Effects */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.8);
+  --shadow-inset-light: inset 0 1px 0 var(--border-light);
+  --shadow-glow: 0 0 10px var(--accent-muted);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+  --transition-slow: 500ms ease;
+
+    /* Overlay & Modal */
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --backdrop-blur: blur(8px);
+  
+  /* Shadows */
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-inset-light: inset 0 1px 0 var(--border-light);
+  
+  /* Input & Interactive */
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus-ring: rgba(255, 255, 255, 0.2);
+  --input-placeholder: rgba(255, 255, 255, 0.3);
+  
+  /* Animations */
+  --bounce-delay-75: 75ms;
+  --bounce-delay-150: 150ms;
+
+   /* Overlay Colors */
+  --overlay-dark: rgba(0, 0, 0, 0.6);
+  --overlay-light: rgba(0, 0, 0, 0.5);
+  
+  /* Shadows */
+  --shadow-inset-light: inset 0 1px 0 var(--border-light);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.8);
+  
+  /* Transitions */
+  --transition-smooth: all 0.3s ease;
+  --transition-bounce: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Image Effects */
+  --image-bg: var(--bg-darker);
+  --image-overlay: linear-gradient(to top, rgba(0,0,0,0.8), transparent, transparent);
 }
 
 /* Theme Overrides */

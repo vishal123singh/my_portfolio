@@ -220,7 +220,7 @@ export default function ChatBox() {
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                       e.currentTarget.nextElementSibling?.classList.remove(
-                        "hidden"
+                        "hidden",
                       );
                     }}
                   />
@@ -324,8 +324,8 @@ export default function ChatBox() {
                         isOwn
                           ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-br-md shadow-lg"
                           : isAI
-                          ? "bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200 rounded-bl-md"
-                          : "bg-white text-gray-800 shadow-md rounded-bl-md border border-gray-100"
+                            ? "bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200 rounded-bl-md"
+                            : "bg-white text-gray-800 shadow-md rounded-bl-md border border-gray-100"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
@@ -334,8 +334,8 @@ export default function ChatBox() {
                             isOwn
                               ? "text-white/90"
                               : isAI
-                              ? "text-purple-600"
-                              : "text-gray-500"
+                                ? "text-purple-600"
+                                : "text-gray-500"
                           }`}
                         >
                           {isAI ? "🤖 AI Assistant" : msg.sender}

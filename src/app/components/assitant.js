@@ -76,7 +76,8 @@ export default function AssistantModal({ onClose }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      //style={{ background: "var(--overlay-bg)" }}
       onClick={onClose}
     >
       <motion.div
@@ -87,22 +88,31 @@ export default function AssistantModal({ onClose }) {
         onClick={(e) => e.stopPropagation()}
         className="relative rounded-2xl w-full max-w-xl mx-4 h-[70vh] flex flex-col overflow-hidden"
         style={{
-          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.06), 0 25px 50px -12px rgba(0,0,0,0.5)",
+          background: "var(--gradient-metal)",
+          border: "1px solid var(--border-light)",
+          boxShadow: "var(--shadow-inset-light), var(--shadow-xl)",
         }}
       >
         <div
           className="flex justify-between items-center p-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ borderBottom: "1px solid var(--border-light)" }}
         >
-          <h2 className="text-white/80 font-light tracking-wide">
+          <h2
+            className="font-light tracking-wide"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Chat with ViVA
           </h2>
           <button
             onClick={onClose}
-            className="text-white/40 hover:text-white/60 transition-colors"
+            className="transition-colors"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = "var(--text-secondary)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "var(--text-muted)")
+            }
           >
             <X size={20} />
           </button>
@@ -114,14 +124,24 @@ export default function AssistantModal({ onClose }) {
           ))}
           {loading && (
             <motion.div
-              className="flex items-center gap-2 text-white/40 italic"
+              className="flex items-center gap-2 italic"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              style={{ color: "var(--text-muted)" }}
             >
               <div className="flex space-x-1">
-                <div className="w-2 h-2 rounded-full bg-white/30 animate-bounce"></div>
-                <div className="w-2 h-2 rounded-full bg-white/30 animate-bounce delay-75"></div>
-                <div className="w-2 h-2 rounded-full bg-white/30 animate-bounce delay-150"></div>
+                <div
+                  className="w-2 h-2 rounded-full animate-bounce"
+                  style={{ background: "var(--text-muted)" }}
+                />
+                <div
+                  className="w-2 h-2 rounded-full animate-bounce delay-75"
+                  style={{ background: "var(--text-muted)" }}
+                />
+                <div
+                  className="w-2 h-2 rounded-full animate-bounce delay-150"
+                  style={{ background: "var(--text-muted)" }}
+                />
               </div>
               <span>ViVA is typing...</span>
             </motion.div>
@@ -131,13 +151,19 @@ export default function AssistantModal({ onClose }) {
 
         <div
           className="p-4"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ borderTop: "1px solid var(--border-light)" }}
         >
           <div
-            className="flex items-center rounded-xl px-4 py-2 transition-all focus-within:ring-2 focus-within:ring-white/20"
+            className="flex items-center rounded-xl px-4 py-2 transition-all focus-within:ring-2"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "var(--accent-muted)",
+              border: "1px solid var(--border-medium)",
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.boxShadow = "0 0 0 2px var(--accent-muted)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             <input
@@ -146,7 +172,8 @@ export default function AssistantModal({ onClose }) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAsk()}
               placeholder="Ask something..."
-              className="flex-1 bg-transparent text-white/80 text-sm outline-none placeholder:text-white/30"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:opacity-30"
+              style={{ color: "var(--text-primary)" }}
               disabled={loading}
             />
             <button
@@ -154,8 +181,8 @@ export default function AssistantModal({ onClose }) {
               disabled={loading || !input.trim()}
               className={`p-2 rounded-md transition-all ${
                 loading || !input.trim()
-                  ? "text-white/30"
-                  : "hover:text-white/80 transition-colors"
+                  ? "opacity-30 cursor-not-allowed"
+                  : "hover:opacity-80 transition-opacity"
               }`}
               style={{ color: "var(--accent)" }}
             >
@@ -179,23 +206,40 @@ function ChatMessage({ msg }) {
         </div>
       )}
       <div
-        className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm shadow-md ${
+        className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md ${
           isUser ? "rounded-br-none" : "rounded-bl-none"
         }`}
         style={{
-          background: isUser
-            ? "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)"
-            : "rgba(255,255,255,0.05)",
-          border: isUser
-            ? "1px solid rgba(255,255,255,0.08)"
-            : "1px solid rgba(255,255,255,0.08)",
-          color: isUser ? "var(--accent)" : "rgba(255,255,255,0.8)",
+          background: isUser ? "var(--gradient-metal)" : "var(--accent-muted)",
+          border: "1px solid var(--border-light)",
+          color: isUser ? "var(--accent)" : "var(--text-primary)",
         }}
       >
         {isUser ? (
           <p className="text-sm">{msg.text}</p>
         ) : (
-          <div className="prose prose-sm prose-invert max-w-none overflow-auto">
+          <div
+            className="prose prose-sm max-w-none overflow-auto"
+            style={{
+              color: "var(--text-primary)",
+              "--tw-prose-body": "var(--text-primary)",
+              "--tw-prose-headings": "var(--text-primary)",
+              "--tw-prose-lead": "var(--text-secondary)",
+              "--tw-prose-links": "var(--accent)",
+              "--tw-prose-bold": "var(--text-primary)",
+              "--tw-prose-counters": "var(--text-secondary)",
+              "--tw-prose-bullets": "var(--text-secondary)",
+              "--tw-prose-hr": "var(--border-light)",
+              "--tw-prose-quotes": "var(--text-secondary)",
+              "--tw-prose-quote-borders": "var(--border-light)",
+              "--tw-prose-captions": "var(--text-secondary)",
+              "--tw-prose-code": "var(--accent)",
+              "--tw-prose-pre-code": "var(--text-primary)",
+              "--tw-prose-pre-bg": "var(--bg-darker)",
+              "--tw-prose-th-borders": "var(--border-light)",
+              "--tw-prose-td-borders": "var(--border-light)",
+            }}
+          >
             <ReactMarkdown>{msg.text}</ReactMarkdown>
           </div>
         )}

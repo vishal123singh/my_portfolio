@@ -53,7 +53,6 @@ export default function Footer() {
     { name: "PROJECTS", href: "/projects" },
     { name: "BLOGS", href: "/blogs" },
     { name: "APPS", href: "/apps" },
-    { name: "CONTACT", href: "/contact" },
   ];
 
   // Animation variants

@@ -229,10 +229,16 @@ export default function Navbar() {
   const { theme, toggle } = useContext(ThemeContext);
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [showNavbar, setShowNavbar] = useState(
+    !pathname.includes("/apps/algo-teacher"),
+  );
   const isVisible = useScrollVisibility();
   useLockBodyScroll(menuOpen);
   useEscapeKey(() => setMenuOpen(false));
+
+  if (!showNavbar) {
+    return null;
+  }
 
   // Close menu on route change
   useEffect(() => {
