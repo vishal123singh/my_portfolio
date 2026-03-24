@@ -236,10 +236,10 @@ const BlogDetailPage = () => {
       <div
         className="rounded-3xl p-4 sm:p-6 mb-10"
         style={{
-          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+          background: "var(--gradient-metal)",
+          border: "1px solid var(--border-light)",
+          // boxShadow:
+          //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
         }}
       >
         <article
@@ -252,10 +252,10 @@ const BlogDetailPage = () => {
       <div
         className="rounded-3xl p-4 sm:p-6 mb-10"
         style={{
-          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+          background: "var(--gradient-metal)",
+          border: "1px solid var(--border-light)",
+          // boxShadow:
+          //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
         }}
       >
         <h2 className="text-xl sm:text-2xl font-light mb-6 text-white/90">
@@ -269,8 +269,8 @@ const BlogDetailPage = () => {
                 key={comment._id}
                 className="rounded-xl p-4"
                 style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "var(--gradient-metal)",
+                  border: "1px solid var(--border-light)",
                 }}
               >
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
@@ -293,15 +293,15 @@ const BlogDetailPage = () => {
                 {comment.replies?.length > 0 && (
                   <div
                     className="ml-2 sm:ml-4 mt-4 pl-2 sm:pl-4 space-y-3"
-                    style={{ borderLeft: "2px solid rgba(255,255,255,0.1)" }}
+                    style={{ borderLeft: "2px solid var(--border-light)" }}
                   >
                     {comment.replies.map((reply) => (
                       <div
                         key={reply._id}
                         className="p-3 rounded-lg"
                         style={{
-                          background: "rgba(255,255,255,0.02)",
-                          border: "1px solid rgba(255,255,255,0.05)",
+                          background: "var(--gradient-metal)",
+                          border: "1px solid var(--border-light)",
                         }}
                       >
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1 gap-1">
@@ -322,8 +322,8 @@ const BlogDetailPage = () => {
                   <form
                     className="mt-4 ml-2 sm:ml-4 p-4 rounded-xl space-y-2"
                     style={{
-                      background: "rgba(0,0,0,0.3)",
-                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "var(--gradient-metal)",
+                      border: "1px solid var(--border-light)",
                     }}
                     onSubmit={(e) => handleSubmitReply(e, comment._id)}
                   >
@@ -384,15 +384,15 @@ const BlogDetailPage = () => {
       <div
         className="rounded-3xl p-4 sm:p-6"
         style={{
-          background: "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+          background: "var(--gradient-metal)",
+          border: "1px solid var(--border-light)",
+          // boxShadow:
+          //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
         }}
       >
         <h2
           className="text-xl sm:text-2xl font-light mb-4"
-          style={{ color: "var(--accent)" }}
+          style={{ color: "var(--text-primary)" }}
         >
           Join the Discussion
         </h2>

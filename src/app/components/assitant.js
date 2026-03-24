@@ -90,7 +90,7 @@ export default function AssistantModal({ onClose }) {
         style={{
           background: "var(--gradient-metal)",
           border: "1px solid var(--border-light)",
-          boxShadow: "var(--shadow-inset-light), var(--shadow-xl)",
+          // boxShadow: "var(--shadow-inset-light), var(--shadow-xl)",
         }}
       >
         <div
@@ -157,13 +157,19 @@ export default function AssistantModal({ onClose }) {
             className="flex items-center rounded-xl px-4 py-2 transition-all focus-within:ring-2"
             style={{
               background: "var(--accent-muted)",
-              border: "1px solid var(--border-medium)",
+              border: "1px solid var(--border-light)",
+              boxShadow: "0 0 0 2px var(--border-light)",
+              backgroundColor: "var(--gradient-metal)",
             }}
             onFocus={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 0 2px var(--accent-muted)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.border = "none";
+              e.currentTarget.style.backgroundColor = "var(--accent-muted)";
             }}
             onBlur={(e) => {
               e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.border = "none";
+              e.currentTarget.style.backgroundColor = "var(--accent-muted)";
             }}
           >
             <input

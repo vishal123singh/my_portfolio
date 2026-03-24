@@ -256,10 +256,10 @@ export default function MyBlogsPage() {
                 className="magnetic-button group relative px-8 py-4 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                 style={{
                   background:
-                    "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                    "var(--gradient-metal)",
+                  border: "1px solid var(--border-light)",
+                  // boxShadow:
+                  //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                 }}
               >
                 <span className="relative z-10 tracking-wider text-sm font-medium flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
@@ -314,10 +314,10 @@ export default function MyBlogsPage() {
                 className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8"
                 style={{
                   background:
-                    "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                    "var(--gradient-metal)",
+                  border: "1px solid var(--border-light)",
+                  // boxShadow:
+                  //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                 }}
               >
                 {/* Header */}
@@ -364,8 +364,8 @@ export default function MyBlogsPage() {
                     className="w-full sm:w-auto magnetic-button group relative px-5 sm:px-6 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
-                        "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                      border: "1px solid rgba(255,255,255,0.08)",
+                        "var(--gradient-metal)",
+                      border: "1px solid var(--border-light)",
                     }}
                   >
                     <span className="relative z-10 text-white/60 text-sm font-medium flex items-center justify-center gap-2 group-hover:text-white/80 transition-colors">
@@ -380,10 +380,10 @@ export default function MyBlogsPage() {
                     className="w-full sm:w-auto magnetic-button group relative px-6 sm:px-8 py-3 rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
-                        "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      boxShadow:
-                        "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                        "var(--gradient-metal)",
+                      border: "1px solid var(--border-light)",
+                      // boxShadow:
+                      //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                     }}
                   >
                     <span className="relative z-10 text-sm font-medium flex items-center justify-center gap-2 text-white/80 group-hover:text-white transition-colors">
@@ -450,10 +450,10 @@ export default function MyBlogsPage() {
                       className="group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02]"
                       style={{
                         background:
-                          "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        boxShadow:
-                          "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                          "var(--gradient-metal)",
+                        border: "1px solid var(--border-light)",
+                        // boxShadow:
+                        //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                         transformStyle: "preserve-3d",
                       }}
                     >
@@ -470,7 +470,7 @@ export default function MyBlogsPage() {
                           <span
                             className="text-white/30 text-xs px-3 py-1 rounded-full"
                             style={{
-                              border: "1px solid rgba(255,255,255,0.1)",
+                              border: "1px solid var(--border-light)",
                               background: "rgba(255,255,255,0.05)",
                             }}
                           >
@@ -542,7 +542,7 @@ export default function MyBlogsPage() {
                             className="p-2 rounded-full transition-colors hover:bg-white/10 backdrop-blur-sm"
                             style={{
                               background: "rgba(0,0,0,0.5)",
-                              border: "1px solid rgba(255,255,255,0.1)",
+                              border: "1px solid var(--border-light)",
                             }}
                           >
                             <FilePenLineIcon
@@ -569,7 +569,7 @@ export default function MyBlogsPage() {
                             className="p-2 rounded-full transition-colors hover:bg-white/10 backdrop-blur-sm"
                             style={{
                               background: "rgba(0,0,0,0.5)",
-                              border: "1px solid rgba(255,255,255,0.1)",
+                              border: "1px solid var(--border-light)",
                             }}
                           >
                             <Trash size={14} className="text-white/60" />
@@ -579,7 +579,7 @@ export default function MyBlogsPage() {
 
                       <div
                         className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-700"
-                        style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+                        style={{ border: "1px solid var(--border-light)" }}
                       />
                     </div>
                   );

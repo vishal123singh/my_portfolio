@@ -27,14 +27,15 @@ export default function LayoutWrapper({ children }) {
   useEffect(() => {
     const root = document.documentElement;
     // Remove ALL custom classes
-    root.className = "";
+    root.className = "theme-blue";
 
     if (
       pathname.startsWith("/test") ||
       pathname.includes("/projects/playground/") ||
-      pathname === "/ai-agent-builder"
+      pathname === "/ai-agent-builder" ||
+      pathname === "/docs"
     ) {
-      // root.classList.add("test-theme");
+      //root.classList.add("test-theme");
     } else {
       //root.classList.add("app-theme");
     }

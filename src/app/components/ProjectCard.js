@@ -112,7 +112,7 @@ export default function ProjectCard({
         style={{
           background: "var(--gradient-metal)",
           border: "1px solid var(--border-light)",
-          boxShadow: "var(--shadow-inset-light), var(--shadow-lg)",
+          // boxShadow: "var(--shadow-inset-light), var(--shadow-lg)",
         }}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

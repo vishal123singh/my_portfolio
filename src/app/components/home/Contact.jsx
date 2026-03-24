@@ -25,8 +25,8 @@ const ContactMethodCard = ({ type, value, description, Icon, isMobile }) => {
       style={{
         background: "var(--gradient-metal)",
         border: "1px solid var(--border-light)",
-        boxShadow:
-          "inset 0 1px 0 var(--border-light), 0 10px 25px rgba(0,0,0,0.8)",
+        // boxShadow:
+        //   "inset 0 1px 0 var(--border-light), 0 10px 25px rgba(0,0,0,0.8)",
         transform: "translateZ(0)",
         WebkitTapHighlightColor: "transparent",
       }}
@@ -245,8 +245,8 @@ export default function Contact() {
               style={{
                 background: "var(--gradient-metal)",
                 border: "1px solid var(--border-light)",
-                boxShadow:
-                  "inset 0 1px 0 var(--border-light), 0 15px 40px rgba(0,0,0,0.8)",
+                // boxShadow:
+                //   "inset 0 1px 0 var(--border-light), 0 15px 40px rgba(0,0,0,0.8)",
                 transform: "translateZ(0)",
               }}
             >
@@ -306,8 +306,8 @@ export default function Contact() {
                     background:
                       "linear-gradient(145deg, var(--accent), var(--text-muted))",
                     color: "var(--bg-dark)",
-                    boxShadow:
-                      "inset 0 1px 0 rgba(255,255,255,0.5), 0 5px 20px var(--accent-muted)",
+                    // boxShadow:
+                    //   "inset 0 1px 0 rgba(255,255,255,0.5), 0 5px 20px var(--accent-muted)",
                     WebkitTapHighlightColor: "transparent",
                   }}
                 >

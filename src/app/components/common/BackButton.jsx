@@ -7,7 +7,11 @@ export default function BackButton({ label = "Back" }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  if (pathname === "/" || pathname.includes("/blogs/")) {
+  if (
+    pathname === "/" ||
+    pathname.includes("/blogs/") ||
+    pathname.includes("/docs")
+  ) {
     return null;
   }
 
@@ -30,10 +34,10 @@ export default function BackButton({ label = "Back" }) {
         color: "var(--text-primary)",
         background: "rgba(255,255,255,0.04)",
         border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.06),
-          0 8px 20px rgba(0,0,0,0.6)
-        `,
+        // boxShadow: `
+        //   inset 0 1px 0 rgba(255,255,255,0.06),
+        //   0 8px 20px rgba(0,0,0,0.6)
+        // `,
       }}
     >
       {/* Icon */}

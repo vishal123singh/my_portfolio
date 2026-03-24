@@ -147,10 +147,10 @@ export default function About() {
                 style={{
                   background: "var(--gradient-metal)",
                   border: "1px solid var(--border-light)",
-                  boxShadow: `
-                    inset 0 1px 0 var(--border-light),
-                    var(--shadow-lg)
-                  `,
+                  // boxShadow: `
+                  //   inset 0 1px 0 var(--border-light),
+                  //   var(--shadow-lg)
+                  // `,
                 }}
               />
 
@@ -247,10 +247,10 @@ export default function About() {
                       style={{
                         background: "var(--gradient-metal)",
                         border: "1px solid var(--border-light)",
-                        boxShadow: `
-                          var(--shadow-inset-light),
-                          var(--shadow-lg)
-                        `,
+                        // boxShadow: `
+                        //   var(--shadow-inset-light),
+                        //   var(--shadow-lg)
+                        // `,
                       }}
                     >
                       <h4 className="text-primary">{exp.title}</h4>

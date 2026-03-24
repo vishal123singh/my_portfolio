@@ -35,42 +35,42 @@
   --spacing-2xl: 6rem;
 
   /* Color Palette - Matte Blacks (Light-Absorbing) */
-  --bg-darker: #040404;
-  --bg-dark: #080808;
-  --bg-base: #0e0e0e;
+  --bg-darker: #0b0f14;
+  --bg-dark: #0f141a;
+  --bg-base: #141a20;
 
   /* Color Palette - Metallic Greys (Light-Reactive) */
-  --bg-light: #161616;
-  --bg-elevated: #1f1f1f;
-  --bg-metal: #2a2a2a;
+  --bg-light: #182028;
+  --bg-elevated: #1e2832;
+  --bg-metal: #263445;
 
   /* Text Colors - Polished Metal Finish */
-  --text-primary: #f2f2f2;
-  --text-secondary: #b5b5b5;
-  --text-muted: #7a7a7a;
+  --text-primary: #e8edf2;
+  --text-secondary: #b6c2cc;
+  --text-muted: #8b98a5;
 
   /* Border Colors */
-  --border-light: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(232, 237, 242, 0.08);
+  --border-medium: rgba(232, 237, 242, 0.16);
 
   /* Accent Colors - Brushed Steel Highlight */
-  --accent: #e6e6e6;
-  --accent-muted: rgba(255, 255, 255, 0.08);
+  --accent: #7cc5b8;
+  --accent-muted: rgba(124, 197, 184, 0.16);
 
   /* Gradient Effects - Surface Reflection Simulation */
   --gradient-metal: linear-gradient(
     145deg,
-    #2a2a2a,
-    #1a1a1a 40%,
-    #0f0f0f 100%
+    #263445,
+    #1e2832 40%,
+    #151e27 100%
   );
 
   --gradient-matte: linear-gradient(
     145deg,
-    #141414,
-    #121212 40%,
-    #101010 75%,
-    #0e0e0e
+    #182028,
+    #161e26 40%,
+    #141b22 75%,
+    #12181f
   );
 
   /* Shadow Effects */
@@ -94,10 +94,10 @@
   --shadow-inset-light: inset 0 1px 0 var(--border-light);
   
   /* Input & Interactive */
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(255, 255, 255, 0.1);
-  --input-focus-ring: rgba(255, 255, 255, 0.2);
-  --input-placeholder: rgba(255, 255, 255, 0.3);
+  --input-bg: rgba(24, 32, 40, 0.7);
+  --input-border: rgba(232, 237, 242, 0.12);
+  --input-focus-ring: rgba(124, 197, 184, 0.35);
+  --input-placeholder: rgba(182, 194, 204, 0.5);
   
   /* Animations */
   --bounce-delay-75: 75ms;
@@ -122,21 +122,83 @@
 
 /* Theme Overrides */
 .app-theme {
-  --bg-dark: #0a0a0a;
-  --bg-darker: #050505;
-  --bg-light: #1a1a1a;
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
-  --text-muted: #666666;
-  --border-light: #222222;
-  --border-medium: #333333;
-  --accent: #ffffff;
-  --accent-muted: rgba(255, 255, 255, 0.1);
-  --gradient-start: #1a1a1a;
-  --gradient-end: #0a0a0a;
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --bg-dark: #0f141a;
+  --bg-darker: #0b0f14;
+  --bg-light: #182028;
+  --text-primary: #e8edf2;
+  --text-secondary: #b6c2cc;
+  --text-muted: #8b98a5;
+  --border-light: rgba(232, 237, 242, 0.08);
+  --border-medium: rgba(232, 237, 242, 0.16);
+  --accent: #7cc5b8;
+  --accent-muted: rgba(124, 197, 184, 0.16);
+  --gradient-start: #263445;
+  --gradient-end: #151e27;
+  --popover: oklch(0.205 0 270);
+  --popover-foreground: oklch(0.985 0 270);
 }
+
+/* ============================================
+   OPTIONAL THEME PRESETS (toggle via class)
+   Apply on html/body or your root wrapper alongside .app-theme
+   e.g., <html class="app-theme theme-blue">
+   ============================================ */
+.theme-blue {
+  --bg-darker: #090f1d;
+  --bg-dark: #0d1526;
+  --bg-base: #111b2f;
+  --bg-light: #15213a;
+  --bg-elevated: #1b2947;
+  --bg-metal: #23345a;
+  --text-primary: #eaf1fb;
+  --text-secondary: #bdcade;
+  --text-muted: #8b9db8;
+  --border-light: rgba(234, 241, 251, 0.08);
+  --border-medium: rgba(234, 241, 251, 0.18);
+  --accent: #79a8ff;
+  --accent-muted: rgba(121, 168, 255, 0.18);
+  --gradient-metal: linear-gradient(145deg, #253860, #1c2a4b 40%, #131d37 100%);
+  --gradient-matte: linear-gradient(145deg, #182543, #16213c 40%, #121b31 75%, #0e172b);
+  --input-bg: rgba(21, 33, 58, 0.62);
+  --input-border: rgba(234, 241, 251, 0.14);
+  --input-focus-ring: rgba(121, 168, 255, 0.38);
+  --input-placeholder: rgba(189, 202, 222, 0.52);
+}
+
+/* Premium polish only for blue theme */
+.theme-blue body {
+  background-color: var(--bg-dark);
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(121, 168, 255, 0.12), transparent 32%),
+    radial-gradient(circle at 82% 4%, rgba(98, 201, 255, 0.08), transparent 26%),
+    linear-gradient(180deg, var(--bg-dark), var(--bg-darker));
+  background-attachment: fixed;
+}
+
+.theme-blue a:hover,
+.theme-blue .nav-item:hover,
+.theme-blue .project-link:hover {
+  color: var(--accent);
+}
+
+.theme-blue .nav-item::after,
+.theme-blue .highlight::after {
+  background: var(--accent);
+}
+
+.theme-blue .hero-btn,
+.theme-blue .resume-floating {
+  background: linear-gradient(135deg, #8bb5ff, #6f97ef);
+  color: #0b1324;
+}
+
+.theme-blue .hero-btn:hover,
+.theme-blue .resume-floating:hover {
+  box-shadow: 0 10px 30px -12px rgba(121, 168, 255, 0.55);
+}
+
+
+
 
 /* ============================================
    BASE STYLES

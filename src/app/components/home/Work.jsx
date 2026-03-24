@@ -223,10 +223,10 @@ export default function Work() {
                     style={{
                       background: "var(--gradient-metal)",
                       border: "1px solid var(--border-light)",
-                      boxShadow: `
-                        inset 0 1px 0 var(--border-light),
-                        0 15px 40px rgba(0,0,0,0.8)
-                      `,
+                      // boxShadow: `
+                      //   inset 0 1px 0 var(--border-light),
+                      //   0 15px 40px rgba(0,0,0,0.8)
+                      // `,
                     }}
                   >
                     {/* Top reflection */}

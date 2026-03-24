@@ -206,10 +206,10 @@ export default function AppsShowcase() {
                       className="relative group overflow-hidden rounded-2xl transition-all duration-500"
                       style={{
                         background:
-                          "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        boxShadow:
-                          "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                          "var(--gradient-metal)",
+                        border: "1px solid var(--border-light)",
+                        // boxShadow:
+                        //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                         transformStyle: "preserve-3d",
                       }}
                     >
@@ -225,7 +225,7 @@ export default function AppsShowcase() {
                           <span
                             className="text-xs uppercase tracking-wider px-3 py-1 rounded-full transition-colors text-white/40 group-hover:text-white/60"
                             style={{
-                              border: "1px solid rgba(255,255,255,0.1)",
+                              border: "1px solid var(--border-light)",
                               background: "rgba(255,255,255,0.05)",
                             }}
                           >
@@ -243,8 +243,8 @@ export default function AppsShowcase() {
                               key={tech}
                               className="text-xs px-2 py-1 rounded text-white/40 group-hover:text-white/60 transition-colors"
                               style={{
-                                background: "rgba(255,255,255,0.05)",
-                                border: "1px solid rgba(255,255,255,0.08)",
+                                background: "var(--gradient-metal)",
+                                border: "1px solid var(--border-light)",
                               }}
                             >
                               {tech}
@@ -258,10 +258,10 @@ export default function AppsShowcase() {
                           className="inline-flex items-center justify-center w-full sm:w-auto px-5 sm:px-6 py-3 rounded-lg font-medium transition-all duration-300 relative overflow-hidden group"
                           style={{
                             background:
-                              "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                            boxShadow:
-                              "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                              "var(--gradient-metal)",
+                            border: "1px solid var(--border-light)",
+                            // boxShadow:
+                            //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                             color: "var(--accent)",
                           }}
                         >
@@ -273,7 +273,7 @@ export default function AppsShowcase() {
                             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                             style={{
                               background:
-                                "linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+                                "var(--gradient-metal)",
                             }}
                           />
                         </motion.a>
@@ -282,7 +282,7 @@ export default function AppsShowcase() {
                       {/* Decorative elements */}
                       <div
                         className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-700"
-                        style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+                        style={{ border: "1px solid var(--border-light)" }}
                       />
                     </motion.div>
                   ))}
@@ -317,10 +317,10 @@ export default function AppsShowcase() {
                     className="relative group overflow-hidden rounded-xl transition-all duration-500"
                     style={{
                       background:
-                        "linear-gradient(145deg, #2a2a2a, #1a1a1a 40%, #0f0f0f)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      boxShadow:
-                        "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
+                        "var(--gradient-metal)",
+                      border: "1px solid var(--border-light)",
+                      // boxShadow:
+                      //   "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 25px rgba(0,0,0,0.8)",
                     }}
                   >
                     <div className="p-5 sm:p-6">
@@ -332,8 +332,8 @@ export default function AppsShowcase() {
                         <span
                           className="text-xs uppercase tracking-wider px-2 py-1 rounded-full text-white/40 group-hover:text-white/60 transition-colors"
                           style={{
-                            border: "1px solid rgba(255,255,255,0.1)",
-                            background: "rgba(255,255,255,0.05)",
+                            border: "1px solid var(--border-light)",
+                            background: "var(--gradient-metal)",
                           }}
                         >
                           {app.category}
@@ -349,7 +349,7 @@ export default function AppsShowcase() {
                         whileTap={{ scale: 0.95 }}
                         className="inline-flex items-center text-sm px-4 py-2 rounded-lg transition-all duration-300 group"
                         style={{
-                          border: "1px solid rgba(255,255,255,0.1)",
+                          border: "1px solid var(--border-light)",
                           color: "var(--accent)",
                         }}
                       >
@@ -361,7 +361,7 @@ export default function AppsShowcase() {
                     {/* Decorative corner */}
                     <div
                       className="absolute top-0 right-0 w-12 h-12 border-t border-r opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ borderColor: "rgba(255,255,255,0.1)" }}
+                      style={{ borderColor: "var(--border-light)" }}
                     />
                   </motion.div>
                 ))}

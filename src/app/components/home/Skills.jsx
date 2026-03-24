@@ -165,10 +165,10 @@ export default function TechStack() {
               style={{
                 background: "var(--gradient-metal)",
                 border: "1px solid var(--border-light)",
-                boxShadow: `
-                  inset 0 1px 0 var(--border-light),
-                  0 8px 20px rgba(0,0,0,0.6)
-                `,
+                // boxShadow: `
+                //   inset 0 1px 0 var(--border-light),
+                //   0 8px 20px rgba(0,0,0,0.6)
+                // `,
                 transform: isMobile ? "none" : undefined,
               }}
               role="listitem"
