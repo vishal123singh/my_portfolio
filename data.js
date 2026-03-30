@@ -89,7 +89,7 @@ const projects = [
     title: "Velotransact",
     slug: "velotransact",
     description: "Smarter Vehicle Transactions Platform.",
-    link: "https://velotransact.com/",
+    link: "https://www.velotransact.com/",
     tags: [
       "Web Application",
       "React",
@@ -311,7 +311,7 @@ const projects = [
     slug: "resiliq",
     description:
       "Resiliq is a full-featured logistics management platform that handles end-to-end delivery operations. The system supports multiple user roles including Super Admin, Hub Managers, Delivery Associates, Franchise Managers, Cluster Managers, City Managers, and more",
-    link: "https://dashboardv1.resiliq.in",
+    link: "https://www.resiliq.in/",
     tags: ["Webhook", "Web Application", "React", "Node JS", "Express JS"],
     images: [
       "/projects/screenshots/resiliq/resiliq_1.webp",
@@ -449,7 +449,7 @@ const projects = [
     slug: "koodums-chat",
     description:
       "AI-powered digital concierge chatbot for hotels offering room services, travel planning, ticket booking,and itinerary management.",
-    link: "https://admin-tool-dev.genaisolutions.ai/",
+    link: "https://www.koodums.com/",
     images: [
       "/projects/screenshots/koodums-chat/koodums.webp",
       "/projects/screenshots/koodums-chat/koodums_11.webp",
@@ -570,7 +570,7 @@ const projects = [
     slug: "kiddie-kredit",
     description:
       "Financial education mobile app for children. Gamified with task & reward systems.",
-    link: "https://play.google.com/store/apps/details?id=com.kiddiekredit.app&pcampaignid=web_share",
+    link: "https://www.kiddiekredit.com/",
     images: [
       "/projects/screenshots/kk/kiddie_kredit_1.webp",
       "/projects/screenshots/kk/5.png",
@@ -964,7 +964,7 @@ const keyProjects = [
     tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
     image: "/projects/screenshots/koodums-chat/koodums.webp",
     color: "from-purple-600 to-pink-600",
-    link: "https://admin-tool-dev.genaisolutions.ai/",
+    link: "https://www.koodums.com/",
   },
   {
     title: "Aadvico",
@@ -984,7 +984,7 @@ const keyProjects = [
     tech: "React Native • Node.js • Socket.io",
     image: "/projects/screenshots/kk/kiddie_kredit_1.webp",
     color: "from-orange-600 to-red-600",
-    link: "https://play.google.com/store/apps/details?id=com.kiddiekredit.app&pcampaignid=web_share",
+    link: "https://www.kiddiekredit.com/",
   },
 ];
 

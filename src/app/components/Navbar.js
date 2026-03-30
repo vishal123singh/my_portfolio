@@ -140,7 +140,7 @@ function MobileDrawer({ isOpen, onClose, navLinks, isActive }) {
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/95 backdrop-blur-lg"
+            className="absolute inset-0 backdrop-blur-lg"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -149,7 +149,7 @@ function MobileDrawer({ isOpen, onClose, navLinks, isActive }) {
 
           {/* Drawer */}
           <motion.div
-            className="absolute top-0 right-0 h-full w-[280px] bg-[#0a0a0a] border-l border-gray-800 px-8 py-12 flex flex-col space-y-8 shadow-2xl"
+            className="absolute top-0 right-0 h-full w-[280px] bg-gradient-matte border-l border-gray-800 px-8 py-12 flex flex-col space-y-8 shadow-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
