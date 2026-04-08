@@ -604,7 +604,7 @@ const projects = [
     slug: "earnings-call",
     description:
       "AI-powered insights platform for earnings calls and SEC filings.",
-    link: "https://earnings-call.vercel.app/",
+    link: "https://getalphalens.vercel.app/",
     tags: ["AI", "Web Application", "Next.js", "AWS"],
     images: [
       "/projects/screenshots/earnings-call/1.png",
@@ -668,7 +668,7 @@ const projects = [
       "Integrated SEC filing reports including income statements, balance sheets, and cash flow statements.",
       "Added voice assistant functionality for interactive financial insights.",
     ],
-    displayImage: "/projects/screenshots/earnings-call/12.png",
+    displayImage: "/projects/screenshots/earnings-call/0.png",
   },
   {
     title: "Logik",
@@ -806,7 +806,7 @@ const projects = [
     slug: "autoflow",
     description:
       "Lead generation and outbound marketing platform with Apollo.io integration.",
-    link: null,
+    link: "https://leadnexis.vercel.app/",
     images: [
       "/projects/screenshots/autoflow/1.png",
       "/projects/screenshots/autoflow/2.png",
