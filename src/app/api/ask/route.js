@@ -17,7 +17,7 @@ const contentMap = {
       email: "bs08081996@gmail.com",
       phone: "+918210705162",
       linkedin: "https://www.linkedin.com/in/vishal-singh-b57b7b109",
-      github: "https://github.com/vishal123singh",
+      github: "https://github.com/vishalsinghlab",
       portfolio: "https://singhvishal.vercel.app/",
     },
     summary:

@@ -600,12 +600,21 @@ const projects = [
   },
 
   {
-    title: "Earnings Call",
-    slug: "earnings-call",
+    title: "InvestorEye",
+    slug: "investoreye",
     description:
-      "AI-powered insights platform for earnings calls and SEC filings.",
-    link: "https://getalphalens.vercel.app/",
-    tags: ["AI", "Web Application", "Next.js", "AWS"],
+      "AI-powered platform for decoding earnings call transcripts and extracting financial insights",
+    link: "https://investoreye.vercel.app/",
+    tags: [
+      "AI",
+      "Web Application",
+      "Next.js",
+      "AWS",
+      "Python",
+      "FASTAPI",
+      "RAG",
+      "Langchain",
+    ],
     images: [
       "/projects/screenshots/earnings-call/1.png",
       "/projects/screenshots/earnings-call/2.png",
@@ -668,7 +677,7 @@ const projects = [
       "Integrated SEC filing reports including income statements, balance sheets, and cash flow statements.",
       "Added voice assistant functionality for interactive financial insights.",
     ],
-    displayImage: "/projects/screenshots/earnings-call/0.png",
+    displayImage: "/projects/screenshots/earnings-call/0.webp",
   },
   {
     title: "Logik",
@@ -947,6 +956,16 @@ const experiences = [
 ];
 
 const keyProjects = [
+  {
+    title: "InvestorEye",
+    category: "Web Application",
+    description:
+      "AI-powered platform for decoding earnings call transcripts and extracting financial insights",
+    tech: "Next.js • Python • FastAPI • RAG • Langchain",
+    image: "/projects/screenshots/earnings-call/0.webp",
+    color: "from-orange-600 to-red-600",
+    link: "https://singhvishal.vercel.app/",
+  },
   {
     title: "Velotransact",
     slug: "velotransact",

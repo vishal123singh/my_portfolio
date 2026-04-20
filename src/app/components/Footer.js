@@ -18,7 +18,7 @@ export default function Footer() {
   const socialLinks = [
     {
       icon: <FaGithub className="w-5 h-5" />,
-      href: "https://github.com/vishal123singh",
+      href: "https://github.com/vishalsinghlab",
       label: "GitHub",
       color: "hover:text-gray-300",
     },
@@ -87,7 +87,10 @@ export default function Footer() {
     <footer
       ref={footerRef}
       className="relative overflow-hidden"
-      style={{ background: "var(--gradient-metal)", color: "var(--text-primary)" }}
+      style={{
+        background: "var(--gradient-metal)",
+        color: "var(--text-primary)",
+      }}
     >
       <div className="relative px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto relative z-10">
@@ -95,7 +98,7 @@ export default function Footer() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 mb-12 sm:mb-16"
             variants={containerVariant}
             initial="hidden"
-            whileInView="visible" 
+            whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
             {/* Brand */}

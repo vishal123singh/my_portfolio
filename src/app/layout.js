@@ -18,10 +18,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Vishal Singh | Portfolio",
-  description: "Portfolio website of Vishal Singh",
+  metadataBase: new URL("https://singhvishal.vercel.app"),
+  title: "Vishal Singh | Full-Stack Dev | AI Native",
   icons: {
-    icon: "/vs.png",
+    icon: [
+      { url: "/vs.png", sizes: "32x32", type: "image/png" },
+      { url: "/vs.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
+  description: "Portfolio website of Vishal Singh",
+  openGraph: {
+    title: "Vishal Singh | Full-Stack Dev | AI Native",
+    description: "Portfolio website of Vishal Singh",
+    url: "https://singhvishal.vercel.app/",
+    siteName: "Vishal Singh",
+    images: ["/preview.webp"], // cleaner
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vishal Singh | Full-Stack Dev | AI Native",
+    description: "Portfolio website of Vishal Singh",
+    images: ["/preview.webp"], // cleaner
   },
 };
 
