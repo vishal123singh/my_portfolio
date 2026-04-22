@@ -197,7 +197,187 @@
   box-shadow: 0 10px 30px -12px rgba(121, 168, 255, 0.55);
 }
 
+/* ============================================
+   THEME: EMERALD FOREST
+   Professional, organic, calm
+============================================ */
+.theme-emerald {
+  --bg-darker: #07170f;
+  --bg-dark: #0a1f15;
+  --bg-base: #0e2a1d;
+  --bg-light: #143526;
+  --bg-elevated: #1b4633;
+  --bg-metal: #235c41;
+  --text-primary: #e6f3ed;
+  --text-secondary: #b3cdc0;
+  --text-muted: #7a9b89;
+  --border-light: rgba(230, 243, 237, 0.08);
+  --border-medium: rgba(230, 243, 237, 0.18);
+  --accent: #6fcf97;
+  --accent-muted: rgba(111, 207, 151, 0.18);
+  --gradient-metal: linear-gradient(145deg, #235c41, #1b4633 40%, #0e2a1d 100%);
+  --gradient-matte: linear-gradient(145deg, #1b4633, #143526 40%, #0e2a1d 75%, #0a1f15);
+  --input-bg: rgba(20, 53, 38, 0.62);
+  --input-border: rgba(230, 243, 237, 0.14);
+  --input-focus-ring: rgba(111, 207, 151, 0.38);
+  --input-placeholder: rgba(179, 205, 192, 0.52);
+}
 
+/* ============================================
+   THEME: SUNSET CORAL
+   Warm, energetic, creative
+============================================ */
+.theme-sunset {
+  --bg-darker: #1a0c12;
+  --bg-dark: #261218;
+  --bg-base: #331a21;
+  --bg-light: #40232c;
+  --bg-elevated: #52303b;
+  --bg-metal: #6a4250;
+  --text-primary: #fef0f0;
+  --text-secondary: #e0c0c8;
+  --text-muted: #b88a98;
+  --border-light: rgba(254, 240, 240, 0.08);
+  --border-medium: rgba(254, 240, 240, 0.18);
+  --accent: #ff9f7c;
+  --accent-muted: rgba(255, 159, 124, 0.18);
+  --gradient-metal: linear-gradient(145deg, #6a4250, #52303b 40%, #331a21 100%);
+  --gradient-matte: linear-gradient(145deg, #52303b, #40232c 40%, #331a21 75%, #261218);
+  --input-bg: rgba(64, 35, 44, 0.62);
+  --input-border: rgba(254, 240, 240, 0.14);
+  --input-focus-ring: rgba(255, 159, 124, 0.38);
+  --input-placeholder: rgba(224, 192, 200, 0.52);
+}
+
+/* ============================================
+   THEME: AMETHYST DREAM
+   Luxurious, mystical, sophisticated
+============================================ */
+.theme-amethyst {
+  --bg-darker: #120d1f;
+  --bg-dark: #1a132c;
+  --bg-base: #231a3b;
+  --bg-light: #2e234a;
+  --bg-elevated: #3c2e5e;
+  --bg-metal: #4e3d7a;
+  --text-primary: #f0eaff;
+  --text-secondary: #cbbff0;
+  --text-muted: #9b8bc9;
+  --border-light: rgba(240, 234, 255, 0.08);
+  --border-medium: rgba(240, 234, 255, 0.18);
+  --accent: #c28aff;
+  --accent-muted: rgba(194, 138, 255, 0.18);
+  --gradient-metal: linear-gradient(145deg, #4e3d7a, #3c2e5e 40%, #231a3b 100%);
+  --gradient-matte: linear-gradient(145deg, #3c2e5e, #2e234a 40%, #231a3b 75%, #1a132c);
+  --input-bg: rgba(46, 35, 74, 0.62);
+  --input-border: rgba(240, 234, 255, 0.14);
+  --input-focus-ring: rgba(194, 138, 255, 0.38);
+  --input-placeholder: rgba(203, 191, 240, 0.52);
+}
+
+/* ============================================
+   THEME: GOLDEN HOUR
+   Warm, premium, optimistic
+============================================ */
+.theme-golden {
+  --bg-darker: #1a1508;
+  --bg-dark: #26200c;
+  --bg-base: #332b12;
+  --bg-light: #403719;
+  --bg-elevated: #524723;
+  --bg-metal: #6a5c30;
+  --text-primary: #fff5e6;
+  --text-secondary: #f0e0c0;
+  --text-muted: #c8b088;
+  --border-light: rgba(255, 245, 230, 0.08);
+  --border-medium: rgba(255, 245, 230, 0.18);
+  --accent: #ffd166;
+  --accent-muted: rgba(255, 209, 102, 0.18);
+  --gradient-metal: linear-gradient(145deg, #6a5c30, #524723 40%, #332b12 100%);
+  --gradient-matte: linear-gradient(145deg, #524723, #403719 40%, #332b12 75%, #26200c);
+  --input-bg: rgba(64, 55, 25, 0.62);
+  --input-border: rgba(255, 245, 230, 0.14);
+  --input-focus-ring: rgba(255, 209, 102, 0.38);
+  --input-placeholder: rgba(240, 224, 192, 0.52);
+}
+
+/* ============================================
+   THEME: COLD STEEL
+   Industrial, minimal, powerful
+============================================ */
+.theme-steel {
+  --bg-darker: #0f1217;
+  --bg-dark: #151a21;
+  --bg-base: #1c222c;
+  --bg-light: #242c38;
+  --bg-elevated: #2e3847;
+  --bg-metal: #3b475a;
+  --text-primary: #f0f4f8;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-light: rgba(240, 244, 248, 0.08);
+  --border-medium: rgba(240, 244, 248, 0.18);
+  --accent: #94a3b8;
+  --accent-muted: rgba(148, 163, 184, 0.18);
+  --gradient-metal: linear-gradient(145deg, #3b475a, #2e3847 40%, #1c222c 100%);
+  --gradient-matte: linear-gradient(145deg, #2e3847, #242c38 40%, #1c222c 75%, #151a21);
+  --input-bg: rgba(36, 44, 56, 0.62);
+  --input-border: rgba(240, 244, 248, 0.14);
+  --input-focus-ring: rgba(148, 163, 184, 0.38);
+  --input-placeholder: rgba(203, 213, 225, 0.52);
+}
+
+/* ============================================
+   THEME: PLUM WINE
+   Rich, deep, dramatic
+============================================ */
+.theme-plum {
+  --bg-darker: #1a0f17;
+  --bg-dark: #261520;
+  --bg-base: #331c2a;
+  --bg-light: #402536;
+  --bg-elevated: #523146;
+  --bg-metal: #6a405c;
+  --text-primary: #fef0f7;
+  --text-secondary: #e0c0d4;
+  --text-muted: #b88aaa;
+  --border-light: rgba(254, 240, 247, 0.08);
+  --border-medium: rgba(254, 240, 247, 0.18);
+  --accent: #ff8fb4;
+  --accent-muted: rgba(255, 143, 180, 0.18);
+  --gradient-metal: linear-gradient(145deg, #6a405c, #523146 40%, #331c2a 100%);
+  --gradient-matte: linear-gradient(145deg, #523146, #402536 40%, #331c2a 75%, #261520);
+  --input-bg: rgba(64, 37, 54, 0.62);
+  --input-border: rgba(254, 240, 247, 0.14);
+  --input-focus-ring: rgba(255, 143, 180, 0.38);
+  --input-placeholder: rgba(224, 192, 212, 0.52);
+}
+
+/* ============================================
+   THEME: OCEAN TEAL
+   Refreshing, modern, trustworthy
+============================================ */
+.theme-teal {
+  --bg-darker: #061a1c;
+  --bg-dark: #0a2528;
+  --bg-base: #0e3236;
+  --bg-light: #144046;
+  --bg-elevated: #1c545b;
+  --bg-metal: #256e77;
+  --text-primary: #e5f7f9;
+  --text-secondary: #b3e0e6;
+  --text-muted: #7abcd4;
+  --border-light: rgba(229, 247, 249, 0.08);
+  --border-medium: rgba(229, 247, 249, 0.18);
+  --accent: #5dd9c1;
+  --accent-muted: rgba(93, 217, 193, 0.18);
+  --gradient-metal: linear-gradient(145deg, #256e77, #1c545b 40%, #0e3236 100%);
+  --gradient-matte: linear-gradient(145deg, #1c545b, #144046 40%, #0e3236 75%, #0a2528);
+  --input-bg: rgba(20, 64, 70, 0.62);
+  --input-border: rgba(229, 247, 249, 0.14);
+  --input-focus-ring: rgba(93, 217, 193, 0.38);
+  --input-placeholder: rgba(179, 224, 230, 0.52);
+}
 
 
 /* ============================================
@@ -248,7 +428,7 @@ nav {
   display: flex;
   gap: 2rem;
   justify-content: center;
-  padding: 2rem 0;
+  /* padding: 2rem 0; */
   font-size: 0.875rem;
   font-weight: 400;
   letter-spacing: 0.05em;

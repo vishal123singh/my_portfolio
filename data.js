@@ -86,6 +86,157 @@ import {
 
 const projects = [
   {
+    title: "Koodums Chat",
+    slug: "koodums-chat",
+    description:
+      "AI-powered digital concierge chatbot for hotels offering room services, travel planning, ticket booking,and itinerary management.",
+    link: "https://www.koodums.com/",
+    images: [
+      "/projects/screenshots/koodums-chat/koodums.webp",
+      "/projects/screenshots/koodums-chat/koodums_11.webp",
+      "/projects/screenshots/koodums-chat/koodums_22.webp",
+      "/projects/screenshots/koodums-chat/koodums_33.webp",
+      "/projects/screenshots/koodums-chat/koodums_1.webp",
+      "/projects/screenshots/koodums-chat/koodums_2.webp",
+      "/projects/screenshots/koodums-chat/1.png",
+      "/projects/screenshots/koodums-chat/2.png",
+      "/projects/screenshots/koodums-chat/3.png",
+    ],
+    fullPageImages: [
+      "/projects/screenshots/koodums-chat/koodums.webp",
+      "/projects/screenshots/koodums-chat/koodums_11.webp",
+      "/projects/screenshots/koodums-chat/koodums_22.webp",
+      "/projects/screenshots/koodums-chat/koodums_33.webp",
+      "/projects/screenshots/koodums-chat/koodums_1.webp",
+      "/projects/screenshots/koodums-chat/koodums_2.webp",
+    ],
+    tags: ["AI Agents", "Node JS", "Typescript", "Python", "GCP", "MCP"],
+
+    features: [
+      {
+        title: "AI-Driven Travel Assistance",
+        icon: <Bot size={20} />,
+        description:
+          "Conversational AI interface providing travel assistance and hotel room services through natural language interactions.",
+      },
+      {
+        title: "External Tool Integrations (MCP)",
+        icon: <Plug size={20} />,
+        description:
+          "MCP-based integration with external tools such as Google Maps and YouTube to enhance responses with real-time data and rich content.",
+      },
+      {
+        title: "Intelligent Prompt Refinement",
+        icon: <Sparkles size={20} />,
+        description:
+          "Automatically refines incomplete or ambiguous user queries to generate accurate and context-aware responses.",
+      },
+      {
+        title: "Dynamic Context Management",
+        icon: <Layers size={20} />,
+        description:
+          "Maintains and manages conversation history dynamically to ensure coherent, multi-turn LLM interactions.",
+      },
+      {
+        title: "Scalable High-Performance Architecture",
+        icon: <Gauge size={20} />,
+        description:
+          "Designed for scalability and performance, enabling efficient handling of concurrent chatbot conversations.",
+      },
+    ],
+
+    contributions: [
+      "Focused on building the MCP (Model Context Protocol) client and server architecture to connect AI agents with external tools like Google Maps and YouTube.",
+      "Implemented MCP servers from scratch to handle tool calls for fetching place details, directions, reviews, photos, YouTube videos, comments, live streams, shorts, channels, and playlists.",
+      "Developed prompt optimization logic to clarify incomplete or ambiguous user queries by analyzing conversational context or dynamically requesting missing information from the user.",
+      "Designed and implemented context management system to ensure optimal LLM performance by maintaining only the latest 10 conversational turns for efficient memory usage and relevant context injection.",
+      "Enabled AI agents to dynamically chain tool calls through MCP servers to enrich user conversations and deliver personalized, context-aware responses.",
+      "Collaborated on integration with cloud services for scalable deployment and real-time system performance.",
+    ],
+    displayImage: "/projects/screenshots/koodums-chat/koodums.webp",
+  },
+
+  {
+    title: "InvestorEye",
+    slug: "investoreye",
+    description:
+      "AI-powered platform for decoding earnings call transcripts and extracting financial insights",
+    link: "https://investoreye.vercel.app/",
+    tags: [
+      "AI",
+      "Web Application",
+      "Next.js",
+      "AWS",
+      "Python",
+      "FASTAPI",
+      "RAG",
+      "Langchain",
+    ],
+    images: [
+      "/projects/screenshots/earnings-call/1.png",
+      "/projects/screenshots/earnings-call/2.png",
+      "/projects/screenshots/earnings-call/3.png",
+      "/projects/screenshots/earnings-call/4.png",
+      "/projects/screenshots/earnings-call/5.png",
+      "/projects/screenshots/earnings-call/6.png",
+      "/projects/screenshots/earnings-call/7.png",
+      "/projects/screenshots/earnings-call/8.png",
+      "/projects/screenshots/earnings-call/9.png",
+      "/projects/screenshots/earnings-call/10.png",
+      "/projects/screenshots/earnings-call/11.png",
+      "/projects/screenshots/earnings-call/12.png",
+    ],
+
+    features: [
+      {
+        title: "AI-Powered Earnings Call Analysis",
+        icon: <BarChart2 size={20} />,
+        description:
+          "Leverages AI to automatically analyze earnings calls, extracting key insights and trends for investors and analysts.",
+      },
+      {
+        title: "Sentiment Analysis & Real-Time Graphs",
+        icon: <TrendingUp size={20} />,
+        description:
+          "Provides sentiment scoring and real-time visualizations to quickly assess market reactions and investor sentiment.",
+      },
+      {
+        title: "Earnings Call Transcripts & Uploads",
+        icon: <FileText size={20} />,
+        description:
+          "Allows users to upload and access detailed transcripts of earnings calls for review and reference.",
+      },
+      {
+        title: "Company Comparisons & Financial Reports",
+        icon: <Layers size={20} />,
+        description:
+          "Compare multiple companies side-by-side with comprehensive financial reports and performance metrics.",
+      },
+      {
+        title: "SEC Filings Integration",
+        icon: <GitPullRequest size={20} />,
+        description:
+          "Integrates directly with SEC filings to provide accurate, up-to-date financial documentation.",
+      },
+      {
+        title: "Voice Assistant for Conversational Queries",
+        icon: <Speaker size={20} />,
+        description:
+          "Interact with the platform using voice commands for instant answers to complex financial queries.",
+      },
+    ],
+
+    contributions: [
+      "Developed the application end-to-end, integrating AI-powered data processing and visualization.",
+      "Implemented real-time sentiment analysis, Q&A functionality, and transcript generation from earnings calls.",
+      "Built features to fetch, upload, and manage earnings calls for multiple companies.",
+      "Developed earnings calendar, company performance comparison tools, and AI-generated visual reports.",
+      "Integrated SEC filing reports including income statements, balance sheets, and cash flow statements.",
+      "Added voice assistant functionality for interactive financial insights.",
+    ],
+    displayImage: "/projects/screenshots/earnings-call/0.webp",
+  },
+  {
     title: "Velotransact",
     slug: "velotransact",
     description: "Smarter Vehicle Transactions Platform.",
@@ -445,77 +596,6 @@ const projects = [
   },
 
   {
-    title: "Koodums Chat",
-    slug: "koodums-chat",
-    description:
-      "AI-powered digital concierge chatbot for hotels offering room services, travel planning, ticket booking,and itinerary management.",
-    link: "https://www.koodums.com/",
-    images: [
-      "/projects/screenshots/koodums-chat/koodums.webp",
-      "/projects/screenshots/koodums-chat/koodums_11.webp",
-      "/projects/screenshots/koodums-chat/koodums_22.webp",
-      "/projects/screenshots/koodums-chat/koodums_33.webp",
-      "/projects/screenshots/koodums-chat/koodums_1.webp",
-      "/projects/screenshots/koodums-chat/koodums_2.webp",
-      "/projects/screenshots/koodums-chat/1.png",
-      "/projects/screenshots/koodums-chat/2.png",
-      "/projects/screenshots/koodums-chat/3.png",
-    ],
-    fullPageImages: [
-      "/projects/screenshots/koodums-chat/koodums.webp",
-      "/projects/screenshots/koodums-chat/koodums_11.webp",
-      "/projects/screenshots/koodums-chat/koodums_22.webp",
-      "/projects/screenshots/koodums-chat/koodums_33.webp",
-      "/projects/screenshots/koodums-chat/koodums_1.webp",
-      "/projects/screenshots/koodums-chat/koodums_2.webp",
-    ],
-    tags: ["AI Agents", "Node JS", "Typescript", "Python", "GCP", "MCP"],
-
-    features: [
-      {
-        title: "AI-Driven Travel Assistance",
-        icon: <Bot size={20} />,
-        description:
-          "Conversational AI interface providing travel assistance and hotel room services through natural language interactions.",
-      },
-      {
-        title: "External Tool Integrations (MCP)",
-        icon: <Plug size={20} />,
-        description:
-          "MCP-based integration with external tools such as Google Maps and YouTube to enhance responses with real-time data and rich content.",
-      },
-      {
-        title: "Intelligent Prompt Refinement",
-        icon: <Sparkles size={20} />,
-        description:
-          "Automatically refines incomplete or ambiguous user queries to generate accurate and context-aware responses.",
-      },
-      {
-        title: "Dynamic Context Management",
-        icon: <Layers size={20} />,
-        description:
-          "Maintains and manages conversation history dynamically to ensure coherent, multi-turn LLM interactions.",
-      },
-      {
-        title: "Scalable High-Performance Architecture",
-        icon: <Gauge size={20} />,
-        description:
-          "Designed for scalability and performance, enabling efficient handling of concurrent chatbot conversations.",
-      },
-    ],
-
-    contributions: [
-      "Focused on building the MCP (Model Context Protocol) client and server architecture to connect AI agents with external tools like Google Maps and YouTube.",
-      "Implemented MCP servers from scratch to handle tool calls for fetching place details, directions, reviews, photos, YouTube videos, comments, live streams, shorts, channels, and playlists.",
-      "Developed prompt optimization logic to clarify incomplete or ambiguous user queries by analyzing conversational context or dynamically requesting missing information from the user.",
-      "Designed and implemented context management system to ensure optimal LLM performance by maintaining only the latest 10 conversational turns for efficient memory usage and relevant context injection.",
-      "Enabled AI agents to dynamically chain tool calls through MCP servers to enrich user conversations and deliver personalized, context-aware responses.",
-      "Collaborated on integration with cloud services for scalable deployment and real-time system performance.",
-    ],
-    displayImage: "/projects/screenshots/koodums-chat/koodums.webp",
-  },
-
-  {
     title: "SWIFI",
     slug: "swifi",
     description:
@@ -599,86 +679,6 @@ const projects = [
     ],
   },
 
-  {
-    title: "InvestorEye",
-    slug: "investoreye",
-    description:
-      "AI-powered platform for decoding earnings call transcripts and extracting financial insights",
-    link: "https://investoreye.vercel.app/",
-    tags: [
-      "AI",
-      "Web Application",
-      "Next.js",
-      "AWS",
-      "Python",
-      "FASTAPI",
-      "RAG",
-      "Langchain",
-    ],
-    images: [
-      "/projects/screenshots/earnings-call/1.png",
-      "/projects/screenshots/earnings-call/2.png",
-      "/projects/screenshots/earnings-call/3.png",
-      "/projects/screenshots/earnings-call/4.png",
-      "/projects/screenshots/earnings-call/5.png",
-      "/projects/screenshots/earnings-call/6.png",
-      "/projects/screenshots/earnings-call/7.png",
-      "/projects/screenshots/earnings-call/8.png",
-      "/projects/screenshots/earnings-call/9.png",
-      "/projects/screenshots/earnings-call/10.png",
-      "/projects/screenshots/earnings-call/11.png",
-      "/projects/screenshots/earnings-call/12.png",
-    ],
-
-    features: [
-      {
-        title: "AI-Powered Earnings Call Analysis",
-        icon: <BarChart2 size={20} />,
-        description:
-          "Leverages AI to automatically analyze earnings calls, extracting key insights and trends for investors and analysts.",
-      },
-      {
-        title: "Sentiment Analysis & Real-Time Graphs",
-        icon: <TrendingUp size={20} />,
-        description:
-          "Provides sentiment scoring and real-time visualizations to quickly assess market reactions and investor sentiment.",
-      },
-      {
-        title: "Earnings Call Transcripts & Uploads",
-        icon: <FileText size={20} />,
-        description:
-          "Allows users to upload and access detailed transcripts of earnings calls for review and reference.",
-      },
-      {
-        title: "Company Comparisons & Financial Reports",
-        icon: <Layers size={20} />,
-        description:
-          "Compare multiple companies side-by-side with comprehensive financial reports and performance metrics.",
-      },
-      {
-        title: "SEC Filings Integration",
-        icon: <GitPullRequest size={20} />,
-        description:
-          "Integrates directly with SEC filings to provide accurate, up-to-date financial documentation.",
-      },
-      {
-        title: "Voice Assistant for Conversational Queries",
-        icon: <Speaker size={20} />,
-        description:
-          "Interact with the platform using voice commands for instant answers to complex financial queries.",
-      },
-    ],
-
-    contributions: [
-      "Developed the application end-to-end, integrating AI-powered data processing and visualization.",
-      "Implemented real-time sentiment analysis, Q&A functionality, and transcript generation from earnings calls.",
-      "Built features to fetch, upload, and manage earnings calls for multiple companies.",
-      "Developed earnings calendar, company performance comparison tools, and AI-generated visual reports.",
-      "Integrated SEC filing reports including income statements, balance sheets, and cash flow statements.",
-      "Added voice assistant functionality for interactive financial insights.",
-    ],
-    displayImage: "/projects/screenshots/earnings-call/0.webp",
-  },
   {
     title: "Logik",
     slug: "logik",
@@ -964,7 +964,7 @@ const keyProjects = [
     tech: "Next.js • Python • FastAPI • RAG • Langchain",
     image: "/projects/screenshots/earnings-call/0.webp",
     color: "from-orange-600 to-red-600",
-    link: "https://singhvishal.vercel.app/",
+    link: "https://investoreye.vercel.app/",
   },
   {
     title: "Velotransact",

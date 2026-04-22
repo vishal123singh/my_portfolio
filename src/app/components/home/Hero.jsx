@@ -55,9 +55,54 @@ const CTA_MAGNETIC_MULTIPLIER = 0.3;
 const HERO_LINE_DURATION = 0.8;
 const HERO_CTA_EASE = "elastic.out(1, 0.5)";
 
-// ------------------- Loader -------------------
+// ------------------- Loader with Character Animations -------------------
 function Loader({ onComplete }) {
   const loaderRef = useRef(null);
+  const textContainerRef = useRef(null);
+  const vsCharsRef = useRef([]);
+  const taglineCharsRef = useRef([]);
+
+  // Split text into characters
+  useEffect(() => {
+    if (textContainerRef.current) {
+      const vsText = "VS";
+      textContainerRef.current.innerHTML = "";
+      const vsSpans = vsText.split("").map((char, i) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        span.style.display = "inline-block";
+        span.style.opacity = "0";
+        span.style.transform = "translateY(20px)";
+        if (char === "V")
+          span.className =
+            "text-6xl sm:text-8xl text-primary font-light tracking-tight";
+        if (char === "S")
+          span.className =
+            "text-6xl sm:text-8xl text-muted font-light tracking-tight";
+        textContainerRef.current.appendChild(span);
+        return span;
+      });
+      vsCharsRef.current = vsSpans;
+    }
+
+    if (taglineCharsRef.current.length === 0) {
+      const taglineEl = document.querySelector("[data-tagline]");
+      if (taglineEl) {
+        const text = "CRAFTING DIGITAL EXPERIENCES";
+        taglineEl.innerHTML = "";
+        const chars = text.split("").map((char) => {
+          const span = document.createElement("span");
+          span.textContent = char === " " ? "\u00A0" : char;
+          span.style.display = "inline-block";
+          span.style.opacity = "0";
+          if (char !== " ") span.style.transform = "scale(0)";
+          taglineEl.appendChild(span);
+          return span;
+        });
+        taglineCharsRef.current = chars;
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const loaderEl = loaderRef.current;
@@ -72,8 +117,8 @@ function Loader({ onComplete }) {
       const tl = gsap.timeline({
         onStart: () => {
           setTimeout(() => {
-            onComplete(); //
-          }, 1000);
+            onComplete();
+          }, 2200);
         },
         onComplete: () => {
           document.body.style.overflow = originalOverflow;
@@ -81,13 +126,87 @@ function Loader({ onComplete }) {
         },
       });
 
-      tl.to(loaderEl, {
-        scaleY: 0,
-        transformOrigin: "top",
-        duration: 1.8,
-        ease: "power4.inOut",
-        delay: 1,
-      }).to(loaderEl, { display: "none", duration: 0 }, "-=1.3");
+      // Animate each character of "VS" with stagger
+      tl.fromTo(
+        vsCharsRef.current,
+        {
+          opacity: 0,
+          y: 40,
+          rotationX: -90,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          rotationX: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "back.out(1.5)",
+        },
+      )
+
+        // Add a 3D flip effect to the second character
+        .to(
+          vsCharsRef.current[1],
+          {
+            rotationY: 360,
+            duration: 0.6,
+            repeat: 1,
+            yoyo: true,
+            ease: "power2.inOut",
+          },
+          "+=0.5",
+        )
+
+        // Animate the dividing line with pulse effect
+        .to(
+          ".loader-line",
+          {
+            scaleX: 1,
+            opacity: 1,
+            duration: 0.8,
+            ease: "elastic.out(1, 0.5)",
+          },
+          "-=0.3",
+        )
+
+        // Animate tagline characters with wave effect
+        .to(
+          taglineCharsRef.current,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            stagger: {
+              each: 0.03,
+              from: "center",
+              ease: "back.out(1.2)",
+            },
+          },
+          "-=0.2",
+        )
+
+        // Glow pulse animation on the whole text
+        .to(
+          textContainerRef.current,
+          {
+            textShadow: "0 0 30px rgba(0,0,0,0.1)",
+            duration: 0.8,
+            repeat: 2,
+            yoyo: true,
+            ease: "power1.inOut",
+          },
+          "+=0.3",
+        )
+
+        // Animate out the loader
+        .to(loaderEl, {
+          scaleY: 0,
+          transformOrigin: "top",
+          duration: 1.5,
+          ease: "power4.inOut",
+          delay: 0.5,
+        })
+        .to(loaderEl, { display: "none", duration: 0 }, "-=1.2");
     });
 
     return () => {
@@ -100,23 +219,33 @@ function Loader({ onComplete }) {
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 bg-dark z-[100] flex items-center justify-center"
+      className="fixed inset-0 bg-light z-[100] flex items-center justify-center"
       style={{ transformOrigin: "top" }}
       aria-label="Loading screen"
       role="status"
     >
       <div className="text-center relative px-4">
         <div className="relative">
-          <span className="text-6xl sm:text-8xl text-primary font-light tracking-tight relative z-10">
-            V<span className="text-muted">S</span>
-          </span>
+          <div
+            ref={textContainerRef}
+            className="relative flex justify-center gap-2"
+            style={{ perspective: "500px" }}
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border-light/20 to-transparent blur-3xl animate-pulse" />
         </div>
-        <div className="mt-8 relative">
-          <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-medium to-transparent mx-auto" />
+
+        <div className="mt-8 relative overflow-hidden">
+          <div
+            className="loader-line w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-medium to-transparent mx-auto"
+            style={{ transform: "scaleX(0)", opacity: 0 }}
+          />
           <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-light to-transparent mx-auto mt-1 animate-pulse" />
         </div>
-        <div className="mt-8 text-muted text-xs sm:text-sm tracking-[0.3em] animate-pulse">
+
+        <div
+          data-tagline
+          className="mt-8 text-muted text-xs sm:text-sm tracking-[0.3em]"
+        >
           CRAFTING DIGITAL EXPERIENCES
         </div>
       </div>

@@ -105,7 +105,7 @@ export default function AssistantModal({ onClose }) {
           </h2>
           <button
             onClick={onClose}
-            className="transition-colors"
+            className="transition-colors cursor-pointer"
             style={{ color: "var(--text-muted)" }}
             onMouseEnter={(e) =>
               (e.currentTarget.style.color = "var(--text-secondary)")
