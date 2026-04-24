@@ -6,7 +6,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-
+import { SiGithub, SiLinkedin } from "react-icons/si";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
@@ -198,6 +198,26 @@ function MobileDrawer({ isOpen, onClose, navLinks, isActive }) {
               ))}
             </div>
 
+            <div className="flex gap-6 pt-6">
+              <a
+                href="https://github.com/vishalsinghlab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-white transition-colors"
+              >
+                <SiGithub size={20} />
+              </a>
+
+              <a
+                href="https://linkedin.com/in/vishal-singh-b57b7b109"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-white transition-colors"
+              >
+                <SiLinkedin size={20} />
+              </a>
+            </div>
+
             {/* Decorative elements */}
             <div className="absolute -bottom-20 -right-20 w-40 h-40 border border-gray-800 rounded-full opacity-20" />
             <div className="absolute -top-20 -left-20 w-40 h-40 border border-gray-800 rounded-full opacity-20" />
@@ -261,10 +281,49 @@ export default function Navbar() {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="fixed top-0 left-0 w-full z-50 mix-blend-difference"
       >
-        <div className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        <div className="flex flex-1 items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+          {/* Logo */}
           <Logo />
-          <DesktopNav navLinks={navLinks} isActive={isActive} />
-          <MobileMenuButton isOpen={menuOpen} onClick={toggleMenu} />
+
+          {/* Nav */}
+          <div className="mx-auto hidden md:flex">
+            <DesktopNav navLinks={navLinks} isActive={isActive} />
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-6">
+            {/* Socials */}
+            <div className="hidden md:flex items-center gap-4">
+              <a
+                href="https://github.com/vishalsinghlab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+                aria-label="GitHub"
+              >
+                <SiGithub
+                  className="text-gray-400 group-hover:text-white transition-all duration-300 group-hover:scale-110"
+                  size={18}
+                />
+              </a>
+
+              <a
+                href="https://linkedin.com/in/vishal-singh-b57b7b109"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+                aria-label="LinkedIn"
+              >
+                <SiLinkedin
+                  className="text-gray-400 group-hover:text-white transition-all duration-300 group-hover:scale-110"
+                  size={18}
+                />
+              </a>
+            </div>
+
+            {/* Mobile Menu */}
+            <MobileMenuButton isOpen={menuOpen} onClick={toggleMenu} />
+          </div>
         </div>
       </motion.nav>
 

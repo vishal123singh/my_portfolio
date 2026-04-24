@@ -18,7 +18,6 @@ import {
   SiGooglecloud,
   SiExpress,
 } from "react-icons/si";
-import { SiGithub, SiLinkedin } from "react-icons/si";
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 // Tech stack definition
@@ -513,34 +512,6 @@ export default function HomeHero() {
         className="relative min-h-screen bg-gradient-matte text-primary"
         aria-label="Hero section"
       >
-        {/* Top Right Socials */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-12 z-20 flex items-center gap-4">
-          <a
-            href="https://github.com/vishalsinghlab"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group"
-            aria-label="GitHub"
-          >
-            <SiGithub
-              size={20}
-              className="text-muted group-hover:text-primary transition-colors duration-300"
-            />
-          </a>
-
-          <a
-            href="https://linkedin.com/in/vishal-singh-b57b7b109"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group"
-            aria-label="LinkedIn"
-          >
-            <SiLinkedin
-              size={20}
-              className="text-muted group-hover:text-primary transition-colors duration-300"
-            />
-          </a>
-        </div>
         <div
           ref={heroRef}
           className="relative min-h-screen flex items-center px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-20 z-10"
