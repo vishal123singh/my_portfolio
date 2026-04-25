@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import {
   SiReact,
   SiNextdotjs,
@@ -18,6 +18,7 @@ import {
   SiGooglecloud,
   SiExpress,
 } from "react-icons/si";
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 // Tech stack definition
@@ -54,199 +55,111 @@ const CTA_MAGNETIC_MULTIPLIER = 0.3;
 const HERO_LINE_DURATION = 0.8;
 const HERO_CTA_EASE = "elastic.out(1, 0.5)";
 
-// ------------------- Loader with Character Animations -------------------
+// ------------------- Enhanced Loader with Fade-Out -------------------
 function Loader({ onComplete }) {
   const loaderRef = useRef(null);
-  const textContainerRef = useRef(null);
-  const vsCharsRef = useRef([]);
-  const taglineCharsRef = useRef([]);
-
-  // Split text into characters
-  useEffect(() => {
-    if (textContainerRef.current) {
-      const vsText = "VS";
-      textContainerRef.current.innerHTML = "";
-      const vsSpans = vsText.split("").map((char, i) => {
-        const span = document.createElement("span");
-        span.textContent = char;
-        span.style.display = "inline-block";
-        span.style.opacity = "0";
-        span.style.transform = "translateY(20px)";
-        if (char === "V")
-          span.className =
-            "text-6xl sm:text-8xl text-primary font-light tracking-tight";
-        if (char === "S")
-          span.className =
-            "text-6xl sm:text-8xl text-muted font-light tracking-tight";
-        textContainerRef.current.appendChild(span);
-        return span;
-      });
-      vsCharsRef.current = vsSpans;
-    }
-
-    if (taglineCharsRef.current.length === 0) {
-      const taglineEl = document.querySelector("[data-tagline]");
-      if (taglineEl) {
-        const text = "CRAFTING DIGITAL EXPERIENCES";
-        taglineEl.innerHTML = "";
-        const chars = text.split("").map((char) => {
-          const span = document.createElement("span");
-          span.textContent = char === " " ? "\u00A0" : char;
-          span.style.display = "inline-block";
-          span.style.opacity = "0";
-          if (char !== " ") span.style.transform = "scale(0)";
-          taglineEl.appendChild(span);
-          return span;
-        });
-        taglineCharsRef.current = chars;
-      }
-    }
-  }, []);
+  const textRef = useRef(null);
+  const lineRef = useRef(null);
 
   useEffect(() => {
-    const loaderEl = loaderRef.current;
-    if (!loaderEl) return;
-
-    const originalOverflow = document.body.style.overflow;
-    const originalPointerEvents = document.body.style.pointerEvents;
-    document.body.style.overflow = "hidden";
-    document.body.style.pointerEvents = "none";
-
     const ctx = gsap.context(() => {
+      const chars = textRef.current.querySelectorAll(".loader-char");
+
       const tl = gsap.timeline({
-        onStart: () => {
-          setTimeout(() => {
-            onComplete();
-          }, 2200);
-        },
         onComplete: () => {
-          document.body.style.overflow = originalOverflow;
-          document.body.style.pointerEvents = originalPointerEvents;
+          gsap.to(loaderRef.current, {
+            opacity: 0,
+            duration: 0.8,
+            ease: "power4.inOut",
+            onComplete: () => {
+              onComplete();
+              loaderRef.current.style.display = "none";
+            },
+          });
         },
       });
 
-      // Animate each character of "VS" with stagger
       tl.fromTo(
-        vsCharsRef.current,
+        chars,
         {
           opacity: 0,
-          y: 40,
-          rotationX: -90,
+          y: 60,
+          rotateX: -90,
+          filter: "blur(10px)",
         },
         {
           opacity: 1,
           y: 0,
-          rotationX: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "back.out(1.5)",
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 1.2,
+          stagger: {
+            amount: 0.6,
+            from: "random",
+          },
+          ease: "back.out(1.7)",
         },
       )
-
-        // Add a 3D flip effect to the second character
-        .to(
-          vsCharsRef.current[1],
+        .fromTo(
+          lineRef.current,
           {
-            rotationY: 360,
-            duration: 0.6,
-            repeat: 1,
-            yoyo: true,
-            ease: "power2.inOut",
+            scaleX: 0,
+            opacity: 0,
           },
-          "+=0.5",
-        )
-
-        // Animate the dividing line with pulse effect
-        .to(
-          ".loader-line",
           {
             scaleX: 1,
             opacity: 1,
             duration: 0.8,
-            ease: "elastic.out(1, 0.5)",
+            ease: "power3.out",
           },
-          "-=0.3",
+          "-=0.4",
         )
+        .to({}, { duration: 1.2 });
+    }, loaderRef);
 
-        // Animate tagline characters with wave effect
-        .to(
-          taglineCharsRef.current,
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.4,
-            stagger: {
-              each: 0.03,
-              from: "center",
-              ease: "back.out(1.2)",
-            },
-          },
-          "-=0.2",
-        )
-
-        // Glow pulse animation on the whole text
-        .to(
-          textContainerRef.current,
-          {
-            textShadow: "0 0 30px rgba(0,0,0,0.1)",
-            duration: 0.8,
-            repeat: 2,
-            yoyo: true,
-            ease: "power1.inOut",
-          },
-          "+=0.3",
-        )
-
-        // Animate out the loader
-        .to(loaderEl, {
-          scaleY: 0,
-          transformOrigin: "top",
-          duration: 1.5,
-          ease: "power4.inOut",
-          delay: 0.5,
-        })
-        .to(loaderEl, { display: "none", duration: 0 }, "-=1.2");
-    });
-
-    return () => {
-      ctx.revert();
-      document.body.style.overflow = originalOverflow;
-      document.body.style.pointerEvents = originalPointerEvents;
-    };
+    return () => ctx.revert();
   }, [onComplete]);
+
+  const text = "VISHAL SINGH";
 
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 bg-light z-[100] flex items-center justify-center"
-      style={{ transformOrigin: "top" }}
-      aria-label="Loading screen"
+      className="fixed inset-0 bg-light z-[200] flex items-center justify-center"
       role="status"
+      aria-label="Loading"
     >
-      <div className="text-center relative px-4">
-        <div className="relative">
-          <div
-            ref={textContainerRef}
-            className="relative flex justify-center gap-2"
-            style={{ perspective: "500px" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border-light/20 to-transparent blur-3xl animate-pulse" />
-        </div>
-
-        <div className="mt-8 relative overflow-hidden">
-          <div
-            className="loader-line w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-medium to-transparent mx-auto"
-            style={{ transform: "scaleX(0)", opacity: 0 }}
-          />
-          <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-border-light to-transparent mx-auto mt-1 animate-pulse" />
-        </div>
-
+      <div className="text-center">
         <div
-          data-tagline
-          className="mt-8 text-muted text-xs sm:text-sm tracking-[0.3em]"
+          ref={textRef}
+          className="flex items-center justify-center gap-1 sm:gap-3"
         >
-          CRAFTING DIGITAL EXPERIENCES
+          {text.split("").map((char, i) => (
+            <span
+              key={i}
+              className="loader-char inline-block text-6xl sm:text-7xl md:text-8xl font-light tracking-tight"
+              style={{
+                color:
+                  char === " "
+                    ? "transparent"
+                    : i < 6
+                      ? "var(--primary)"
+                      : "var(--secondary)",
+                width: char === " " ? "0.5em" : "auto",
+              }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
         </div>
+        <div
+          ref={lineRef}
+          className="h-px bg-gradient-to-r from-transparent via-border-medium to-transparent mt-8 mx-auto w-48"
+          style={{ transform: "scaleX(0)" }}
+        />
+        <p className="text-xs tracking-[0.3em] text-muted mt-6 font-light">
+          ENGINEERING SCALABLE SYSTEMS
+        </p>
       </div>
     </div>
   );
@@ -299,11 +212,10 @@ function TechStack({ activeIndex, setActiveIndex }) {
   );
 }
 
-// ------------------- HomeHero -------------------
+// ------------------- HomeHero - Premium Edition -------------------
 export default function HomeHero() {
   const router = useRouter();
   const containerRef = useRef(null);
-  const heroRef = useRef(null);
   const ctaRef = useRef(null);
   const animationFrameRef = useRef(null);
 
@@ -328,7 +240,7 @@ export default function HomeHero() {
         gsap.to(ctaEl, {
           x: x * CTA_MAGNETIC_MULTIPLIER,
           y: y * CTA_MAGNETIC_MULTIPLIER,
-          duration: 0.4,
+          duration: 0.6,
           ease: "power2.out",
         });
       });
@@ -338,7 +250,12 @@ export default function HomeHero() {
       if (animationFrameRef.current)
         cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
-      gsap.to(ctaEl, { x: 0, y: 0, duration: 0.4, ease: "power2.out" });
+      gsap.to(ctaEl, {
+        x: 0,
+        y: 0,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.5)",
+      });
     };
 
     ctaEl.addEventListener("mousemove", mouseMoveHandler);
@@ -352,17 +269,23 @@ export default function HomeHero() {
     };
   }, [isReady]);
 
-  // ------------------- Hero & Scroll Animations with quickSetter -------------------
+  // ------------------- Hero Entrance & Parallax Animations -------------------
   useEffect(() => {
     if (!isReady || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Hero animation
-      const heroTl = gsap.timeline();
+      // Hero entrance timeline
+      const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
       heroTl
         .fromTo(
           ".hero-line",
-          { y: 200, opacity: 0, rotateX: -45, filter: "blur(10px)" },
+          {
+            y: 200,
+            opacity: 0,
+            rotateX: -45,
+            filter: "blur(10px)",
+          },
           {
             y: 0,
             opacity: 1,
@@ -370,29 +293,28 @@ export default function HomeHero() {
             filter: "blur(0px)",
             duration: HERO_LINE_DURATION,
             stagger: 0.15,
-            ease: "power4.out",
           },
         )
         .fromTo(
           ".hero-pre-title",
-          { y: 30, opacity: 0, rotateX: -15 },
-          { y: 0, opacity: 1, rotateX: 0, duration: 1, ease: "power3.out" },
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1 },
           "-=1.4",
         )
         .fromTo(
           ".hero-description",
           { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
+          { y: 0, opacity: 1, duration: 1 },
           "-=0.8",
         )
         .fromTo(
-          ".hero-cta",
+          ".hero-cta-wrapper",
           { scale: 0.8, opacity: 0 },
           { scale: 1, opacity: 1, duration: 1, ease: HERO_CTA_EASE },
           "-=0.5",
         );
 
-      // Tech stack animation
+      // Tech stack entrance on scroll
       ScrollTrigger.create({
         trigger: ".tech-stack",
         start: "top bottom-=50",
@@ -414,58 +336,60 @@ export default function HomeHero() {
           gsap.set(".tech-item", { y: 30, opacity: 0, scale: 0.8 }),
       });
 
-      // ------------------- Optimized Parallax Layers -------------------
-      const isDesktop = window.innerWidth >= 768;
-      if (isDesktop) {
-        const parallaxLayers = [
-          { selector: ".parallax-layer-1", yPercent: 20 },
-          { selector: ".parallax-layer-2", yPercent: 30, scale: 1.1 },
-          {
-            selector: ".parallax-layer-3",
-            yPercent: 40,
-            opacity: 0.2,
-            scale: 1.2,
-          },
-        ];
+      // Parallax layers with quickSetter
+      const parallaxLayers = [
+        { selector: ".parallax-layer-1", yPercent: 30 },
+        { selector: ".parallax-layer-2", yPercent: 50, scale: 1.1 },
+        {
+          selector: ".parallax-layer-3",
+          yPercent: 70,
+          opacity: 0.3,
+          scale: 1.2,
+        },
+      ];
 
+      const isDesktop = window.innerWidth >= 768;
+
+      if (isDesktop) {
         parallaxLayers.forEach((layer) => {
-          const set = gsap.quickSetter(layer.selector, "yPercent");
+          const setY = gsap.quickSetter(layer.selector, "yPercent");
           ScrollTrigger.create({
             trigger: containerRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: true,
-            onUpdate: (self) => set(layer.yPercent * self.progress),
+            scrub: 1,
+            onUpdate: (self) => setY(layer.yPercent * self.progress),
           });
-          // Optional: scale & opacity can also use quickSetter if needed
+
           if (layer.scale) {
             const setScale = gsap.quickSetter(layer.selector, "scale");
             ScrollTrigger.create({
               trigger: containerRef.current,
               start: "top top",
               end: "bottom top",
-              scrub: true,
+              scrub: 1,
               onUpdate: (self) =>
                 setScale(1 + (layer.scale - 1) * self.progress),
             });
           }
+
           if (layer.opacity !== undefined) {
             const setOpacity = gsap.quickSetter(layer.selector, "opacity");
             ScrollTrigger.create({
               trigger: containerRef.current,
               start: "top top",
               end: "bottom top",
-              scrub: true,
+              scrub: 1,
               onUpdate: (self) => setOpacity(layer.opacity * self.progress),
             });
           }
         });
       }
 
-      // ------------------- Floating Orbs -------------------
+      // Floating ambient orbs
       const floatingOrbs = [
-        { selector: ".floating-orb-1", x: 100, y: 50, duration: 20 },
-        { selector: ".floating-orb-2", x: -80, y: -30, duration: 15 },
+        { selector: ".floating-orb-1", x: 100, y: 60, duration: 20 },
+        { selector: ".floating-orb-2", x: -80, y: -40, duration: 15 },
         { selector: ".floating-orb-3", x: 60, y: -80, duration: 18 },
       ];
 
@@ -492,11 +416,10 @@ export default function HomeHero() {
 
     return () => {
       ctx.revert();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, [isReady]);
 
-  // ------------------- ScrollTrigger refresh on resize -------------------
+  // ScrollTrigger refresh on resize
   useEffect(() => {
     const handleResize = () => ScrollTrigger.refresh();
     window.addEventListener("resize", handleResize);
@@ -504,79 +427,111 @@ export default function HomeHero() {
   }, []);
 
   return (
-    <div className="overflow-hidden relative min-h-screen">
+    <div className="overflow-hidden relative min-h-screen bg-light">
       {!isReady && <Loader onComplete={() => setIsReady(true)} />}
 
       <section
         ref={containerRef}
-        className="relative min-h-screen bg-gradient-matte text-primary"
+        className="relative min-h-screen overflow-hidden"
         aria-label="Hero section"
       >
-        <div
-          ref={heroRef}
-          className="relative min-h-screen flex items-center px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-20 z-10"
-        >
-          <div className="max-w-7xl mx-auto w-full relative">
+        {/* Ambient background layers */}
+        <div className="absolute inset-0 bg-gradient-matte">
+          {/* Subtle grid overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,black,transparent)]" />
+
+          {/* Floating ambient orbs */}
+          <div className="floating-orb-1 parallax-layer-1 absolute -top-32 -right-32 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl will-change-transform" />
+          <div className="floating-orb-2 parallax-layer-2 absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-accent-muted/5 rounded-full blur-3xl will-change-transform" />
+          <div className="floating-orb-3 parallax-layer-3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-border-light/5 rounded-full blur-3xl will-change-transform" />
+        </div>
+
+        {/* Main content */}
+        <div className="relative min-h-screen flex items-center px-4 sm:px-6 md:px-6 lg:px-6 py-12 sm:py-12 z-10">
+          <div className="max-w-7xl mx-auto w-full">
             {/* Pre-title */}
-            <span className="hero-pre-title inline-block text-muted text-[10px] sm:text-xs md:text-sm tracking-[0.3em] mb-3 sm:mb-4 md:mb-6 opacity-0">
-              <span
-                className="inline-block w-6 sm:w-8 md:w-12 h-px mr-2 sm:mr-3 md:mr-4 align-middle"
+            <div className="hero-pre-title inline-flex items-center gap-3 mb-6 sm:mb-8 opacity-0">
+              <div
+                className="w-8 sm:w-12 h-px"
                 style={{ background: "var(--accent)" }}
                 aria-hidden="true"
               />
-              VISHAL SINGH - FULL-STACK DEVELOPER
-            </span>
+              <span className="text-[10px] sm:text-xs tracking-[0.3em] text-muted font-light uppercase">
+                VISHAL SINGH — BUILDING PRODUCTION-GRADE SYSTEMS
+              </span>
+            </div>
 
-            {/* Hero Title */}
+            {/* Hero headline */}
             <h1 className="mb-6 sm:mb-8">
               <div className="sr-only">Digital Craftsmanship</div>
               <div aria-hidden="true">
-                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-primary opacity-0 leading-[1.1] sm:leading-[0.9]">
-                  DIGITAL
-                </span>
-              </div>
-              <div aria-hidden="true" className="mt-1 sm:mt-0">
-                <span className="hero-line block text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-light tracking-tight text-primary opacity-0 leading-[1.1] sm:leading-[0.9]">
-                  <span className="text-secondary relative inline-block">
-                    CRAFTSMANSHIP
-                    <span
-                      className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-px bg-gradient-to-r from-transparent via-border-medium to-transparent"
-                      aria-hidden="true"
-                    />
+                <div className="flex flex-col">
+                  <span className="hero-line block text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight text-primary leading-[1.02] opacity-0">
+                    DIGITAL
                   </span>
-                </span>
+                  <span className="hero-line block text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light tracking-tight text-primary leading-[1.02] opacity-0">
+                    <span className="text-secondary relative inline-block">
+                      CRAFTSMANSHIP
+                      <span
+                        className="absolute -bottom-2 sm:-bottom-3 left-0 w-1/3 h-px bg-gradient-to-r from-border-medium to-transparent"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </span>
+                </div>
               </div>
             </h1>
 
             {/* Description */}
-            <div className="hero-description max-w-xl sm:max-w-2xl opacity-0">
-              <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-secondary leading-relaxed">
-                Building performant, scalable systems with obsessive attention
-                to detail and user experience through first principles thinking.
-              </p>
-            </div>
+            <p className="hero-description max-w-xl text-sm sm:text-base md:text-lg text-secondary leading-relaxed mb-8 sm:mb-12 opacity-0 font-light">
+              I design and build high-performance backend systems, real-time
+              APIs, and AI-powered infrastructure focused on scalability,
+              reliability, and production use.
+            </p>
 
-            {/* CTA Button */}
-            <div className="hero-cta mt-8 sm:mt-10 md:mt-12 opacity-0">
+            {/* CTA Buttons */}
+            <div className="hero-cta-wrapper flex flex-col sm:flex-row items-start sm:items-center gap-4 opacity-0">
               <button
                 ref={ctaRef}
                 onClick={handleLaunch}
-                className="magnetic-cta group relative px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 rounded-full overflow-hidden transition-all focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:ring-offset-transparent min-h-[44px]"
+                className="group relative px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 rounded-full overflow-hidden transition-all focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:ring-offset-light min-h-[44px]"
                 style={{
                   background: "var(--accent)",
                   color: "var(--bg-dark)",
-                  boxShadow: "0 0 20px var(--accent-muted)",
+                  boxShadow: "0 0 30px var(--accent-muted)",
                 }}
                 aria-label="Explore my work"
               >
                 <span className="relative z-10 tracking-wider text-xs sm:text-sm font-medium flex items-center gap-2">
-                  EXPLORE MY WORK
+                  <span className="group-hover:-translate-x-1 transition-transform duration-300">
+                    VIEW WORK
+                  </span>
                   <ArrowRight
                     size={16}
                     className="transform transition-transform duration-300 group-hover:translate-x-1"
                     aria-hidden="true"
                   />
                 </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-accent via-accent/90 to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full blur-xl" />
+              </button>
+
+              <button
+                onClick={() =>
+                  document
+                    .getElementById("about")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="group flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-full border border-border-light/20 text-muted hover:text-secondary hover:border-border-light/40 transition-all duration-300 min-h-[44px]"
+                aria-label="Learn more about me"
+              >
+                <span className="text-xs sm:text-sm font-light tracking-wide">
+                  LEARN MORE
+                </span>
+                <ArrowDown
+                  size={16}
+                  className="opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
+                  aria-hidden="true"
+                />
               </button>
             </div>
           </div>
@@ -584,26 +539,18 @@ export default function HomeHero() {
 
         {/* Tech Stack */}
         <TechStack activeIndex={activeTech} setActiveIndex={setActiveTech} />
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <div className="w-px h-12 bg-gradient-to-b from-transparent via-border-light/20 to-border-light/30 animate-pulse" />
+          <span className="text-[9px] tracking-[0.3em] text-muted/30 font-light">
+            SCROLL
+          </span>
+        </div>
       </section>
 
       {/* Styles */}
       <style jsx>{`
-        @keyframes scroll {
-          0% {
-            transform: translateY(-100%);
-          }
-          50% {
-            transform: translateY(100%);
-          }
-          100% {
-            transform: translateY(-100%);
-          }
-        }
-
-        .animate-scroll {
-          animation: scroll 3s ease-in-out infinite;
-        }
-
         .parallax-layer-1,
         .parallax-layer-2,
         .parallax-layer-3,
@@ -614,13 +561,12 @@ export default function HomeHero() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .animate-scroll,
-          .floating-orb-1,
-          .floating-orb-2,
-          .floating-orb-3,
           .parallax-layer-1,
           .parallax-layer-2,
-          .parallax-layer-3 {
+          .parallax-layer-3,
+          .floating-orb-1,
+          .floating-orb-2,
+          .floating-orb-3 {
             animation: none;
             transform: none;
           }

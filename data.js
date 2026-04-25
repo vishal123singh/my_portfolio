@@ -82,6 +82,7 @@ import {
   BarChart3,
   Truck,
   Warehouse,
+  Lock,
 } from "lucide-react";
 
 const projects = [
@@ -926,7 +927,7 @@ const experiences = [
     company: "Jai Infoway Pvt. Ltd.",
     duration: "August 2024 – July 2025",
     description:
-      "Leading full-stack development for global client projects in a product-service hybrid environment.",
+      "Built and maintained full-stack systems for fintech, analytics, and AI-driven platforms. Worked on backend architecture, API design, and scalable service integration in production environments.",
     tech: "React • Node.js • AWS • Microservices",
   },
   {
@@ -934,7 +935,7 @@ const experiences = [
     company: "Brightcode Pvt. Ltd.",
     duration: "March 2024 – August 2024",
     description:
-      "Developed cross-platform mobile applications with optimized performance and responsive UIs.",
+      "Developed cross-platform mobile applications for logistics and booking systems with a focus on performance, real-time updates, and smooth user experience.",
     tech: "React Native • Node.js • GCP",
   },
   {
@@ -942,7 +943,7 @@ const experiences = [
     company: "Jai Infoway Pvt. Ltd.",
     duration: "February 2023 – February 2024",
     description:
-      "Built client-facing applications end-to-end in Agile teams, from UI to backend services.",
+      "Worked on end-to-end product development including frontend interfaces, backend services, and database design in Agile teams. Contributed to scalable API development and production feature delivery.",
     tech: "Angular • Express.js • MongoDB • MySQL",
   },
   {
@@ -950,7 +951,7 @@ const experiences = [
     company: "",
     duration: "July 2022 – January 2023",
     description:
-      "Delivered complete web solutions for local businesses, handling all development phases.",
+      "Delivered complete web applications for clients, handling frontend, backend, deployment, and API integration from scratch to production.",
     tech: "React • Node.js • REST APIs",
   },
 ];
@@ -958,52 +959,59 @@ const experiences = [
 const keyProjects = [
   {
     title: "InvestorEye",
-    category: "Web Application",
+    category: "AI Financial Intelligence Platform",
     description:
-      "AI-powered platform for decoding earnings call transcripts and extracting financial insights",
-    tech: "Next.js • Python • FastAPI • RAG • Langchain",
+      "AI system that processes earnings call transcripts to extract structured financial insights using LLMs and retrieval-augmented generation.",
+    tech: "Next.js • Python • FastAPI • RAG • LangChain",
     image: "/projects/screenshots/earnings-call/0.webp",
     color: "from-orange-600 to-red-600",
     link: "https://investoreye.vercel.app/",
+    isFullPageImage: false,
   },
   {
     title: "Velotransact",
     slug: "velotransact",
-    category: "Web Application",
-    description: "Smarter Vehicle Transactions Platform.",
+    category: "Vehicle Transaction Ecosystem",
+    description:
+      "End-to-end platform for secure vehicle transactions with verification, listings, and workflow automation.",
     tech: "React • Node.js • TypeScript • Firebase • MongoDB • GCP • Express.js",
     image: "/projects/screenshots/velotransact/velo.webp",
     color: "from-purple-600 to-pink-600",
     link: "https://www.velotransact.com/",
+    isFullPageImage: true,
   },
   {
     title: "Koodums Chat",
-    category: "Web Application",
-    description: "Generative AI Agents Builder.",
+    category: "AI Agent Builder Platform",
+    description:
+      "Generative AI platform for building and deploying autonomous AI agents with tool usage, memory, and workflow orchestration.",
     tech: "React • Node.js • TypeScript • Python • Vertex AI • GCP • Express.js",
     image: "/projects/screenshots/koodums-chat/koodums.webp",
     color: "from-purple-600 to-pink-600",
     link: "https://www.koodums.com/",
+    isFullPageImage: true,
   },
   {
     title: "Aadvico",
-    category: "Web Application",
+    category: "AI-Powered E-Commerce Platform",
     description:
-      "Aadvico’s website is an e-commerce platform for buying healthy roasted makhana snacks, with product browsing, shopping cart, account login, order management, health benefit details, and support contact info.",
+      "Modern e-commerce system for health products with AI-assisted recommendations, order management, and customer engagement flows.",
     tech: "Next.js • AWS • AI Agents",
     image: "/projects/screenshots/aadvico/aadvico_1.webp",
     color: "from-blue-600 to-cyan-600",
     link: "https://aadvico.com/",
+    isFullPageImage: true,
   },
   {
     title: "Kiddie-Kredit",
-    category: "Mobile Application",
+    category: "Fintech Mobile Learning App",
     description:
-      "Financial education mobile app for children. Gamified with task & reward systems.",
+      "Gamified financial education app for children with task-based rewards, learning progression, and real-time state sync.",
     tech: "React Native • Node.js • Socket.io",
     image: "/projects/screenshots/kk/kiddie_kredit_1.webp",
     color: "from-orange-600 to-red-600",
     link: "https://www.kiddiekredit.com/",
+    isFullPageImage: true,
   },
 ];
 

@@ -1,94 +1,212 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Briefcase } from "lucide-react";
-import { experiences } from "../../../../data.js";
+import { Briefcase, Shield, Zap, GitBranch, Cpu } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const skills = [
-  { skill: "Frontend Development", level: "95%" },
-  { skill: "UI/UX Design", level: "88%" },
-  { skill: "Performance Optimization", level: "92%" },
-  { skill: "3D Web Experiences", level: "85%" },
-  { skill: "Backend Development", level: "95%" },
-  { skill: "DevOps", level: "95%" },
+const experiences = [
+  {
+    title: "Full-Stack Developer",
+    company: "AppCurators Technologies",
+    period: "2025 – Present",
+    description:
+      "Developing full-stack applications for fintech and logistics platforms. Built backend APIs for transaction processing, inventory systems, and order lifecycle management. Integrated third-party services like Stripe, vAuto, and QuickBooks.",
+    tech: "React · Node.js · GCP",
+    highlight: "Production systems · API design",
+  },
+  {
+    title: "Software Engineer",
+    company: "Jai Infoway Pvt. Ltd.",
+    period: "2023 – 2025",
+    description:
+      "Built backend services and AI-driven features using Node.js and Python (FastAPI). Implemented RAG pipelines, vector search systems, and LLM-based applications with real-time streaming responses.",
+    tech: "Node.js · FastAPI · Python · LLMs",
+    highlight: "AI systems · RAG pipelines",
+  },
+  {
+    title: "Mobile App Developer",
+    company: "Brightcode Pvt. Ltd.",
+    period: "2024",
+    description:
+      "Developed React Native applications for logistics and vehicle rental platforms with real-time tracking, booking systems, and payment integrations.",
+    tech: "React Native · Node.js · MongoDB",
+    highlight: "Real-time features",
+  },
+  {
+    title: "Freelance Full-Stack Developer",
+    company: "Self-employed",
+    period: "2022 – 2023",
+    description:
+      "Built and deployed web applications for clients including e-commerce platforms with authentication, payments, and admin dashboards.",
+    tech: "Next.js · Firebase",
+    highlight: "End-to-end delivery",
+  },
+];
+// Engineering principles
+const principles = [
+  {
+    icon: Shield,
+    title: "Idempotency-first",
+    description:
+      "Every write operation is replay-safe. No duplicate orders, ever.",
+  },
+  {
+    icon: GitBranch,
+    title: "Observable by design",
+    description: "Structured logs with trace IDs from day one. Debug at 3 AM.",
+  },
+  {
+    icon: Zap,
+    title: "Rate limit + retry",
+    description:
+      "Never fail silently. Exponential backoff with circuit breakers.",
+  },
+  {
+    icon: Cpu,
+    title: "Test state mutation",
+    description:
+      "Unit tests for business logic. Integration tests for contracts.",
+  },
+];
+
+// Key metrics from your resume
+const metrics = [
+  { value: "4+", label: "Years of experience", color: "#3B82F6" },
+  {
+    value: "10K+",
+    label: "Daily AI tool calls handled",
+    color: "#10B981",
+  },
+  {
+    value: "5K+",
+    label: "Requests/min supported (webhooks)",
+    color: "#06B6D4",
+  },
+  {
+    value: "92%",
+    label: "RAG retrieval success rate",
+    color: "#8B5CF6",
+  },
+  {
+    value: "$1M",
+    label: "Winning product (Kiddie Kredit)",
+    color: "#EC4899",
+  },
+  {
+    value: "190+",
+    label: "Countries supported (RomeSIM)",
+    color: "#F59E0B",
+  },
 ];
 
 export default function About() {
   const sectionRef = useRef(null);
-  const aboutRef = useRef(null);
-  const skillsRef = useRef(null);
+  const contentRef = useRef(null);
+  const metricsRef = useRef(null);
+  const principlesRef = useRef(null);
   const timelineRef = useRef(null);
 
-  const aboutText = [
-    "With over 4 years of experience crafting digital solutions",
-    "for global brands and innovative startups, I blend technical",
-    "excellence with creative vision.",
-  ];
+  // State for counter animation
+  const [counters, setCounters] = useState(metrics.map(() => "0"));
+
+  // Counter animation effect using IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            metrics.forEach((metric, idx) => {
+              const targetValue = metric.value;
+              const numericMatch = targetValue.match(/\d+(?:\.\d+)?/);
+              if (!numericMatch) return;
+
+              const targetNum = parseInt(numericMatch[0]);
+              const suffix = targetValue.replace(/[\d\.]/g, "");
+              const duration = 1500;
+              const stepTime = 20;
+              const steps = duration / stepTime;
+              const increment = targetNum / steps;
+              let current = 0;
+
+              const timer = setInterval(() => {
+                current += increment;
+                if (current >= targetNum) {
+                  setCounters((prev) => {
+                    const newCounters = [...prev];
+                    newCounters[idx] = `${targetNum}${suffix}`;
+                    return newCounters;
+                  });
+                  clearInterval(timer);
+                } else {
+                  setCounters((prev) => {
+                    const newCounters = [...prev];
+                    newCounters[idx] = `${Math.floor(current)}${suffix}`;
+                    return newCounters;
+                  });
+                }
+              }, stepTime);
+            });
+
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+
+    if (metricsRef.current) {
+      observer.observe(metricsRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    // Respect prefers-reduced-motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      // Animate paragraphs (instead of per word for performance)
+      // Fade-in content
       gsap.fromTo(
-        ".about-word",
-        { y: 100, opacity: 0 },
+        ".fade-up",
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 1,
-          stagger: 0.05,
-          ease: "power4.out",
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: aboutRef.current,
-            start: "top 70%",
-            once: true, // only run once
-          },
-        },
-      );
-
-      // Animate skill bars
-      gsap.to(".skill-bar-fill", {
-        width: (i, target) => target.dataset.width || "0%",
-        duration: 1.5,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: skillsRef.current,
-          start: "top 70%",
-          once: true,
-        },
-      });
-
-      // Timeline items
-      gsap.fromTo(
-        ".timeline-item",
-        { x: -50, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          stagger: 0.2,
-          duration: 1,
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: timelineRef.current,
-            start: "top 70%",
+            trigger: contentRef.current,
+            start: "top 75%",
             once: true,
           },
         },
       );
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      // Clean up ScrollTriggers
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (
+          trigger.vars?.trigger === contentRef.current ||
+          trigger.vars?.trigger === principlesRef.current ||
+          trigger.vars?.trigger === timelineRef.current
+        ) {
+          trigger.kill();
+        }
+      });
+      ctx.revert();
+    };
   }, []);
 
   return (
     <section
+      id="about"
       ref={sectionRef}
       className="relative min-h-screen py-24 px-6 md:px-12 lg:px-24 overflow-hidden"
       style={{
@@ -120,164 +238,193 @@ export default function About() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div ref={contentRef} className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
-        <header ref={aboutRef} className="mb-16">
-          <span className="text-sm tracking-[0.3em] text-muted">
-            <span
-              className="inline-block w-12 h-px mr-4"
-              style={{ background: "var(--accent)" }}
-            />
-            ABOUT
-          </span>
-
-          <h2 className="text-5xl md:text-6xl mt-6">
-            <span className="font-medium text-primary">Behind</span>
-            <span className="ml-4 text-secondary">the Code</span>
+        <header className="mb-16 fade-up opacity-0">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-px" style={{ background: "var(--accent)" }} />
+            <span className="text-xs tracking-[0.3em] text-muted font-medium">
+              ABOUT
+            </span>
+          </div>
+          <h2 className="text-5xl md:text-6xl lg:text-7xl tracking-tight">
+            <span className="text-primary font-light">Systems you can</span>
+            <br />
+            <span className="text-accent font-medium">depend on.</span>
           </h2>
         </header>
 
+        {/* Two-column layout */}
         <div className="grid lg:grid-cols-2 gap-16">
-          {/* LEFT */}
+          {/* LEFT COLUMN: Bio + Principles */}
           <div>
-            {/* Profile */}
-            <figure className="relative w-32 h-32 mb-8 group">
-              <div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: "var(--gradient-metal)",
-                  border: "1px solid var(--border-light)",
-                  // boxShadow: `
-                  //   inset 0 1px 0 var(--border-light),
-                  //   var(--shadow-lg)
-                  // `,
-                }}
-              />
-
-              <div className="relative w-full h-full rounded-full overflow-hidden border border-light">
-                <Image
-                  src="/personal/image.webp"
-                  alt="Profile photo of Vishal Singh"
-                  fill
-                  className="object-cover"
-                  priority
+            {/* Profile + short bio */}
+            <div className="fade-up opacity-0">
+              <figure className="relative w-24 h-24 mb-6">
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: "var(--gradient-metal)",
+                    border: "1px solid var(--border-light)",
+                  }}
                 />
-              </div>
-            </figure>
+                <div className="relative w-full h-full rounded-full overflow-hidden border border-light">
+                  <Image
+                    src="/personal/image.webp"
+                    alt="Vishal Singh"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </figure>
 
-            {/* Text */}
-            <div className="space-y-4 text-lg mb-12 text-secondary">
-              {aboutText.map((line, i) => (
-                <p key={i}>
-                  {line.split(" ").map((word, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-block mr-2 overflow-hidden"
-                    >
-                      <span className="about-word inline-block translate-y-full">
-                        {word}
-                      </span>
-                    </span>
-                  ))}
-                </p>
-              ))}
+              <p className="text-lg leading-relaxed text-secondary mb-4">
+                I'm{" "}
+                <span className="text-primary font-medium">Vishal Singh</span>,
+                a full-stack developer focused on building{" "}
+                <span className="text-primary">
+                  scalable backend systems, APIs, and AI-powered applications
+                </span>
+                .
+              </p>
+
+              <p className="text-secondary mb-6 leading-relaxed">
+                I have 4+ years of experience working across web, mobile, and
+                backend systems using JavaScript, TypeScript, and Python. My
+                work includes building transaction systems, automation
+                workflows, and AI-driven platforms using RAG pipelines and LLM
+                integrations. I focus on writing reliable, production-ready code
+                with proper validation, error handling, and system design
+                practices.
+              </p>
+              <p className="text-xs text-muted italic">
+                I design systems that don’t just work — they remain correct
+                under retries, failures, and scale.
+              </p>
             </div>
 
-            {/* Skills */}
-            <div ref={skillsRef} className="space-y-6">
-              <h3 className="text-xl mb-6 text-primary">Expertise</h3>
-
-              {skills.map((s) => (
-                <div key={s.skill}>
-                  <div className="flex justify-between text-sm mb-2 text-muted">
-                    <span>{s.skill}</span>
-                    <span>{s.level}</span>
-                  </div>
-
-                  {/* Track */}
+            {/* Engineering Principles */}
+            <div ref={principlesRef} className="mt-10 fade-up opacity-0">
+              <h3 className="text-sm font-medium text-muted uppercase tracking-wider mb-5">
+                Engineering Philosophy
+              </h3>
+              <div className="space-y-3">
+                {principles.map((principle, idx) => (
                   <div
-                    className="h-[2px] rounded-full overflow-hidden"
-                    style={{
-                      background: "var(--border-light)",
-                    }}
+                    key={idx}
+                    className="flex items-start gap-3 p-3 rounded-lg transition-all hover:bg-accent/5"
                   >
-                    {/* Fill */}
-                    <div
-                      className="skill-bar-fill h-full"
-                      data-width={s.level}
-                      style={{
-                        width: "0%",
-                        background: `linear-gradient(90deg, var(--accent), var(--text-muted))`,
-                        boxShadow: "var(--shadow-glow)",
-                      }}
+                    <principle.icon
+                      size={18}
+                      className="text-accent mt-0.5 flex-shrink-0"
                     />
+                    <div>
+                      <h4 className="text-sm font-medium text-primary">
+                        {principle.title}
+                      </h4>
+                      <p className="text-xs text-muted">
+                        {principle.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* TIMELINE */}
-          <div ref={timelineRef}>
-            <h3 className="text-xl mb-8 flex items-center gap-2 text-secondary">
-              <Briefcase size={18} style={{ color: "var(--accent)" }} />
-              Journey
-            </h3>
-
-            <div className="relative">
-              <div
-                className="absolute left-4 top-0 bottom-0 w-px"
-                style={{ background: "var(--border-light)" }}
-              />
-
-              <ul className="space-y-8">
-                {experiences.map((exp, i) => (
-                  <li key={i} className="timeline-item pl-12 opacity-0">
+          {/* RIGHT COLUMN: Metrics + Experience */}
+          <div>
+            {/* Metrics Grid */}
+            <div ref={metricsRef} className="fade-up opacity-0">
+              <h3 className="text-sm font-medium text-muted uppercase tracking-wider mb-5">
+                Production Metrics
+              </h3>
+              <div className="grid grid-cols-2 gap-3 mb-10">
+                {metrics.map((metric, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-xl text-center transition-all hover:scale-[1.02]"
+                    style={{
+                      background: "rgba(59, 130, 246, 0.03)",
+                      border: "1px solid var(--border-light)",
+                    }}
+                  >
                     <div
-                      className="absolute left-2 top-2 w-4 h-4 rounded-full"
-                      style={{
-                        background: "var(--accent)",
-                        boxShadow: "var(--shadow-glow)",
-                      }}
-                    />
-
-                    {/* Card */}
-                    <article
-                      className="rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02]"
-                      style={{
-                        background: "var(--gradient-metal)",
-                        border: "1px solid var(--border-light)",
-                        // boxShadow: `
-                        //   var(--shadow-inset-light),
-                        //   var(--shadow-lg)
-                        // `,
-                      }}
+                      className="text-xl font-bold"
+                      style={{ color: metric.color }}
                     >
-                      <h4 className="text-primary">{exp.title}</h4>
-                      <p className="text-muted text-sm">{exp.company}</p>
-                      <p className="text-muted/70 text-sm mt-2">
-                        {exp.description}
-                      </p>
-                    </article>
-                  </li>
+                      {counters[idx] === "0" ? "0" : counters[idx]}
+                    </div>
+                    <div className="text-[10px] text-muted mt-1 leading-tight">
+                      {metric.label}
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
+            </div>
+
+            {/* Timeline */}
+            <div ref={timelineRef} className="fade-up opacity-0">
+              <h3 className="text-sm font-medium text-muted uppercase tracking-wider mb-5 flex items-center gap-2">
+                <Briefcase size={14} className="text-accent" />
+                Experience
+              </h3>
+              <div className="space-y-6">
+                {experiences.map((exp, idx) => (
+                  <div
+                    key={idx}
+                    className="relative pl-5"
+                    style={{ borderLeft: "1px solid var(--border-light)" }}
+                  >
+                    <div
+                      className="absolute -left-[5px] top-1 w-2 h-2 rounded-full"
+                      style={{ background: "var(--accent)" }}
+                    />
+                    <div className="flex flex-wrap items-baseline justify-between gap-1 mb-1">
+                      <h4 className="text-sm font-medium text-primary">
+                        {exp.title}
+                      </h4>
+                      <span className="text-[10px] text-muted">
+                        {exp.period}
+                      </span>
+                    </div>
+                    <p className="text-xs text-secondary mb-1">{exp.company}</p>
+                    <p className="text-xs text-muted mb-2 leading-relaxed">
+                      {exp.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      <span
+                        className="text-[9px] px-1.5 py-0.5 rounded"
+                        style={{
+                          background: "rgba(59, 130, 246, 0.1)",
+                          color: "var(--accent)",
+                        }}
+                      >
+                        {exp.highlight}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA to case studies */}
+            <div className="fade-up opacity-0 mt-8">
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-2 text-sm transition-all"
+                style={{ color: "var(--accent)" }}
+              >
+                <span>View detailed case studies</span>
+                <span className="group-hover:translate-x-1 transition-transform">
+                  →
+                </span>
+              </Link>
             </div>
           </div>
         </div>
-
-        {/* Decor */}
-        <div
-          className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-10"
-          style={{ border: "1px solid var(--border-light)" }}
-        />
       </div>
-
-      <style jsx>{`
-        .about-word {
-          transform: translateY(100%);
-        }
-      `}</style>
     </section>
   );
 }

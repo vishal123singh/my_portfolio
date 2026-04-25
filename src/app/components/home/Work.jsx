@@ -12,6 +12,7 @@ export default function Work() {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
   const projectsRef = useRef([]);
+  const animationRefs = useRef({});
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -36,53 +37,182 @@ export default function Work() {
           opacity: 1,
           rotateX: 0,
           duration: isMobile ? 0.7 : 0.9,
-          stagger: isMobile ? 0.06 : 0.08, //  smooth spacing
+          stagger: isMobile ? 0.06 : 0.08,
           ease: "power3.out",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 90%", //  earlier = feels faster
+            start: "top 90%",
           },
         },
       );
 
-      // 3D hover (unchanged)
-      projectsRef.current.forEach((card) => {
+      // Apply hover effects based on isFullPageImage property
+      projectsRef.current.forEach((card, cardIndex) => {
         if (!card) return;
 
         const imageCard = card.querySelector(".project-image-card");
+        const image = imageCard?.querySelector("img");
+        const imageContainer = imageCard?.querySelector(".image-container");
         const isTouchDevice =
           "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
-        if (imageCard && !isTouchDevice) {
-          const handleMouseMoveCard = (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+        // Get the isFullPageImage property from the project data
+        const project = keyProjects[cardIndex];
+        const isFullPageImage = project?.isFullPageImage || false;
 
-            const rotateX = (y - rect.height / 2) / 20;
-            const rotateY = (rect.width / 2 - x) / 20;
+        if (imageCard && image && !isTouchDevice) {
+          let animationFrameId = null;
+          let startTime = null;
+          let isAnimating = false;
 
-            gsap.to(imageCard, {
-              rotateX,
-              rotateY,
-              scale: 1.02,
+          // Store animation state for cleanup
+          animationRefs.current[cardIndex] = {
+            frameId: null,
+            timeoutId: null,
+            isActive: false,
+          };
+
+          // Scroll animation for full page images
+          const startScrollAnimation = () => {
+            if (isAnimating) return;
+
+            isAnimating = true;
+            startTime = null;
+            const scrollDuration = 3000; // 3 seconds for full scroll
+
+            const animate = (timestamp) => {
+              if (!startTime) startTime = timestamp;
+              const elapsed = timestamp - startTime;
+              let progress = Math.min(elapsed / scrollDuration, 1);
+
+              // Linear motion for consistent speed
+              const easeProgress = progress;
+
+              if (image && imageContainer) {
+                const containerHeight = imageContainer.clientHeight;
+                const imageHeight = image.clientHeight;
+
+                if (containerHeight && imageHeight > containerHeight) {
+                  const maxScroll = imageHeight - containerHeight;
+                  const scrollY = easeProgress * maxScroll;
+                  image.style.transform = `translateY(-${scrollY}px)`;
+                }
+              }
+
+              if (progress < 1) {
+                animationFrameId = requestAnimationFrame(animate);
+                animationRefs.current[cardIndex].frameId = animationFrameId;
+              } else {
+                // Reached bottom, reset and loop
+                animationRefs.current[cardIndex].timeoutId = setTimeout(() => {
+                  if (image) {
+                    image.style.transform = "translateY(0px)";
+                  }
+                  isAnimating = false;
+                  startTime = null;
+
+                  // Restart animation after pause
+                  animationRefs.current[cardIndex].timeoutId = setTimeout(
+                    () => {
+                      startScrollAnimation();
+                    },
+                    500,
+                  );
+                }, 500);
+              }
+            };
+
+            animationFrameId = requestAnimationFrame(animate);
+            animationRefs.current[cardIndex].frameId = animationFrameId;
+          };
+
+          const stopScrollAnimation = () => {
+            if (animationRefs.current[cardIndex].frameId) {
+              cancelAnimationFrame(animationRefs.current[cardIndex].frameId);
+              animationRefs.current[cardIndex].frameId = null;
+            }
+            if (animationRefs.current[cardIndex].timeoutId) {
+              clearTimeout(animationRefs.current[cardIndex].timeoutId);
+              animationRefs.current[cardIndex].timeoutId = null;
+            }
+
+            if (image) {
+              gsap.killTweensOf(image);
+              gsap.to(image, {
+                y: 0,
+                duration: 0.4,
+                ease: "power2.out",
+                onComplete: () => {
+                  image.style.transform = "translateY(0px)";
+                },
+              });
+            }
+
+            isAnimating = false;
+            startTime = null;
+          };
+
+          // Scale animation for regular images
+          const startScaleAnimation = () => {
+            gsap.to(image, {
+              scale: 1.1,
+              duration: 0.5,
+              ease: "power2.out",
+            });
+          };
+
+          const stopScaleAnimation = () => {
+            gsap.killTweensOf(image);
+            gsap.to(image, {
+              scale: 1,
               duration: 0.4,
               ease: "power2.out",
             });
           };
 
-          const handleMouseLeaveCard = () => {
+          // Hover events based on isFullPageImage property
+          const handleMouseEnter = () => {
+            if (isFullPageImage) {
+              // Full page image: scroll from top to bottom
+              setTimeout(() => {
+                startScrollAnimation();
+              }, 50);
+            } else {
+              // Regular image: just scale
+              startScaleAnimation();
+            }
+
+            // Scale effect for the card (always apply)
             gsap.to(imageCard, {
-              rotateX: 0,
-              rotateY: 0,
-              scale: 1,
-              duration: 0.6,
-              ease: "power3.out",
+              scale: 1.02,
+              duration: 0.3,
+              ease: "power2.out",
             });
           };
 
-          card.addEventListener("mousemove", handleMouseMoveCard);
-          card.addEventListener("mouseleave", handleMouseLeaveCard);
+          const handleMouseLeave = () => {
+            if (isFullPageImage) {
+              stopScrollAnimation();
+            } else {
+              stopScaleAnimation();
+            }
+
+            // Reset card scale
+            gsap.to(imageCard, {
+              scale: 1,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          };
+
+          card.addEventListener("mouseenter", handleMouseEnter);
+          card.addEventListener("mouseleave", handleMouseLeave);
+
+          // Store event listeners for cleanup
+          animationRefs.current[cardIndex].events = {
+            handleMouseEnter,
+            handleMouseLeave,
+          };
         }
       });
 
@@ -95,16 +225,24 @@ export default function Work() {
             trigger: sectionRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 1.2, // slightly tighter
+            scrub: 1.2,
           },
         });
       }
     }, sectionRef);
 
-    const handleResize = () => ScrollTrigger.refresh();
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
     window.addEventListener("resize", handleResize);
 
     return () => {
+      // Cleanup all animations
+      Object.values(animationRefs.current).forEach((anim) => {
+        if (anim.frameId) cancelAnimationFrame(anim.frameId);
+        if (anim.timeoutId) clearTimeout(anim.timeoutId);
+      });
       ctx.revert();
       window.removeEventListener("resize", handleResize);
     };
@@ -167,7 +305,7 @@ export default function Work() {
         {/* Projects */}
         <div
           ref={containerRef}
-          className="space-y-20 sm:space-y-24 md:space-y-32"
+          className="space-y-20 md:space-y-28 lg:space-y-36"
         >
           {keyProjects.map((project, index) => (
             <div
@@ -190,7 +328,7 @@ export default function Work() {
                     <span>{project.year}</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-primary leading-tight">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] xl:text-5xl font-medium text-primary leading-tight">
                     {project.title}
                   </h3>
 
@@ -198,7 +336,7 @@ export default function Work() {
                     {project.category}
                   </span>
 
-                  <p className="text-secondary text-base sm:text-lg leading-relaxed max-w-md">
+                  <p className="text-secondary text-base sm:text-lg leading-relaxed max-w-xl">
                     {project.description}
                   </p>
 
@@ -219,19 +357,15 @@ export default function Work() {
                 {/* Image Card */}
                 <div className="mt-6 sm:mt-8 lg:mt-0">
                   <div
-                    className="project-image-card relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500"
+                    className="project-image-card relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 group-hover:shadow-2xl"
                     style={{
                       background: "var(--gradient-metal)",
                       border: "1px solid var(--border-light)",
-                      // boxShadow: `
-                      //   inset 0 1px 0 var(--border-light),
-                      //   0 15px 40px rgba(0,0,0,0.8)
-                      // `,
                     }}
                   >
                     {/* Top reflection */}
                     <div
-                      className="absolute inset-0 pointer-events-none"
+                      className="absolute inset-0 pointer-events-none z-20"
                       style={{
                         background: `
                           linear-gradient(
@@ -243,22 +377,49 @@ export default function Work() {
                       }}
                     />
 
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                    <div className="image-container relative aspect-[4/3] overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10" />
 
                       {!project.image ? (
                         <div className="w-full h-full flex items-center justify-center text-muted p-4 text-center text-sm sm:text-base">
                           Project Image
                         </div>
+                      ) : project.isFullPageImage ? (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full"
+                          style={{
+                            height: "auto",
+                            position: "relative",
+                            top: 0,
+                            transition:
+                              "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                            willChange: "transform",
+                          }}
+                          loading="lazy"
+                        />
                       ) : (
                         <img
                           src={project.image}
                           alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                          className="absolute inset-0 w-full h-full object-cover object-center"
+                          style={{
+                            transition:
+                              "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                            willChange: "transform",
+                          }}
                           loading="lazy"
                         />
                       )}
                     </div>
+
+                    {/* Full Page Indicator (optional) */}
+                    {project.isFullPageImage && (
+                      <div className="absolute bottom-2 left-2 text-white/60 text-[10px] px-2 py-1 rounded-full backdrop-blur-sm z-30 pointer-events-none">
+                        ↓ Scroll to view
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

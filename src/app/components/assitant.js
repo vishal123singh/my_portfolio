@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaPaperPlane } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { ChatBotIcon } from "./ChatIcon";
@@ -18,13 +18,12 @@ export default function AssistantModal({ onClose }) {
     setMessages([
       { role: "assistant", text: "Hi, I am ViVA. How can I help you today?" },
     ]);
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    return () => (document.body.style.overflow = "auto");
   }, []);
 
   const handleAsk = async () => {
     if (!input.trim()) return;
+
     const userMsg = { role: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
@@ -44,16 +43,15 @@ export default function AssistantModal({ onClose }) {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value);
-        result += chunk;
+
+        result += decoder.decode(value);
 
         setMessages((prev) => {
           const last = prev[prev.length - 1];
           if (last?.role === "assistant") {
             return [...prev.slice(0, -1), { role: "assistant", text: result }];
-          } else {
-            return [...prev, { role: "assistant", text: result }];
           }
+          return [...prev, { role: "assistant", text: result }];
         });
       }
     } catch {
@@ -71,133 +69,72 @@ export default function AssistantModal({ onClose }) {
   }, [messages]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      //style={{ background: "var(--overlay-bg)" }}
-      onClick={onClose}
-    >
+    <AnimatePresence>
       <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.95, opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative rounded-2xl w-full max-w-xl mx-4 h-[70vh] flex flex-col overflow-hidden"
-        style={{
-          background: "var(--gradient-metal)",
-          border: "1px solid var(--border-light)",
-          // boxShadow: "var(--shadow-inset-light), var(--shadow-xl)",
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40"
+        onClick={onClose}
       >
-        <div
-          className="flex justify-between items-center p-4"
-          style={{ borderBottom: "1px solid var(--border-light)" }}
+        <motion.div
+          initial={{ scale: 0.92, opacity: 0, y: 40 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-xl h-[75vh] mx-4 flex flex-col rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl"
         >
-          <h2
-            className="font-light tracking-wide"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Chat with ViVA
-          </h2>
-          <button
-            onClick={onClose}
-            className="transition-colors cursor-pointer"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "var(--text-secondary)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "var(--text-muted)")
-            }
-          >
-            <X size={20} />
-          </button>
-        </div>
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+            <h2 className="text-sm tracking-wide text-white/70">
+              Chat with ViVA
+            </h2>
 
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 custom-scroll">
-          {messages.map((msg, i) => (
-            <ChatMessage key={i} msg={msg} />
-          ))}
-          {loading && (
-            <motion.div
-              className="flex items-center gap-2 italic"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              style={{ color: "var(--text-muted)" }}
-            >
-              <div className="flex space-x-1">
-                <div
-                  className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ background: "var(--text-muted)" }}
-                />
-                <div
-                  className="w-2 h-2 rounded-full animate-bounce delay-75"
-                  style={{ background: "var(--text-muted)" }}
-                />
-                <div
-                  className="w-2 h-2 rounded-full animate-bounce delay-150"
-                  style={{ background: "var(--text-muted)" }}
-                />
-              </div>
-              <span>ViVA is typing...</span>
-            </motion.div>
-          )}
-          <div ref={chatEndRef} />
-        </div>
-
-        <div
-          className="p-4"
-          style={{ borderTop: "1px solid var(--border-light)" }}
-        >
-          <div
-            className="flex items-center rounded-xl px-4 py-2 transition-all focus-within:ring-2"
-            style={{
-              background: "var(--accent-muted)",
-              border: "1px solid var(--border-light)",
-              boxShadow: "0 0 0 2px var(--border-light)",
-              backgroundColor: "var(--gradient-metal)",
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.border = "none";
-              e.currentTarget.style.backgroundColor = "var(--accent-muted)";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.border = "none";
-              e.currentTarget.style.backgroundColor = "var(--accent-muted)";
-            }}
-          >
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAsk()}
-              placeholder="Ask something..."
-              className="flex-1 bg-transparent text-sm outline-none placeholder:opacity-30"
-              style={{ color: "var(--text-primary)" }}
-              disabled={loading}
-            />
             <button
-              onClick={handleAsk}
-              disabled={loading || !input.trim()}
-              className={`p-2 rounded-md transition-all ${
-                loading || !input.trim()
-                  ? "opacity-30 cursor-not-allowed"
-                  : "hover:opacity-80 transition-opacity"
-              }`}
-              style={{ color: "var(--accent)" }}
+              onClick={onClose}
+              className="text-white/40 hover:text-white transition"
             >
-              <FaPaperPlane className="w-4 h-4" />
+              <X size={18} />
             </button>
           </div>
-        </div>
+
+          {/* Chat */}
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 scrollbar-thin scrollbar-thumb-white/10">
+            {messages.map((msg, i) => (
+              <ChatMessage key={i} msg={msg} />
+            ))}
+
+            {loading && <TypingIndicator />}
+
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="p-4 border-t border-white/10">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus-within:border-white/20 transition">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAsk()}
+                placeholder="Ask anything..."
+                className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 outline-none"
+                disabled={loading}
+              />
+
+              <button
+                onClick={handleAsk}
+                disabled={loading || !input.trim()}
+                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 disabled:opacity-30 transition"
+              >
+                <FaPaperPlane className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -205,51 +142,43 @@ function ChatMessage({ msg }) {
   const isUser = msg.role === "user";
 
   return (
-    <div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} gap-3`}>
       {!isUser && (
-        <div className="pt-1">
-          <ChatBotIcon size={24} />
+        <div className="pt-1 opacity-80">
+          <ChatBotIcon size={22} />
         </div>
       )}
-      <div
-        className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md ${
-          isUser ? "rounded-br-none" : "rounded-bl-none"
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`max-w-[75%] px-4 py-3 text-sm leading-relaxed rounded-2xl ${
+          isUser
+            ? "bg-white text-black rounded-br-none"
+            : "bg-white/10 text-white rounded-bl-none"
         }`}
-        style={{
-          background: isUser ? "var(--gradient-metal)" : "var(--accent-muted)",
-          border: "1px solid var(--border-light)",
-          color: isUser ? "var(--accent)" : "var(--text-primary)",
-        }}
       >
         {isUser ? (
-          <p className="text-sm">{msg.text}</p>
+          msg.text
         ) : (
-          <div
-            className="prose prose-sm max-w-none overflow-auto"
-            style={{
-              color: "var(--text-primary)",
-              "--tw-prose-body": "var(--text-primary)",
-              "--tw-prose-headings": "var(--text-primary)",
-              "--tw-prose-lead": "var(--text-secondary)",
-              "--tw-prose-links": "var(--accent)",
-              "--tw-prose-bold": "var(--text-primary)",
-              "--tw-prose-counters": "var(--text-secondary)",
-              "--tw-prose-bullets": "var(--text-secondary)",
-              "--tw-prose-hr": "var(--border-light)",
-              "--tw-prose-quotes": "var(--text-secondary)",
-              "--tw-prose-quote-borders": "var(--border-light)",
-              "--tw-prose-captions": "var(--text-secondary)",
-              "--tw-prose-code": "var(--accent)",
-              "--tw-prose-pre-code": "var(--text-primary)",
-              "--tw-prose-pre-bg": "var(--bg-darker)",
-              "--tw-prose-th-borders": "var(--border-light)",
-              "--tw-prose-td-borders": "var(--border-light)",
-            }}
-          >
+          <div className="prose prose-invert text-sm max-w-none">
             <ReactMarkdown>{msg.text}</ReactMarkdown>
           </div>
         )}
+      </motion.div>
+    </div>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-2 text-white/40 text-sm">
+      <div className="flex gap-1">
+        <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce" />
+        <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce delay-100" />
+        <span className="w-2 h-2 bg-white/40 rounded-full animate-bounce delay-200" />
       </div>
+      ViVA is thinking...
     </div>
   );
 }
